@@ -18,7 +18,6 @@ export default function ContactCompact() {
         animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.5 }}
       >
-        <h2 className="text-2xl font-bold mb-2">Let's Connect</h2>
         <p className="text-muted mb-6">
           Open to discussing AI engineering roles, consulting projects, or collaborations.
         </p>
@@ -63,13 +62,30 @@ export default function ContactCompact() {
           </a>
         </div>
 
-        {/* Cal.com Scheduling Widget */}
+        {/* Cal.com Scheduling - Mobile: Button, Desktop: Embed */}
         <div className="card p-0 overflow-hidden">
           <div className="p-4 border-b border-card-border">
             <h3 className="font-semibold">Schedule a Call</h3>
             <p className="text-sm text-muted">Book a 30-minute conversation directly</p>
           </div>
-          <div className="cal-embed-container">
+
+          {/* Mobile - Prominent CTA Button */}
+          <div className="lg:hidden p-6">
+            <a
+              href="https://cal.com/jeswin-arul-samuel/30min"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full py-4 px-6 bg-accent hover:bg-accent/90 text-white text-center font-semibold rounded-lg transition-colors"
+            >
+              Book a 30-min Call
+            </a>
+            <p className="text-xs text-muted text-center mt-3">
+              Opens Cal.com scheduling page
+            </p>
+          </div>
+
+          {/* Desktop - Embedded Calendar */}
+          <div className="hidden lg:block cal-embed-container">
             <Cal
               calLink="jeswin-arul-samuel/30min"
               style={{ width: "100%", height: "100%", overflow: "auto" }}

@@ -18,6 +18,16 @@ const framedCerts = [
   { name: "Leadership Development Program", issuer: "Compassion International", position: "bottom-right" },
 ]
 
+// All certs for mobile view
+const allCerts = [
+  { name: "Agile Project Management (AgilePM) Foundation", issuer: "APMG International" },
+  { name: "Complete Generative AI with LangChain and HuggingFace", issuer: "Udemy" },
+  { name: "LLMs: Developer's Masterclass", issuer: "Udemy" },
+  { name: "Machine Learning", issuer: "Andrew NG (Coursera)" },
+  { name: "Data Analyst with Power BI", issuer: "Datacamp" },
+  { name: "Leadership Development Program", issuer: "Compassion International" },
+]
+
 function HangingCertificate({ cert, index, isInView }: { cert: typeof hangingCerts[0], index: number, isInView: boolean }) {
   return (
     <motion.div
@@ -149,39 +159,104 @@ export default function CertificationsSection() {
         initial={{ opacity: 0, y: 20 }}
         animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.5 }}
-        className="relative min-h-[700px]"
       >
-        {/* Framed certificates positioned at edges - far from center */}
-        <div className="absolute -top-4 -left-4 z-10">
-          <FramedCertificate cert={framedCerts[0]} index={0} isInView={isInView} />
+        {/* Header */}
+        <div className="text-center mb-8">
+          <p className="text-muted max-w-2xl mx-auto">
+            Professional certifications and continuous learning
+          </p>
         </div>
 
-        <div className="absolute -top-4 -right-4 z-10">
-          <FramedCertificate cert={framedCerts[1]} index={1} isInView={isInView} />
-        </div>
-
-        <div className="absolute bottom-4 -right-4 z-10">
-          <FramedCertificate cert={framedCerts[2]} index={2} isInView={isInView} />
-        </div>
-
-        {/* Center section with string and hanging certificates */}
-        <div className="pt-44 pb-24">
-          {/* String/Wire - thicker and more visible */}
-          <div className="relative mb-0">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[85%] h-1 bg-gradient-to-r from-gray-700 via-gray-400 to-gray-700 rounded-full shadow-sm" />
-            {/* String supports */}
-            <div className="absolute top-0 left-[7%] w-2 h-2 bg-gray-500 rounded-full" />
-            <div className="absolute top-0 right-[7%] w-2 h-2 bg-gray-500 rounded-full" />
+        {/* Desktop View - Original design with frames */}
+        <div className="hidden lg:block relative min-h-[700px]">
+          {/* Framed certificates positioned at edges */}
+          <div className="absolute -top-4 -left-4 z-10">
+            <FramedCertificate cert={framedCerts[0]} index={0} isInView={isInView} />
           </div>
 
-          {/* Hanging Certificates */}
-          <div className="flex justify-center flex-wrap gap-6 lg:gap-8 px-4">
-            {hangingCerts.map((cert, index) => (
-              <div key={cert.name} className="w-40 lg:w-44">
-                <HangingCertificate cert={cert} index={index} isInView={isInView} />
-              </div>
-            ))}
+          <div className="absolute -top-4 -right-4 z-10">
+            <FramedCertificate cert={framedCerts[1]} index={1} isInView={isInView} />
           </div>
+
+          <div className="absolute bottom-4 -right-4 z-10">
+            <FramedCertificate cert={framedCerts[2]} index={2} isInView={isInView} />
+          </div>
+
+          {/* Center section with string and hanging certificates */}
+          <div className="pt-44 pb-24">
+            {/* String/Wire */}
+            <div className="relative mb-0">
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[85%] h-1 bg-gradient-to-r from-gray-700 via-gray-400 to-gray-700 rounded-full shadow-sm" />
+              {/* String supports */}
+              <div className="absolute top-0 left-[7%] w-2 h-2 bg-gray-500 rounded-full" />
+              <div className="absolute top-0 right-[7%] w-2 h-2 bg-gray-500 rounded-full" />
+            </div>
+
+            {/* Hanging Certificates */}
+            <div className="flex justify-center flex-wrap gap-6 lg:gap-8 px-4">
+              {hangingCerts.map((cert, index) => (
+                <div key={cert.name} className="w-40 lg:w-44">
+                  <HangingCertificate cert={cert} index={index} isInView={isInView} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile View - Vertical string design */}
+        <div className="lg:hidden relative max-w-md mx-auto">
+          {/* Vertical String/Line */}
+          <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-accent via-accent/50 to-accent/20" />
+
+          {/* Top hook */}
+          <div className="absolute left-1/2 -translate-x-1/2 -top-2 w-3 h-3 rounded-full bg-accent shadow-lg shadow-accent/30" />
+
+          {/* Certificates */}
+          <div className="space-y-6 pt-4">
+            {allCerts.map((cert, index) => {
+              const isLeft = index % 2 === 0
+              return (
+                <motion.div
+                  key={cert.name}
+                  initial={{ opacity: 0, x: isLeft ? -30 : 30, y: -10 }}
+                  animate={isInView ? { opacity: 1, x: 0, y: 0 } : {}}
+                  transition={{
+                    duration: 0.5,
+                    delay: index * 0.15,
+                    type: "spring",
+                    stiffness: 100
+                  }}
+                  className={`relative flex ${isLeft ? 'justify-end pr-[52%]' : 'justify-start pl-[52%]'}`}
+                >
+                  {/* Connection to string */}
+                  <div className={`absolute top-6 ${isLeft ? 'right-[50%]' : 'left-[50%]'} w-[8%] h-0.5 bg-gradient-to-r ${isLeft ? 'from-transparent to-accent/50' : 'from-accent/50 to-transparent'}`} />
+
+                  {/* Node on string */}
+                  <div className="absolute left-1/2 -translate-x-1/2 top-5 w-2.5 h-2.5 rounded-full bg-accent/80 border-2 border-background" />
+
+                  {/* Certificate Card */}
+                  <motion.div
+                    whileHover={{ scale: 1.03, y: -2 }}
+                    className="relative p-4 bg-card-bg border border-card-border rounded-xl shadow-lg hover:border-accent/30 transition-colors cursor-pointer w-full"
+                  >
+                    {/* Icon */}
+                    <div className={`absolute -top-3 ${isLeft ? 'right-4' : 'left-4'}`}>
+                      <div className="p-1.5 rounded-full bg-accent/20 border border-accent/30">
+                        <Award size={14} className="text-accent" />
+                      </div>
+                    </div>
+
+                    {/* Content */}
+                    <h3 className="text-sm font-semibold mb-1 mt-1 leading-tight">{cert.name}</h3>
+                    <p className="text-xs text-muted">{cert.issuer}</p>
+                  </motion.div>
+                </motion.div>
+              )
+            })}
+          </div>
+
+          {/* Bottom end */}
+          <div className="absolute left-1/2 -translate-x-1/2 -bottom-2 w-2 h-2 rounded-full bg-accent/30" />
         </div>
       </motion.div>
     </section>

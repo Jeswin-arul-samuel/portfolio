@@ -114,39 +114,40 @@ export default function CareerProgression() {
       >
         {/* Header */}
         <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold mb-3">Career Progression</h2>
           <p className="text-muted max-w-2xl mx-auto">
             From Pioneer to AI Architect — a decade of continuous evolution
           </p>
         </div>
 
         {/* Journey Strip - Reverse chronological (newest first) */}
-        <div className="flex items-center justify-center gap-1 sm:gap-2 mb-8 flex-wrap">
-          {evolutionSteps.map((step, index) => (
-            <div key={step.phase} className="flex items-center gap-1 sm:gap-2">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-                className="flex flex-col items-center"
-              >
-                <div className={`p-2 sm:p-2.5 rounded-xl bg-gradient-to-br ${step.color} shadow-lg`}>
-                  <step.icon size={16} className="text-white sm:w-5 sm:h-5" />
-                </div>
-                <p className="text-[10px] sm:text-xs font-medium mt-1.5 text-center">{step.phase}</p>
-              </motion.div>
-              {index < evolutionSteps.length - 1 && (
+        <div className="overflow-x-auto pb-2 mb-8 -mx-6 px-6">
+          <div className="flex items-center justify-start sm:justify-center gap-2 min-w-max">
+            {evolutionSteps.map((step, index) => (
+              <div key={step.phase} className="flex items-center gap-2">
                 <motion.div
-                  initial={{ opacity: 0, scaleX: 0 }}
-                  animate={isInView ? { opacity: 1, scaleX: 1 } : {}}
-                  transition={{ duration: 0.3, delay: 0.3 + index * 0.1 }}
-                  className="self-start mt-3"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                  className="flex flex-col items-center"
                 >
-                  <ArrowLeft size={14} className="text-muted" />
+                  <div className={`p-2 rounded-xl bg-gradient-to-br ${step.color} shadow-lg`}>
+                    <step.icon size={16} className="text-white" />
+                  </div>
+                  <p className="text-[9px] sm:text-xs font-medium mt-1.5 text-center whitespace-nowrap">{step.phase}</p>
                 </motion.div>
-              )}
-            </div>
-          ))}
+                {index < evolutionSteps.length - 1 && (
+                  <motion.div
+                    initial={{ opacity: 0, scaleX: 0 }}
+                    animate={isInView ? { opacity: 1, scaleX: 1 } : {}}
+                    transition={{ duration: 0.3, delay: 0.3 + index * 0.1 }}
+                    className="self-start mt-2.5"
+                  >
+                    <ArrowLeft size={12} className="text-muted" />
+                  </motion.div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Evolution Timeline */}

@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
+import { Menu } from 'lucide-react'
 import SidebarNav from '@/components/SidebarNav'
 import IntroSection from '@/components/IntroSection'
 import AboutCompact from '@/components/AboutCompact'
@@ -15,19 +16,50 @@ export type Section = 'intro' | 'about' | 'career' | 'skills' | 'experience' | '
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState<Section>('intro')
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(true) // Start with menu open on mobile
+  const [hasSelectedSection, setHasSelectedSection] = useState(false) // Track if user has selected anything
+
+  const handleSectionChange = (section: Section) => {
+    setActiveSection(section)
+    setMobileMenuOpen(false) // Close menu when section is selected on mobile
+    setHasSelectedSection(true) // User has now selected something
+    window.scrollTo({ top: 0, behavior: 'smooth' }) // Scroll to top
+  }
 
   return (
     <div className="flex min-h-screen">
-      {/* Fixed Sidebar - Hidden on mobile */}
+      {/* Fixed Sidebar - Always visible on desktop */}
       <div className="hidden lg:block">
-        <SidebarNav activeSection={activeSection} setActiveSection={setActiveSection} />
+        <SidebarNav activeSection={activeSection} setActiveSection={(section) => {
+          setActiveSection(section)
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        }} />
       </div>
 
-      {/* Mobile Header */}
-      <MobileHeader activeSection={activeSection} setActiveSection={setActiveSection} />
+      {/* Mobile Menu Overlay */}
+      {mobileMenuOpen && (
+        <div className="lg:hidden fixed inset-0 z-50 bg-background">
+          <SidebarNav
+            activeSection={activeSection}
+            setActiveSection={handleSectionChange}
+            isMobile={true}
+            showHint={!hasSelectedSection}
+          />
+        </div>
+      )}
+
+      {/* Mobile Hamburger Button - Only show when menu is closed */}
+      {!mobileMenuOpen && (
+        <button
+          onClick={() => setMobileMenuOpen(true)}
+          className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-card-bg border border-card-border"
+        >
+          <Menu size={24} />
+        </button>
+      )}
 
       {/* Main Content - Single section at a time */}
-      <main className="flex-1 lg:ml-80 pt-16 lg:pt-0 min-h-screen">
+      <main className="flex-1 lg:ml-80 min-h-screen">
         {activeSection === 'intro' ? (
           <IntroSection />
         ) : activeSection === 'skills' ? (
@@ -49,8 +81,8 @@ export default function Home() {
         )}
       </main>
 
-      {/* Floating Avatar */}
-      <div className="fixed bottom-0 -right-6 lg:-right-10 z-50 w-60 h-60 lg:w-80 lg:h-80 transition-transform hover:scale-105 cursor-pointer drop-shadow-2xl">
+      {/* Floating Avatar - Hidden on mobile when menu is open */}
+      <div className={`fixed bottom-0 -right-4 lg:-right-10 z-40 w-32 h-32 lg:w-80 lg:h-80 drop-shadow-2xl transform-gpu ${mobileMenuOpen ? 'hidden lg:block' : ''}`}>
         <Image
           src="/jeswin_profile.png"
           alt="Jeswin"
@@ -60,46 +92,5 @@ export default function Home() {
         />
       </div>
     </div>
-  )
-}
-
-function MobileHeader({
-  activeSection,
-  setActiveSection
-}: {
-  activeSection: Section
-  setActiveSection: (s: Section) => void
-}) {
-  const sections: { key: Section; label: string }[] = [
-    { key: 'intro', label: 'Home' },
-    { key: 'about', label: 'About' },
-    { key: 'career', label: 'Career' },
-    { key: 'skills', label: 'Skills' },
-    { key: 'experience', label: 'Timeline' },
-    { key: 'certifications', label: 'Certs' },
-    { key: 'contact', label: 'Contact' },
-  ]
-
-  return (
-    <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-card-border">
-      <div className="flex items-center px-4 py-3 overflow-x-auto">
-        <span className="font-bold gradient-text text-sm whitespace-nowrap mr-4">JAS</span>
-        <nav className="flex gap-1 text-xs">
-          {sections.map((section) => (
-            <button
-              key={section.key}
-              onClick={() => setActiveSection(section.key)}
-              className={`px-2 py-1 rounded whitespace-nowrap transition-colors ${
-                activeSection === section.key
-                  ? 'bg-accent text-white'
-                  : 'text-muted hover:text-white'
-              }`}
-            >
-              {section.label}
-            </button>
-          ))}
-        </nav>
-      </div>
-    </header>
   )
 }

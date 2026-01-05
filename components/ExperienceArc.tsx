@@ -1,7 +1,7 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 import { experience } from '@/data/portfolio-data'
 
@@ -27,19 +27,78 @@ interface Experience {
 
 const experienceData = experience as Experience[]
 
+const MOBILE_ITEM_HEIGHT = 100 // Fixed height per item in pixels
+
 export default function ExperienceArc() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [selectedExp, setSelectedExp] = useState<Experience | null>(null)
   const [expandedProject, setExpandedProject] = useState<number | null>(null)
-  const itemsPerView = 2
-  const itemWidth = 50 // percentage width per item
+  const [mobileItemsPerView, setMobileItemsPerView] = useState(3)
+  const [containerHeight, setContainerHeight] = useState(300)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  // Desktop settings
+  const desktopItemsPerView = 2
+  const itemWidth = 50 // percentage width per item (desktop)
+
+  // Calculate mobile items per view based on available screen height
+  useEffect(() => {
+    const calculateMobileLayout = () => {
+      // Get viewport height
+      const viewportHeight = window.innerHeight
+      // Reserve space for: mobile header (~64px), legend (~60px), hint (~40px), progress dots (~40px), padding (~40px)
+      const reservedSpace = 244
+      const availableHeight = viewportHeight - reservedSpace
+
+      // Calculate how many items can fit
+      const itemsThatFit = Math.floor(availableHeight / MOBILE_ITEM_HEIGHT)
+      const clampedItems = Math.max(2, Math.min(itemsThatFit, experienceData.length))
+
+      setMobileItemsPerView(clampedItems)
+      setContainerHeight(clampedItems * MOBILE_ITEM_HEIGHT)
+    }
+
+    calculateMobileLayout()
+    window.addEventListener('resize', calculateMobileLayout)
+    return () => window.removeEventListener('resize', calculateMobileLayout)
+  }, [])
+
+  // Mobile percentage per item
+  const itemHeightPercent = 100 / mobileItemsPerView
+
+  // Touch handling for mobile swipe
+  const touchStartY = useRef<number>(0)
+  const touchEndY = useRef<number>(0)
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartY.current = e.touches[0].clientY
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndY.current = e.touches[0].clientY
+  }
+
+  const handleTouchEnd = () => {
+    const diff = touchStartY.current - touchEndY.current
+    const threshold = 50 // minimum swipe distance
+
+    if (Math.abs(diff) > threshold) {
+      if (diff > 0) {
+        // Swiped up - go to next
+        setCurrentIndex((prev) => Math.min(experienceData.length - mobileItemsPerView, prev + 1))
+      } else {
+        // Swiped down - go to previous
+        setCurrentIndex((prev) => Math.max(0, prev - 1))
+      }
+    }
+  }
 
   const handlePrev = () => {
     setCurrentIndex((prev) => Math.max(0, prev - 1))
   }
 
   const handleNext = () => {
-    setCurrentIndex((prev) => Math.min(experienceData.length - itemsPerView, prev + 1))
+    setCurrentIndex((prev) => Math.min(experienceData.length - desktopItemsPerView, prev + 1))
   }
 
   const openModal = (exp: Experience) => {
@@ -54,11 +113,21 @@ export default function ExperienceArc() {
 
   // Calculate the transform offset for train-like sliding
   const translateX = -(currentIndex * itemWidth)
+  const translateY = -(currentIndex * itemHeightPercent)
+
+  // Pulsate animation for checkpoint circles
+  const pulseAnimation = {
+    scale: [1, 1.15, 1],
+    opacity: [0.7, 1, 0.7],
+  }
+
+  // Max index for mobile (recalculate when itemsPerView changes)
+  const maxMobileIndex = Math.max(0, experienceData.length - mobileItemsPerView)
 
   return (
     <section id="experience" className="py-8">
       {/* Legend */}
-      <div className="flex justify-center gap-6 mb-8">
+      <div className="flex justify-center gap-6 mb-6 lg:mb-8">
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 rounded-full border-2 border-accent bg-background" />
           <span className="text-xs text-muted">Work</span>
@@ -69,8 +138,8 @@ export default function ExperienceArc() {
         </div>
       </div>
 
-      {/* Horizontal Timeline */}
-      <div className="relative">
+      {/* Desktop - Horizontal Timeline */}
+      <div className="hidden lg:block relative">
         {/* Navigation arrows */}
         <button
           onClick={handlePrev}
@@ -85,9 +154,9 @@ export default function ExperienceArc() {
         </button>
         <button
           onClick={handleNext}
-          disabled={currentIndex >= experienceData.length - itemsPerView}
+          disabled={currentIndex >= experienceData.length - desktopItemsPerView}
           className={`absolute -right-4 top-[10px] -translate-y-1/2 z-20 p-2 rounded-full bg-card-bg border border-card-border transition-all duration-300 ${
-            currentIndex >= experienceData.length - itemsPerView
+            currentIndex >= experienceData.length - desktopItemsPerView
               ? 'opacity-30 cursor-not-allowed'
               : 'hover:border-accent hover:scale-110'
           }`}
@@ -113,12 +182,12 @@ export default function ExperienceArc() {
           >
             {experienceData.map((exp, index) => (
               <div
-                key={`${exp.company}-${index}`}
+                key={`desktop-${exp.company}-${index}`}
                 className="flex-shrink-0 flex flex-col items-center cursor-pointer group"
                 style={{ width: `${itemWidth}%` }}
                 onClick={() => openModal(exp)}
               >
-                {/* Hollow circle - 5mm ≈ 20px */}
+                {/* Hollow circle with pulse animation */}
                 <motion.div
                   className={`w-5 h-5 rounded-full border-2 bg-background transition-all duration-300 ${
                     exp.category === 'education'
@@ -127,7 +196,13 @@ export default function ExperienceArc() {
                       ? 'border-accent shadow-lg shadow-accent/30'
                       : 'border-accent/70 group-hover:border-accent group-hover:shadow-lg group-hover:shadow-accent/30'
                   }`}
-                  whileHover={{ scale: 1.2 }}
+                  animate={pulseAnimation}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                  whileHover={{ scale: 1.3 }}
                   whileTap={{ scale: 0.95 }}
                 />
 
@@ -167,7 +242,111 @@ export default function ExperienceArc() {
 
         {/* Progress indicator */}
         <div className="flex justify-center gap-1.5 mt-8">
-          {Array.from({ length: experienceData.length - itemsPerView + 1 }).map((_, i) => (
+          {Array.from({ length: experienceData.length - desktopItemsPerView + 1 }).map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrentIndex(i)}
+              className={`h-1.5 rounded-full transition-all duration-500 ${
+                currentIndex === i
+                  ? 'bg-accent w-6'
+                  : 'bg-card-border hover:bg-muted w-1.5'
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Mobile - Vertical Timeline with Swipe */}
+      <div className="lg:hidden relative">
+        {/* Swipe hint */}
+        <p className="text-center text-xs text-muted mb-4 animate-pulse">Swipe to explore • Tap for details</p>
+
+        {/* Timeline container with touch handling - dynamic height */}
+        <div
+          ref={containerRef}
+          className="mx-4 overflow-hidden touch-none relative"
+          style={{ height: `${containerHeight}px` }}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          {/* Vertical line */}
+          <div className="absolute left-[10px] top-0 bottom-0 w-0.5 bg-card-border" />
+
+          {/* Sliding track - moves vertically */}
+          <motion.div
+            className="flex flex-col"
+            animate={{ y: `${translateY}%` }}
+            transition={{
+              type: "spring",
+              stiffness: 300,
+              damping: 30,
+              mass: 1
+            }}
+          >
+            {experienceData.map((exp, index) => (
+              <div
+                key={`mobile-${exp.company}-${index}`}
+                className="flex-shrink-0 flex items-start gap-3 cursor-pointer group"
+                style={{ height: `${MOBILE_ITEM_HEIGHT}px` }}
+                onClick={() => openModal(exp)}
+              >
+                {/* Hollow circle with pulse animation */}
+                <motion.div
+                  className={`w-5 h-5 rounded-full border-2 bg-background transition-all duration-300 flex-shrink-0 mt-0.5 ${
+                    exp.category === 'education'
+                      ? 'border-emerald-500 group-hover:border-emerald-400 group-hover:shadow-lg group-hover:shadow-emerald-500/30'
+                      : exp.type === 'current'
+                      ? 'border-accent shadow-lg shadow-accent/30'
+                      : 'border-accent/70 group-hover:border-accent group-hover:shadow-lg group-hover:shadow-accent/30'
+                  }`}
+                  animate={pulseAnimation}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: index * 0.2
+                  }}
+                  whileTap={{ scale: 1.3 }}
+                />
+
+                {/* Info to the right of circle */}
+                <div className="flex-1 pr-2">
+                  <p className={`text-sm font-semibold text-white transition-colors leading-tight ${
+                    exp.category === 'education' ? 'group-hover:text-emerald-400' : 'group-hover:text-accent'
+                  }`}>
+                    {exp.role}
+                  </p>
+                  <p className={`text-xs mt-0.5 ${
+                    exp.category === 'education' ? 'text-emerald-500' : 'text-accent'
+                  }`}>
+                    {exp.company}
+                  </p>
+                  <p className="text-[10px] text-muted mt-0.5">
+                    {exp.period.split('–')[0].trim()}
+                  </p>
+                  {/* Domain chips */}
+                  {exp.domains && exp.domains.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {exp.domains.slice(0, 2).map((domain) => (
+                        <span
+                          key={domain}
+                          className="text-[8px] px-1.5 py-0.5 rounded-full bg-card-border/50 text-muted"
+                        >
+                          {domain}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+
+        {/* Progress indicator */}
+        <div className="flex justify-center gap-1.5 mt-4">
+          {Array.from({ length: maxMobileIndex + 1 }).map((_, i) => (
             <button
               key={i}
               onClick={() => setCurrentIndex(i)}

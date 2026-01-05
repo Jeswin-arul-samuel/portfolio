@@ -27,7 +27,7 @@ const whatIDo = [
 
 const achievements = [
   { value: "98%", label: "Reconciliation Accuracy", sublabel: "Financial AI System" },
-  { value: "70%", label: "Audit Capacity Boost", sublabel: "Amazon Project" },
+  { value: "99%", label: "Audit Coverage", sublabel: "Amazon Project" },
   { value: "60%", label: "Revenue Growth YoY", sublabel: "Product Impact" },
   { value: "3000+", label: "Professionals Trained", sublabel: "Across AI & Data" },
 ]
@@ -62,7 +62,6 @@ export default function AboutCompact() {
       >
         {/* Intro */}
         <div className="text-center mb-6">
-          <h2 className="text-2xl font-bold mb-3">About Me</h2>
           <p className="text-muted max-w-2xl mx-auto">
             AI-first technologist with a decade of experience at the intersection of
             <span className="text-accent"> artificial intelligence</span>,

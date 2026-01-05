@@ -18,55 +18,65 @@ const navItems: { key: Section; label: string; icon: React.ElementType }[] = [
 interface SidebarNavProps {
   activeSection: Section
   setActiveSection: (section: Section) => void
+  isMobile?: boolean
+  showHint?: boolean
 }
 
-export default function SidebarNav({ activeSection, setActiveSection }: SidebarNavProps) {
+export default function SidebarNav({ activeSection, setActiveSection, isMobile = false, showHint = false }: SidebarNavProps) {
   return (
-    <aside className="fixed left-0 top-0 h-screen w-80 bg-card-bg border-r border-card-border flex flex-col">
+    <aside className={`${isMobile ? 'w-full h-full' : 'fixed left-0 top-0 h-screen w-80'} bg-card-bg border-r border-card-border flex flex-col ${isMobile ? 'justify-center' : ''}`}>
       {/* Profile Section */}
-      <div className="pt-8 pb-4 px-4 text-center border-b border-card-border">
-        <div className="w-28 h-28 mx-auto mb-4 rounded-full overflow-hidden border-4 border-accent/30">
+      <div className={`${isMobile ? 'pt-12 pb-6' : 'pt-8 pb-4'} px-4 text-center ${isMobile ? '' : 'border-b border-card-border'}`}>
+        <div className={`${isMobile ? 'w-32 h-32' : 'w-28 h-28'} mx-auto mb-4 rounded-full overflow-hidden border-4 border-accent/30`}>
           <Image
             src="/profile.jpeg"
             alt={personalInfo.name}
-            width={112}
-            height={112}
+            width={128}
+            height={128}
             className="w-full h-full object-cover"
             priority
           />
         </div>
-        <h1 className="text-lg font-bold mb-1">{personalInfo.name}</h1>
-        <p className="text-accent text-sm font-medium">India • France • Luxembourg</p>
+        <h1 className={`${isMobile ? 'text-xl' : 'text-lg'} font-bold mb-1`}>{personalInfo.name}</h1>
+        <p className={`text-accent ${isMobile ? 'text-base' : 'text-sm'} font-medium`}>India • France • Luxembourg</p>
       </div>
 
       {/* Navigation */}
-      <nav className="p-4 flex-1 overflow-y-auto">
-        <ul className="space-y-1">
+      <nav className={`${isMobile ? 'px-8 py-6' : 'p-4 flex-1 overflow-y-auto'}`}>
+        <ul className={`${isMobile ? 'space-y-2' : 'space-y-1'}`}>
           {navItems.map((item) => {
             const Icon = item.icon
-            const isActive = activeSection === item.key
+            // Don't highlight on first mobile visit (showHint = true)
+            const isActive = !showHint && activeSection === item.key
             return (
               <li key={item.key}>
                 <button
                   onClick={() => setActiveSection(item.key)}
-                  className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm transition-all duration-200 ${
+                  className={`w-full flex items-center gap-3 ${isMobile ? 'px-6 py-4 text-base' : 'px-4 py-2.5 text-sm'} rounded-lg transition-all duration-200 ${
                     isActive
                       ? 'bg-accent text-white'
                       : 'text-muted hover:text-white hover:bg-accent/10'
                   }`}
                 >
-                  <Icon size={18} />
+                  <Icon size={isMobile ? 22 : 18} />
                   {item.label}
                 </button>
               </li>
             )
           })}
         </ul>
+
+        {/* Hint for first-time mobile visitors */}
+        {showHint && (
+          <p className="text-center text-muted text-sm mt-6 animate-pulse">
+            Tap any option to explore
+          </p>
+        )}
       </nav>
 
       {/* Contact Links */}
-      <div className="p-4 border-t border-card-border">
-        <div className="flex justify-center gap-3">
+      <div className={`${isMobile ? 'p-6' : 'p-4'} ${isMobile ? '' : 'border-t border-card-border'}`}>
+        <div className={`flex justify-center ${isMobile ? 'gap-4' : 'gap-3'}`}>
           <a
             href={`mailto:${personalInfo.email}`}
             className="p-2 rounded-lg bg-background hover:bg-accent/10 text-muted hover:text-accent transition-colors"

@@ -39,8 +39,8 @@ const leadershipStats = [
 ]
 
 const technicalStats = [
-  { label: 'ML Models Built', value: '20+', icon: Cpu },
-  { label: 'Technologies', value: '15+', icon: Sparkles },
+  { label: 'AI/ML Models Built', value: '12+', icon: Cpu },
+  { label: 'Technologies', value: '7+', icon: Sparkles },
   { label: 'Certifications', value: '6+', icon: Award },
   { label: 'Domains', value: '3+', icon: Globe },
 ]

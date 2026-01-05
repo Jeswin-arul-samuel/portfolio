@@ -186,7 +186,7 @@ export const projects = [
     problem: "Manual auditing of customs broker data was limited to less than 1% coverage, with data quality issues causing downstream processing errors.",
     approach: "Developed data schemas to streamline onboarding of customs broker partners (UPS, CEVA, Kerry, etc.). Engineered automated data validation rules and quality gates. Built an automated audit dashboard using QuickSight and SQL.",
     techStack: ["Python", "SQL", "AWS QuickSight", "Data Validation", "ETL"],
-    impact: "Improved data readiness from 38% to 86%. Enhanced audit capacity by 70%, increasing coverage from <1% to 99% across 3 data sources.",
+    impact: "Improved data readiness from 38% to 86%. Increased audit coverage from <1% to 99% across 3 data sources.",
     featured: true,
   },
 ]
@@ -282,6 +282,16 @@ export const experience = [
           "Onboarded data from multiple international logistics partners",
           "Pre-commit and post-commit data quality checks",
           "ETL pipeline with transformation scripts for compliance",
+        ],
+      },
+      {
+        name: "Trade Services Audit Automation",
+        description: "Automated audit system for Global Trade Services team to validate import/export filings from partner brokers. Built dashboard integrating 3 sources of truth: government filings, Amazon internal data, and broker data.",
+        techStack: ["Python", "SQL", "AWS QuickSight", "ETL", "Data Validation"],
+        highlights: [
+          "Cross-validated data from 3 sources to identify filing discrepancies",
+          "Automated scripts to flag and report discrepancy details",
+          "Increased audit coverage from <1% to 99% of documents",
         ],
       },
     ],
