@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-white antialiased;
+  }
+
+  ::selection {
+    @apply bg-accent/30 text-white;
+  }
+}
+
+@layer components {
+  .section-container {
+    @apply max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24;
+  }
+
+  .section-title {
+    @apply text-3xl sm:text-4xl font-bold mb-4 bg-gradient-to-r from-white to-muted bg-clip-text text-transparent;
+  }
+
+  .section-subtitle {
+    @apply text-muted text-lg mb-12;
+  }
+
+  .card {
+    @apply bg-card-bg border border-card-border rounded-xl p-6 transition-all duration-300 hover:border-accent/50 hover:shadow-lg hover:shadow-accent/5;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-6 py-3 bg-accent hover:bg-accent-dark text-white font-medium rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-accent/25;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 px-6 py-3 border border-card-border hover:border-accent text-white font-medium rounded-lg transition-all duration-300;
+  }
+
+  .skill-chip {
+    @apply px-3 py-1.5 bg-card-bg border border-card-border rounded-full text-sm text-muted hover:border-accent/50 hover:text-white transition-all duration-300;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-accent-light via-accent to-accent-dark bg-clip-text text-transparent;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-background;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-card-border rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-accent/50;
+}
+
+/* Cal.com embed container */
+.cal-embed-container {
+  height: 450px;
+  min-height: 400px;
+}
+
+@media (max-width: 640px) {
+  .cal-embed-container {
+    height: 500px;
+  }
+}
