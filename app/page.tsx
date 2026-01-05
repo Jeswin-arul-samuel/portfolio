@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import Image from 'next/image'
 import { Menu } from 'lucide-react'
 import SidebarNav from '@/components/SidebarNav'
+import ChatWidget from '@/components/ChatWidget'
 import IntroSection from '@/components/IntroSection'
 import AboutCompact from '@/components/AboutCompact'
 import CareerProgression from '@/components/CareerProgression'
@@ -81,15 +81,9 @@ export default function Home() {
         )}
       </main>
 
-      {/* Floating Avatar - Hidden on mobile when menu is open */}
-      <div className={`fixed bottom-0 -right-4 lg:-right-10 z-40 w-32 h-32 lg:w-80 lg:h-80 drop-shadow-2xl transform-gpu ${mobileMenuOpen ? 'hidden lg:block' : ''}`}>
-        <Image
-          src="/jeswin_profile.png"
-          alt="Jeswin"
-          width={320}
-          height={320}
-          className="w-full h-full object-contain"
-        />
+      {/* Chat Widget - Hidden on mobile when menu is open */}
+      <div className={mobileMenuOpen ? 'hidden lg:block' : ''}>
+        <ChatWidget />
       </div>
     </div>
   )

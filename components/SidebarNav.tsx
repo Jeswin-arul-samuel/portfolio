@@ -10,7 +10,7 @@ const navItems: { key: Section; label: string; icon: React.ElementType }[] = [
   { key: 'about', label: 'About', icon: User },
   { key: 'career', label: 'Career Progression', icon: TrendingUp },
   { key: 'skills', label: 'Skills', icon: Code },
-  { key: 'experience', label: 'Career Timeline', icon: Briefcase },
+  { key: 'experience', label: 'Professional Timeline', icon: Briefcase },
   { key: 'certifications', label: 'Certifications', icon: Award },
   { key: 'contact', label: 'Contact', icon: MessageSquare },
 ]
