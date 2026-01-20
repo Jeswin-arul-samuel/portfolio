@@ -6,12 +6,12 @@
 ---
 
 ### PROFESSIONAL SUMMARY
-**AI Solutions Architect** with **9 years of total experience** spanning Generative AI, Enterprise Data Engineering, and Technical Strategy. Expert in designing **Agentic AI** systems and **Human-in-the-Loop (HITL)** architectures using **LangGraph**, **OpenAI GPT-4o**, and **FastAPI**. Proven track record of bridging business goals with technical implementation, having successfully led engineering teams to deploy high-accuracy financial reconciliation systems (**98% accuracy**) and optimized data pipelines at **Amazon**. Certified in **Agile Project Management (APMG)**, combining deep technical expertise in **LLMs**, **ETL/MDM**, and **Cloud Infrastructure** with strong stakeholder management and team mentorship capabilities.
+**AI Solutions Architect** with **9 years of total experience** spanning Generative AI, Enterprise Data Engineering, and Technical Strategy. Expert in designing **Agentic AI** systems and **Human-in-the-Loop (HITL)** architectures using **LangGraph**, **OpenAI**, and **FastAPI**. Proven track record of bridging business goals with technical implementation, having successfully led engineering teams to deploy high-accuracy financial reconciliation systems (**98% accuracy**) and optimized data pipelines at **Amazon**. Certified in **Agile Project Management (APMG)**, combining deep technical expertise in **LLMs**, **ETL/MDM**, and **Cloud Infrastructure** with strong stakeholder management and team mentorship capabilities.
 
 ---
 
 ### TECHNICAL SKILLS
-* **Generative AI & LLMs:** OpenAI (GPT-4o, GPT-4o-mini), Anthropic (Claude 3.5 Sonnet), Google (Gemini 2.0), Qwen 3B (Fine-tuning), RAG Pipelines, Vector Embeddings (Text-Embedding-3-Large).
+* **Generative AI & LLMs:** OpenAI, Anthropic (Claude 3.5 Sonnet), Google (Gemini 2.0), Qwen 3B (Fine-tuning), RAG Pipelines, Vector Embeddings (Text-Embedding-3-Large).
 * **Agentic Frameworks:** LangChain, LangGraph (State Management/Checkpointers), LangSmith, ReAct Agents, AutoGen, CrewAI concepts.
 * **Backend Engineering:** Python, FastAPI, Pydantic V2, SQLAlchemy, RESTful APIs, Asynchronous Programming.
 * **Machine Learning:** TensorFlow, Keras, Scikit-Learn, CNN, RNN, LSTM, Pandas, NumPy.
@@ -25,7 +25,7 @@
 ### PROFESSIONAL EXPERIENCE
 
 **CONSTIENT GLOBAL SOLUTIONS** **AI Solutions Architect / Lead AI Engineer** | *July 2025 – Present*
-* **Agentic Financial Automation:** Architected a Multi-Agent Cash Reconciliation System using **OpenAI GPT-4o** and **LangGraph**, achieving a **98% reconciliation rate** with **100% financial accuracy** for enterprise tenants.
+* **Agentic Financial Automation:** Architected a Multi-Agent Cash Reconciliation System using **OpenAI** and **LangGraph**, achieving a **98% reconciliation rate** with **100% financial accuracy** for enterprise tenants.
 * **Hospitality AI Assistant:** Deployed a production-ready **Agentic AI** virtual assistant using **ReAct agents (Langchain, Langgraph, Langsmith Eco)** with features for customers to order food, book tables, log feedback and complaints and make general enquiries. Integrated with **PetPooja POS** for live order injection and tracking.
 * **Human-in-the-Loop (HITL) Pipeline:** Engineered a feedback loop where ambiguous transactions are routed to human reviewers, creating a dataset that creates a model training pipeline to improve future automated tenant matching.
 * **Strategic Analysis & Solution Design:** Led requirements gathering sessions with SMEs and clients, conducting Exploratory Data Analysis (EDA) on enterprise datasets to translate business objectives into scalable technical architecture and API specifications.

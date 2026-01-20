@@ -10,7 +10,7 @@ export const personalInfo = {
   location: "Paris, France",
   bio: `I'm an AI-first technologist with a decade of experience driving innovation at the intersection of artificial intelligence, data, IoT, and robotics. My journey spans startups, enterprise tech, and academia — all connected by one mission: using technology to solve real-world problems and empower people through systems, tools, and education.
 
-Currently, I architect Agentic AI systems and Human-in-the-Loop pipelines using LangGraph, OpenAI GPT-4o, and FastAPI. I've successfully deployed production systems achieving 98% accuracy in financial reconciliation and built AI assistants integrated with real-world business operations.
+Currently, I architect Agentic AI systems and Human-in-the-Loop pipelines using LangGraph, OpenAI, and FastAPI. I've successfully deployed production systems achieving 98% accuracy in financial reconciliation and built AI assistants integrated with real-world business operations.
 
 I'm seeking opportunities in AI Engineering, Solutions Architecture, or hybrid roles that connect technology with business impact.`,
   highlights: [
@@ -33,7 +33,7 @@ export const skills = {
       name: "Generative AI & LLMs",
       icon: "Brain",
       skills: [
-        "OpenAI GPT-4o",
+        "OpenAI",
         "Claude 3.5 Sonnet",
         "Gemini 2.0",
         "LangChain",
@@ -113,25 +113,136 @@ export const skills = {
 
 export const projects = [
   {
-    title: "Multi-Agent Cash Reconciliation System",
+    title: "AI-Powered Accounts Receivable Ledger Reconciliation",
     company: "Constient Global Solutions",
     period: "2025",
     category: "Agentic AI",
-    problem: "Enterprise clients needed to reconcile thousands of financial transactions across multiple tenants with high accuracy, but manual processes were slow and error-prone.",
-    approach: "Architected a Multi-Agent system using OpenAI GPT-4o and LangGraph with state management and checkpointers. Implemented a Human-in-the-Loop (HITL) pipeline where ambiguous transactions are routed to human reviewers, creating a feedback loop that continuously improves model accuracy.",
-    techStack: ["OpenAI GPT-4o", "LangGraph", "FastAPI", "PostgreSQL", "Redis", "Pydantic V2"],
-    impact: "Achieved 98% reconciliation rate with 100% financial accuracy. The HITL feedback loop creates training data that improves future automated tenant matching.",
+    problem: `## Business Context
+Enterprise real estate and property management finance teams needed autonomous financial reconciliation of accounts receivable ledgers handling thousands of transactions monthly.
+
+## Core Challenges
+- Sparse transaction data with missing tenant identification in bank statement deposits
+- Multi-tenant decomposition—single rent/operating expense payments covering multiple building accounts
+- Accounts receivable consolidation from multiple inconsistent sources (bank statements, tenant files, GL coding)
+- Financial account-level matching with missing GL codes and transaction context
+- Inability to meet monthly close deadlines with 100% accuracy
+
+## Current State Gap
+Finance teams needed automated accounts receivable matching to accelerate close timelines and achieve complete ledger accuracy.`,
+    approach: `## Architecture Overview
+Enterprise-grade Agentic AI system built on LangGraph state machine orchestration with sophisticated multi-agent reasoning patterns. Implements ReAct (Reasoning + Acting) agents for autonomous financial decision-making with persistent checkpointing and state management for reliable multi-step workflows.
+
+## LangGraph & LangChain Technical Stack
+- **LangGraph State Machine Architecture** - Graph-based workflow with persistent state management, checkpointing for recovery, and node/edge execution patterns
+- **Deep Agent Loops** - Multi-turn reasoning cycles with observation, thought, and action phases using ReAct protocol
+- **Agentic Reasoning Agents** - Tool-using agents with dynamic tool selection based on financial context and GL reconciliation requirements
+- **Memory & State Management** - Persistent conversation memory, agent state checkpointing, and transaction history tracking across multiple reconciliation cycles
+- **Tool Ecosystem Integration** - LangChain tool bindings for PDF extraction, tenant matching, GL posting, and dashboard queries
+- **Chain Composition** - Sequential and conditional chains for multi-stage financial processing with rollback capabilities
+
+## Key Components
+- **Financial Data Ingestion Agent** - Autonomous PDF extraction using Amazon Textract, LLM parsing with chain-of-thought reasoning, Pydantic schema validation
+- **Autonomous Tenant Identification Agent** - Deep reasoning agent with multi-step chain logic for entity extraction from sparse bank narratives
+- **Intelligent Accounts Receivable Matching Agent** - ReAct-pattern agent with tool use for GL matching, decomposition logic, and pattern analysis
+- **Agentic Reconciliation State Machine** - LangGraph persistent checkpoints, state transitions, branching logic for partial/full reconciliation scenarios
+- **Human-in-the-Loop Loop** - Feedback integration system with memory persistence for continuous agent model improvement
+- **Financial Reporting Dashboard** - Autonomous query agent for dashboard generation
+
+## Integration Points
+- Bank statement sources and tenant master data systems
+- GL infrastructure with autonomous posting capabilities
+- MongoDB data store with Pydantic V2 validation schemas
+- End-to-end agentic pipeline: PDF → Extraction Agent → Tenant ID Agent → AR Matching Agent → State Machine → HITL → GL Dashboard`,
+    techStack: ["OpenAI", "LangGraph", "LangChain", "ReAct Agents", "State Machine Architecture", "Persistent Checkpointing", "Deep Agent Loops", "Tool Binding", "Chain Composition", "Multi-Agent Orchestration", "Agentic Reasoning", "Memory & State Management", "FastAPI", "PostgreSQL", "MongoDB", "Redis", "Pydantic V2", "Amazon Textract", "Python"],
+    impact: `## Key Metrics
+- 98% financial reconciliation accuracy on accounts receivable ledger
+- 100% GL posting accuracy (zero financial errors in matched transactions)
+- 83% autonomous tenant identification from sparse bank data
+- 95% reduction in manual data entry
+- 5-10 minute processing (vs. 2-3 weeks manual close)
+- ~150 financial training data points generated monthly
+
+## Operational Impact
+- Reduced accounts receivable time-to-close from 2+ weeks to 2 days
+- Accelerated monthly financial close process
+- Autonomous AI agents handle complex scenarios through intelligent reasoning
+- Multi-building payments, partial allocations, missing GL context now autonomous
+- Eliminates manual reconciliation bottlenecks
+
+## Scalability & Deployment
+- Enterprise property portfolios with varying GL structures
+- Multi-tenant compositions and property types
+- Extensible to new financial structures and account types
+- Foundation for expanding across real estate enterprise platforms`,
     featured: true,
   },
   {
-    title: "Hospitality AI Assistant",
+    title: "Virtual Waiter",
     company: "Constient Global Solutions",
     period: "2025",
     category: "Agentic AI",
-    problem: "Hospitality businesses needed an intelligent assistant to handle customer orders, table bookings, feedback collection, and general inquiries across multiple channels.",
-    approach: "Deployed a production-ready Agentic AI virtual assistant using ReAct agents with LangChain, LangGraph, and LangSmith ecosystem. Built omnichannel communication handling (WhatsApp, SMS) with real-time POS integration.",
-    techStack: ["LangChain", "LangGraph", "LangSmith", "FastAPI", "PetPooja POS", "Twilio", "WhatsApp Business API", "Razorpay"],
-    impact: "Live order injection and tracking integrated with POS system. Handles food ordering, table reservations, feedback logging, and complaint resolution autonomously.",
+    problem: `## Business Context
+Restaurant and hospitality operators needed autonomous conversational AI to handle customer-facing operations while reducing staff workload.
+
+## Core Challenges
+- Manual waiter/host workload—staff spent time on order-taking, reservations, and customer inquiries simultaneously
+- Limited customer profiling—no autonomous systems to identify returning customers and deliver personalized recommendations
+- Food ordering complexity—menu browsing, cart management, modifications, recommendations all required manual handling
+- Table booking inefficiency—no autonomous system to accept and optimize table reservations
+- Customer feedback bottleneck—complaints and feedback required manual intervention
+- Recommendation gap—no intelligent upselling based on customer preferences and ordering history
+
+## Current State Gap
+Operations heavily dependent on human staff for all customer interactions. Lacked intelligent systems for personalization and autonomous task execution.`,
+    approach: `## Architecture Overview
+Enterprise-grade Agentic AI conversational system built on LangGraph multi-agent orchestration with deep reasoning loops and persistent state management. Implements sophisticated intent classification, dynamic tool selection, and memory-augmented reasoning for autonomous customer interaction across multiple business domains (ordering, booking, feedback).
+
+## LangGraph & LangChain Technical Stack
+- **LangGraph Multi-Agent Orchestration** - Graph-based agent orchestrator with persistent state machine, checkpointing for session recovery, and dynamic agent routing
+- **Deep Conversational Agent Loops** - Multi-turn reasoning with ReAct pattern for intent understanding, entity extraction, and action planning across conversation turns
+- **Agentic State Management** - Persistent conversation state, user preference memory, transaction state checkpointing, and context preservation across agent boundaries
+- **Dynamic Tool Binding** - LangChain tool ecosystem for POS integration, inventory queries, reservation matching, and feedback ticket creation
+- **Chain Composition Patterns** - Sequential chains for order flow, conditional branching for booking constraints, parallel chains for recommendation logic
+- **Memory Systems** - Short-term conversation memory, long-term user preference learning, personalization state persistence, and feedback integration loops
+
+## Core Agents with Deep Reasoning
+- **Conversational Intent Classification Agent** - Multi-label intent classifier with entity extraction using chain-of-thought reasoning
+- **Main Orchestrator Agent** - LangGraph state machine orchestrating sub-agent execution, managing state transitions, and maintaining conversation context
+- **Autonomous Food Ordering Agent** - Deep reasoning agent with tool use for menu search, cart management, and order validation against inventory state
+- **Autonomous Table Booking Agent** - ReAct-pattern agent with constraint satisfaction tools for matching preferences to available reservations
+- **Complaints & Feedback Agent** - Multi-step reasoning agent for sentiment analysis, issue classification, and feedback state management
+- **Conversational Response Agent** - LLM-driven response generation with personality injection and context awareness from persistent state
+
+## Personalization & Intelligence Layer
+- **User Fingerprinting & Memory Engine** - Persistent user state tracking, device fingerprinting, preference learning, and personalization memory
+- **Intelligent Recommendation Agent** - Deep reasoning agent combining collaborative filtering, content-based matching, and user preference chains
+- **Admin Query Agent** - Autonomous agent for analytics queries with tool bindings to reporting infrastructure
+
+## Integrations
+- PetPooja POS system with real-time inventory state management and order injection tools
+- MongoDB for persistent user state, preferences, and long-term memory storage
+- Tool-based agentic architecture enabling autonomous execution of all restaurant operations
+- LangChain callback system for monitoring agent performance and user interactions`,
+    techStack: ["OpenAI", "LangGraph", "LangChain", "Multi-Agent Orchestration", "Deep Reasoning Loops", "ReAct Pattern", "State Machine Architecture", "Persistent State Management", "Checkpointing & Recovery", "Dynamic Tool Binding", "Chain Composition", "Memory Systems", "Intent Classification", "Entity Extraction", "Agentic Reasoning", "FastAPI", "Python", "PostgreSQL", "MongoDB", "Redis", "PetPooja POS", "Pydantic V2"],
+    impact: `## Key Metrics
+- 80%+ autonomous customer identification and recognition without explicit login
+- Handles end-to-end customer journeys autonomously (ordering, booking, feedback)
+- Drives incremental sales through intelligent recommendations
+- Reduces staff dependency for order-taking and host station functions
+- Natural, conversational interactions (waiter-like, not robotic)
+
+## Operational Impact
+- Handles end-to-end customer journeys from menu browsing through order placement without human intervention
+- Enables streamlined operations through natural AI interaction
+- Improved customer experience with personalized, context-aware responses
+- Reduces staff workload for order-taking and host station functions
+- Maintains high service quality through intelligent recommendations and feedback handling
+
+## Scalability & Deployment
+- Seamless integration with real-world POS operations (PetPooja)
+- Multi-property capable with extensible architecture
+- Designed to scale to hotel chains, hospital canteens, and hospitality groups
+- Supports varying operational models and restaurant types`,
     featured: true,
   },
   {
@@ -154,18 +265,18 @@ export const projects = [
     approach: "Developed a personalized EdTech agent for Grade 12 curriculum that dynamically generates study schedules by analyzing student retention metrics and time availability to optimize exam preparation.",
     techStack: ["Python", "LangChain", "OpenAI", "Streamlit"],
     impact: "Personalized learning paths that adapt based on student performance and available study time.",
-    featured: false,
+    featured: true,
   },
   {
     title: "GenAI Project Suite",
     company: "Personal Portfolio",
     period: "2024",
-    category: "Generative AI",
-    problem: "Demonstrating practical applications of LLM technologies across different use cases.",
-    approach: "Built a comprehensive suite of GenAI applications including: Q&A Chatbots (OpenAI + Ollama), PDF RAG Chatbot using Groq, SQL Chatbot for database interaction, MathGPT with custom LLMMathChain, AI Search Engine using Zero-shot ReAct agents, and YT-to-Blog converter using CrewAI agents.",
-    techStack: ["LangChain", "OpenAI", "Ollama", "Groq", "CrewAI", "FAISS", "ChromaDB", "Streamlit"],
-    impact: "Demonstrated versatility across RAG, tool-use, multi-agent systems, and various LLM providers.",
-    featured: true,
+    category: "Generative AI / Agentic AI",
+    problem: "Demonstrating practical applications of LLM technologies and Agentic AI patterns across diverse use cases.",
+    approach: "Built comprehensive suite of GenAI applications showcasing Agentic AI patterns and LangChain/CrewAI frameworks: Q&A Chatbots (LangChain with OpenAI + Ollama multi-model chains), PDF RAG Chatbot (semantic search with Groq optimization), SQL Chatbot (database interaction agents with tool use), MathGPT (custom LLMMathChain with reasoning), AI Search Engine (Zero-shot ReAct agents with dynamic tool selection), YT-to-Blog converter (CrewAI multi-agent orchestration with role-based agent hierarchy). Demonstrates ReAct pattern implementation, agent tool binding, memory management, and chain composition across frameworks.",
+    techStack: ["LangChain", "CrewAI", "OpenAI", "Ollama", "Groq", "ReAct Agents", "FAISS", "ChromaDB", "Vector Embeddings", "Tool Use", "Agent Orchestration", "Streamlit", "Python"],
+    impact: "Demonstrated versatility across RAG pipelines, tool-use agents, multi-agent systems (CrewAI), ReAct reasoning patterns, and multiple LLM providers. Showcased practical Agentic AI implementation patterns including agent memory, state management, and tool ecosystem integration.",
+    featured: false,
   },
   {
     title: "Deep Learning Projects",
@@ -184,9 +295,20 @@ export const projects = [
     period: "2023",
     category: "Data Engineering",
     problem: "Manual auditing of customs broker data was limited to less than 1% coverage, with data quality issues causing downstream processing errors.",
-    approach: "Developed data schemas to streamline onboarding of customs broker partners (UPS, CEVA, Kerry, etc.). Engineered automated data validation rules and quality gates. Built an automated audit dashboard using QuickSight and SQL.",
+    approach: "Developed data schemas to streamline onboarding of customs broker partners. Engineered automated data validation rules and quality gates. Built an automated audit dashboard using QuickSight and SQL.",
     techStack: ["Python", "SQL", "AWS QuickSight", "Data Validation", "ETL"],
     impact: "Improved data readiness from 38% to 86%. Increased audit coverage from <1% to 99% across 3 data sources.",
+    featured: true,
+  },
+  {
+    title: "Import/Export Data Standardization",
+    company: "Amazon",
+    period: "2023",
+    category: "Data Engineering",
+    problem: "Post-Brexit UK-EU import/export operations faced complexity with multiple external logistics brokers submitting filing data in inconsistent formats, causing data quality and compliance issues.",
+    approach: "Built data lake for standardizing filing data from multiple external logistics brokers with JSON schemas, business rules, and data validation pipelines. Engineered automated data validation rules with pre-commit and post-commit quality checks. Integrated with audit automation for cross-validation of 3 sources of truth: government filings, internal data, and broker data.",
+    techStack: ["Python", "SQL", "AWS QuickSight", "ETL", "Data Validation", "JSON Schemas"],
+    impact: "Onboarded data from multiple international logistics partners with consistent quality standards. Automated scripts flag and report discrepancy details in real-time. Increased audit coverage from <1% to 99% of documents across 3 data sources.",
     featured: true,
   },
 ]
@@ -218,7 +340,7 @@ export const experience = [
       {
         name: "Cash Reconciliation AI",
         description: "Automated AI solution for cash reconciliation in commercial real estate. AI-powered tenant identification from bank statements with AI-powered reconciliation agent matching payments to line items including rent, insurance, and operating expenses.",
-        techStack: ["OpenAI GPT-4o", "LangGraph", "FastAPI", "PostgreSQL", "Redis"],
+        techStack: ["OpenAI", "LangGraph", "FastAPI", "PostgreSQL", "Redis"],
         highlights: [
           "End-to-end pipeline from bank statement ingestion to BI dashboard",
           "Human-in-the-Loop pipeline for ambiguous transaction review",

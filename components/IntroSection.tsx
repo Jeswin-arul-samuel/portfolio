@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import type { Section } from '@/app/page'
 import {
   Calendar,
   Brain,
@@ -17,7 +18,7 @@ import {
 } from 'lucide-react'
 
 const experienceStats = [
-  { label: 'Total Experience', value: '9', unit: 'Years', icon: Calendar, color: 'from-violet-500 to-purple-600' },
+  { label: 'Total Experience', value: '9', unit: 'Years', icon: Calendar, color: 'from-violet-500 to-purple-600', navigateTo: 'experience' as Section },
   { label: 'AI / ML', value: '7', unit: 'Years', icon: Brain, color: 'from-blue-500 to-cyan-500' },
   { label: 'Data / BI', value: '6', unit: 'Years', icon: Database, color: 'from-emerald-500 to-teal-500' },
   { label: 'Gen AI / LLMs', value: '2', unit: 'Years', icon: Sparkles, color: 'from-pink-500 to-rose-500' },
@@ -25,7 +26,7 @@ const experienceStats = [
 ]
 
 const projectStats = [
-  { label: 'Industry Projects', value: '7', icon: FolderKanban },
+  { label: 'Industry Projects', value: '7', icon: FolderKanban, navigateTo: 'projects' as Section },
   { label: 'Curriculum Projects', value: '13', icon: GraduationCap },
   { label: 'Projects Managed', value: '10+', icon: Building2 },
   { label: 'Products', value: '5+', icon: Brain },
@@ -56,7 +57,11 @@ const keyIndustries = [
   'Real Estate',
 ]
 
-export default function IntroSection() {
+interface IntroSectionProps {
+  onNavigate?: (section: Section) => void
+}
+
+export default function IntroSection({ onNavigate }: IntroSectionProps) {
   return (
     <section className="pt-16 lg:pt-24 pb-8 lg:pb-12">
       {/* Header - Full width, centered */}
@@ -86,23 +91,29 @@ export default function IntroSection() {
 
         {/* Experience Stats - Large Cards */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
-          {experienceStats.map((stat, index) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3, delay: index * 0.1 }}
-              className="relative overflow-hidden rounded-xl bg-card-bg border border-card-border p-4"
-            >
-              <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${stat.color}`} />
-              <stat.icon size={20} className="text-muted mb-2" />
-              <div className="flex items-baseline gap-1">
-                <span className="text-3xl font-bold">{stat.value}</span>
-                <span className="text-sm text-muted">{stat.unit}</span>
-              </div>
-              <p className="text-xs text-muted mt-1">{stat.label}</p>
-            </motion.div>
-          ))}
+          {experienceStats.map((stat, index) => {
+            const isClickable = 'navigateTo' in stat && stat.navigateTo
+            return (
+              <motion.button
+                key={stat.label}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+                onClick={() => isClickable && onNavigate?.(stat.navigateTo as Section)}
+                className={`relative overflow-hidden rounded-xl bg-card-bg border border-card-border p-4 text-left transition-all duration-300 ${
+                  isClickable ? 'cursor-pointer hover:border-accent hover:shadow-lg hover:shadow-accent/20' : ''
+                }`}
+              >
+                <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${stat.color}`} />
+                <stat.icon size={20} className={`mb-2 ${isClickable ? 'text-accent' : 'text-muted'}`} />
+                <div className="flex items-baseline gap-1">
+                  <span className="text-3xl font-bold">{stat.value}</span>
+                  <span className="text-sm text-muted">{stat.unit}</span>
+                </div>
+                <p className="text-xs text-muted mt-1">{stat.label}</p>
+              </motion.button>
+            )
+          })}
         </div>
 
         {/* Project & Leadership Stats */}
@@ -116,17 +127,26 @@ export default function IntroSection() {
           >
             <h3 className="text-sm font-semibold text-muted uppercase tracking-wider mb-4">Projects</h3>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-2">
-              {projectStats.map((stat) => (
-                <div key={stat.label} className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-accent/10">
-                    <stat.icon size={16} className="text-accent" />
-                  </div>
-                  <div>
-                    <p className="text-xl font-bold">{stat.value}</p>
-                    <p className="text-xs text-muted">{stat.label}</p>
-                  </div>
-                </div>
-              ))}
+              {projectStats.map((stat) => {
+                const isClickable = 'navigateTo' in stat && stat.navigateTo
+                return (
+                  <button
+                    key={stat.label}
+                    onClick={() => isClickable && onNavigate?.(stat.navigateTo as Section)}
+                    className={`flex items-center gap-3 transition-all duration-300 ${
+                      isClickable ? 'cursor-pointer hover:opacity-80' : ''
+                    }`}
+                  >
+                    <div className={`p-2 rounded-lg ${isClickable ? 'bg-accent/20' : 'bg-accent/10'}`}>
+                      <stat.icon size={16} className={isClickable ? 'text-accent' : 'text-accent'} />
+                    </div>
+                    <div>
+                      <p className="text-xl font-bold">{stat.value}</p>
+                      <p className="text-xs text-muted text-left">{stat.label}</p>
+                    </div>
+                  </button>
+                )
+              })}
             </div>
           </motion.div>
 

@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { Home, User, Code, Briefcase, MessageSquare, GraduationCap, Award, TrendingUp, Mail, Linkedin, Github, Phone } from 'lucide-react'
+import { Home, User, Code, Briefcase, MessageSquare, GraduationCap, Award, TrendingUp, Mail, Linkedin, Github, Phone, Zap } from 'lucide-react'
 import { personalInfo } from '@/data/portfolio-data'
 import type { Section } from '@/app/page'
 
@@ -11,6 +11,7 @@ const navItems: { key: Section; label: string; icon: React.ElementType }[] = [
   { key: 'career', label: 'Career Progression', icon: TrendingUp },
   { key: 'skills', label: 'Skills', icon: Code },
   { key: 'experience', label: 'Professional Timeline', icon: Briefcase },
+  { key: 'projects', label: 'Professional Projects', icon: Zap },
   { key: 'certifications', label: 'Certifications', icon: Award },
   { key: 'contact', label: 'Contact', icon: MessageSquare },
 ]

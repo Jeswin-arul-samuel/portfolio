@@ -9,10 +9,11 @@ import AboutCompact from '@/components/AboutCompact'
 import CareerProgression from '@/components/CareerProgression'
 import SkillsCompact from '@/components/SkillsCompact'
 import ExperienceArc from '@/components/ExperienceArc'
+import Projects from '@/components/Projects'
 import CertificationsSection from '@/components/CertificationsSection'
 import ContactCompact from '@/components/ContactCompact'
 
-export type Section = 'intro' | 'about' | 'career' | 'skills' | 'experience' | 'certifications' | 'contact'
+export type Section = 'intro' | 'about' | 'career' | 'skills' | 'experience' | 'projects' | 'certifications' | 'contact'
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState<Section>('intro')
@@ -61,7 +62,7 @@ export default function Home() {
       {/* Main Content - Single section at a time */}
       <main className="flex-1 lg:ml-80 min-h-screen">
         {activeSection === 'intro' ? (
-          <IntroSection />
+          <IntroSection onNavigate={setActiveSection} />
         ) : activeSection === 'skills' ? (
           <div className="w-full max-w-7xl mx-auto px-6 lg:px-12 py-8 lg:py-12 flex items-start lg:items-center justify-center min-h-screen">
             <div className="w-full">
@@ -74,6 +75,7 @@ export default function Home() {
               {activeSection === 'about' && <AboutCompact />}
               {activeSection === 'career' && <CareerProgression />}
               {activeSection === 'experience' && <ExperienceArc />}
+              {activeSection === 'projects' && <Projects />}
               {activeSection === 'certifications' && <CertificationsSection />}
               {activeSection === 'contact' && <ContactCompact />}
             </div>

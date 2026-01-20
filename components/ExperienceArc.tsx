@@ -5,13 +5,6 @@ import { useState, useRef, useEffect } from 'react'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 import { experience } from '@/data/portfolio-data'
 
-interface Project {
-  name: string
-  description: string
-  techStack: string[]
-  highlights: string[]
-}
-
 interface Experience {
   company: string
   role: string
@@ -21,7 +14,7 @@ interface Experience {
   category: 'work' | 'education'
   domains?: string[]
   achievements: string[]
-  projects?: Project[]
+  projects?: any[]
   description?: string
 }
 
@@ -32,7 +25,6 @@ const MOBILE_ITEM_HEIGHT = 100 // Fixed height per item in pixels
 export default function ExperienceArc() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [selectedExp, setSelectedExp] = useState<Experience | null>(null)
-  const [expandedProject, setExpandedProject] = useState<number | null>(null)
   const [mobileItemsPerView, setMobileItemsPerView] = useState(3)
   const [containerHeight, setContainerHeight] = useState(300)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -103,12 +95,10 @@ export default function ExperienceArc() {
 
   const openModal = (exp: Experience) => {
     setSelectedExp(exp)
-    setExpandedProject(null)
   }
 
   const closeModal = () => {
     setSelectedExp(null)
-    setExpandedProject(null)
   }
 
   // Calculate the transform offset for train-like sliding
@@ -400,7 +390,7 @@ export default function ExperienceArc() {
 
               {/* Achievements */}
               {selectedExp.achievements.length > 0 && (
-                <div className="mb-6">
+                <div>
                   <h4 className="text-sm font-semibold text-muted uppercase tracking-wide mb-3">
                     {selectedExp.category === 'education' ? 'Highlights' : 'Key Achievements'}
                   </h4>
@@ -412,78 +402,6 @@ export default function ExperienceArc() {
                       </li>
                     ))}
                   </ul>
-                </div>
-              )}
-
-              {/* Projects */}
-              {selectedExp.projects && selectedExp.projects.length > 0 && (
-                <div className="space-y-3">
-                  <h4 className="text-sm font-semibold text-muted uppercase tracking-wide">
-                    Key Projects
-                  </h4>
-                  <div className="grid gap-3">
-                    {selectedExp.projects.map((project, pIndex) => (
-                      <div
-                        key={pIndex}
-                        className="border border-card-border rounded-lg overflow-hidden"
-                      >
-                        <button
-                          onClick={() =>
-                            setExpandedProject(expandedProject === pIndex ? null : pIndex)
-                          }
-                          className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-accent/5 transition-colors"
-                        >
-                          <span className="font-medium">{project.name}</span>
-                          <motion.span
-                            animate={{ rotate: expandedProject === pIndex ? 180 : 0 }}
-                            transition={{ duration: 0.2 }}
-                            className="text-muted text-sm"
-                          >
-                            ▼
-                          </motion.span>
-                        </button>
-
-                        <AnimatePresence>
-                          {expandedProject === pIndex && (
-                            <motion.div
-                              initial={{ height: 0, opacity: 0 }}
-                              animate={{ height: 'auto', opacity: 1 }}
-                              exit={{ height: 0, opacity: 0 }}
-                              transition={{ duration: 0.3, ease: "easeInOut" }}
-                              className="overflow-hidden"
-                            >
-                              <div className="px-4 pb-4 space-y-3">
-                                <p className="text-muted text-sm">{project.description}</p>
-
-                                <ul className="space-y-1">
-                                  {project.highlights.map((highlight, hIndex) => (
-                                    <li
-                                      key={hIndex}
-                                      className="text-muted text-xs flex gap-2"
-                                    >
-                                      <span className="text-accent">→</span>
-                                      <span>{highlight}</span>
-                                    </li>
-                                  ))}
-                                </ul>
-
-                                <div className="flex flex-wrap gap-1.5 pt-2">
-                                  {project.techStack.map((tech) => (
-                                    <span
-                                      key={tech}
-                                      className="text-[10px] px-2 py-0.5 rounded-full bg-accent/10 text-accent border border-accent/20"
-                                    >
-                                      {tech}
-                                    </span>
-                                  ))}
-                                </div>
-                              </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                    ))}
-                  </div>
                 </div>
               )}
             </motion.div>

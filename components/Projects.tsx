@@ -5,6 +5,8 @@ import { useInView } from 'framer-motion'
 import { useRef, useState } from 'react'
 import { ChevronDown, ChevronUp, Zap, Building2, Calendar } from 'lucide-react'
 import { projects } from '@/data/portfolio-data'
+import MarkdownRenderer from '@/components/MarkdownRenderer'
+import { extractKeyMetrics, truncateMetric } from '@/lib/projectUtils'
 
 export default function Projects() {
   const ref = useRef(null)
@@ -15,16 +17,7 @@ export default function Projects() {
   const otherProjects = projects.filter(p => !p.featured)
 
   return (
-    <section id="projects" className="section-container" ref={ref}>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={isInView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.5 }}
-      >
-        <h2 className="section-title">Featured Projects</h2>
-        <p className="section-subtitle">Highlights from my work in AI and data engineering</p>
-      </motion.div>
-
+    <section ref={ref} className="w-full">
       {/* Featured Projects */}
       <div className="space-y-6 mb-12">
         {featuredProjects.map((project, index) => (
@@ -52,30 +45,67 @@ export default function Projects() {
                   </div>
                 </div>
 
-                <h3 className="text-xl font-semibold mb-2 group-hover:text-accent transition-colors">
+                <h3 className="text-xl font-semibold mb-4">
                   {project.title}
                 </h3>
 
-                <p className="text-muted mb-4">{project.problem}</p>
+                {/* Tech Stack - Collapsed State */}
+                <div className="mb-4">
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {project.techStack.map((tech) => (
+                      <span key={tech} className="skill-chip text-xs">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Key Metrics - Collapsed State Only */}
+                {expandedProject !== index && extractKeyMetrics(project.impact).length > 0 && (
+                  <div className="mb-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                      {extractKeyMetrics(project.impact).map((metric, idx) => (
+                        <div key={idx} className="p-3 bg-accent/10 border-2 border-accent/40 rounded-lg hover:border-accent/60 transition-colors">
+                          <p className="text-xs text-accent font-semibold line-clamp-2">{truncateMetric(metric, 55)}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* Expanded Content */}
                 <motion.div
                   initial={false}
-                  animate={{ height: expandedProject === index ? 'auto' : 0, opacity: expandedProject === index ? 1 : 0 }}
+                  animate={{
+                    height: expandedProject === index ? 'auto' : 0,
+                    opacity: expandedProject === index ? 1 : 0,
+                  }}
                   className="overflow-hidden"
                 >
                   <div className="pt-4 border-t border-card-border space-y-4">
+                    {/* Problem Description */}
                     <div>
-                      <h4 className="font-medium text-accent mb-2 flex items-center gap-2">
-                        <Zap size={16} />
-                        Technical Approach
-                      </h4>
-                      <p className="text-muted text-sm">{project.approach}</p>
+                      <h4 className="font-medium text-accent mb-3">Problem</h4>
+                      <div className="text-sm">
+                        <MarkdownRenderer content={project.problem} />
+                      </div>
                     </div>
 
                     <div>
-                      <h4 className="font-medium text-accent mb-2">Impact</h4>
-                      <p className="text-muted text-sm">{project.impact}</p>
+                      <h4 className="font-medium text-accent mb-3 flex items-center gap-2">
+                        <Zap size={16} />
+                        Technical Approach
+                      </h4>
+                      <div className="text-sm">
+                        <MarkdownRenderer content={project.approach} />
+                      </div>
+                    </div>
+
+                    <div>
+                      <h4 className="font-medium text-accent mb-3">Impact</h4>
+                      <div className="text-sm">
+                        <MarkdownRenderer content={project.impact} />
+                      </div>
                     </div>
 
                     <div>
@@ -102,9 +132,7 @@ export default function Projects() {
 
       {/* Other Projects */}
       {otherProjects.length > 0 && (
-        <>
-          <h3 className="text-xl font-semibold mb-6">Other Projects</h3>
-          <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 gap-6">
             {otherProjects.map((project, index) => (
               <motion.div
                 key={project.title}
@@ -117,24 +145,29 @@ export default function Projects() {
                   <span className="px-3 py-1 bg-accent/10 text-accent text-xs rounded-full">
                     {project.category}
                   </span>
+                  <span className="text-muted text-xs">{project.company}</span>
                   <span className="text-muted text-xs">{project.period}</span>
                 </div>
-                <h4 className="font-semibold mb-2">{project.title}</h4>
-                <p className="text-muted text-sm mb-4">{project.problem}</p>
+                <h4 className="font-semibold mb-3">{project.title}</h4>
+                <div className="text-xs mb-4">
+                  <MarkdownRenderer content={project.problem} />
+                </div>
                 <div className="flex flex-wrap gap-1">
-                  {project.techStack.slice(0, 4).map((tech) => (
+                  {project.techStack.slice(0, 4).map((tech, idx) => (
                     <span key={tech} className="text-xs text-muted">
-                      {tech}{project.techStack.indexOf(tech) < 3 && project.techStack.length > 1 ? ' •' : ''}
+                      {tech}
+                      {idx < 3 && project.techStack.length > 1 ? ' •' : ''}
                     </span>
                   ))}
                   {project.techStack.length > 4 && (
-                    <span className="text-xs text-muted">+{project.techStack.length - 4} more</span>
+                    <span className="text-xs text-muted">
+                      +{project.techStack.length - 4} more
+                    </span>
                   )}
                 </div>
               </motion.div>
             ))}
-          </div>
-        </>
+        </div>
       )}
     </section>
   )
