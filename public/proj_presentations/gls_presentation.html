@@ -1,0 +1,1912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GLS - Generative Learning System</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  :root {
+    --primary: #6366f1;
+    --primary-dark: #4f46e5;
+    --primary-light: #e0e7ff;
+    --accent: #f59e0b;
+    --accent-light: #fef3c7;
+    --success: #10b981;
+    --success-light: #d1fae5;
+    --danger: #ef4444;
+    --danger-light: #fee2e2;
+    --purple: #8b5cf6;
+    --purple-light: #ede9fe;
+    --teal: #14b8a6;
+    --teal-light: #ccfbf1;
+    --rose: #f43f5e;
+    --rose-light: #ffe4e6;
+    --sky: #0ea5e9;
+    --sky-light: #e0f2fe;
+    --gray-50: #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-300: #cbd5e1;
+    --gray-400: #94a3b8;
+    --gray-500: #64748b;
+    --gray-600: #475569;
+    --gray-700: #334155;
+    --gray-800: #1e293b;
+    --gray-900: #0f172a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--gray-50);
+    color: var(--gray-800);
+    line-height: 1.6;
+  }
+
+  .slide {
+    min-height: 100vh;
+    padding: 60px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .slide + .slide { border-top: 1px solid var(--gray-200); }
+
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: var(--primary);
+    margin-bottom: 12px;
+  }
+
+  .slide h2 {
+    font-size: 2.6rem;
+    font-weight: 800;
+    color: var(--gray-900);
+    margin-bottom: 36px;
+    letter-spacing: -1px;
+    line-height: 1.15;
+  }
+
+  .slide h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 16px;
+  }
+
+  /* -- NAV -- */
+  .slide-nav {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 100;
+  }
+
+  .nav-dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--gray-300);
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+  }
+  .nav-dot:hover { background: var(--primary); transform: scale(1.4); }
+
+  /* ======= SLIDE 1: TITLE ======= */
+  .slide-title {
+    background: linear-gradient(135deg, #0f172a 0%, #312e81 40%, #6366f1 100%);
+    color: white;
+    text-align: center;
+    align-items: center;
+  }
+  .slide-title::before {
+    content: '';
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(245,158,11,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .slide-title::after {
+    content: '';
+    position: absolute;
+    bottom: -150px; left: -150px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(16,185,129,0.1) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .logo-icon { width: 100px; height: 100px; margin-bottom: 30px; position: relative; z-index: 1; }
+
+  .slide-title h1 {
+    font-size: 4.5rem;
+    font-weight: 900;
+    letter-spacing: -2px;
+    margin-bottom: 16px;
+    position: relative; z-index: 1;
+  }
+  .slide-title .tagline {
+    font-size: 1.5rem;
+    font-weight: 300;
+    opacity: 0.9;
+    margin-bottom: 40px;
+    position: relative; z-index: 1;
+  }
+  .slide-title .subtitle {
+    font-size: 1rem;
+    opacity: 0.6;
+    position: relative; z-index: 1;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  /* ======= COMMON COMPONENTS ======= */
+
+  .pain-card, .feature-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 22px 24px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .pain-card { border-left: 4px solid var(--danger); }
+  .card-icon-box {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+  }
+  .pain-card h4, .feature-card h4 { font-size: 1rem; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+  .pain-card p, .feature-card p { font-size: 0.85rem; color: var(--gray-500); line-height: 1.5; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 20px; }
+  .gap-20 { gap: 20px; }
+  .gap-30 { gap: 30px; }
+
+  .flex-col { display: flex; flex-direction: column; }
+
+  .stat-card {
+    text-align: center;
+    padding: 32px 24px;
+    border-radius: 20px;
+  }
+  .stat-number {
+    font-size: 3.2rem;
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .stat-label { font-size: 0.9rem; font-weight: 400; }
+
+  /* ======= SLIDE 2: PROBLEM ======= */
+  .slide-problem { background: white; }
+
+  .problem-scene {
+    background: var(--gray-100);
+    border-radius: 24px;
+    padding: 40px;
+    position: relative;
+  }
+
+  .classroom-scene {
+    position: relative;
+    height: 280px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: linear-gradient(180deg, #fef3c7 0%, #fff7ed 50%, #f5f3ff 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .student-icon {
+    position: absolute;
+    font-size: 2rem;
+  }
+  .s1 { bottom: 25%; left: 12%; }
+  .s2 { bottom: 25%; left: 30%; }
+  .s3 { bottom: 25%; left: 50%; }
+  .s4 { bottom: 25%; left: 68%; }
+  .s5 { bottom: 25%; left: 85%; }
+
+  .teacher-icon {
+    position: absolute;
+    font-size: 2.5rem;
+    top: 18%;
+    left: 45%;
+  }
+
+  .thought-bubble {
+    position: absolute;
+    background: white;
+    border-radius: 10px;
+    padding: 5px 10px;
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--gray-700);
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .thought-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid white;
+  }
+  .tb1 { bottom: 52%; left: 5%; }
+  .tb2 { bottom: 56%; left: 25%; }
+  .tb3 { bottom: 52%; left: 48%; }
+  .tb4 { bottom: 56%; left: 70%; }
+
+  .scene-caption {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 5px 14px;
+    border-radius: 16px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  /* ======= SLIDE 3: MARKET ======= */
+  .slide-dark { background: var(--gray-900); color: white; }
+  .slide-dark h2 { color: white; }
+  .slide-dark .section-label { color: var(--accent); }
+
+  .dark-stat .stat-number {
+    background: linear-gradient(135deg, var(--accent) 0%, #fbbf24 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .dark-stat .stat-label { color: rgba(255,255,255,0.55); }
+  .dark-stat { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); }
+
+  .dark-card {
+    padding: 24px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .dark-card h4 { font-size: 1rem; font-weight: 700; color: var(--accent); margin-bottom: 8px; }
+  .dark-card p { font-size: 0.85rem; color: rgba(255,255,255,0.5); line-height: 1.5; }
+
+  /* ======= SLIDE 4: SOLUTION ======= */
+  .slide-solution { background: white; }
+
+  .sol-point {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .sol-icon {
+    width: 46px; height: 46px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+  .sol-point h4 { font-size: 1rem; font-weight: 700; color: var(--gray-900); margin-bottom: 3px; }
+  .sol-point p { font-size: 0.85rem; color: var(--gray-500); line-height: 1.5; }
+
+  /* Chat mockup */
+  .chat-mockup {
+    width: 320px;
+    background: var(--gray-900);
+    border-radius: 28px;
+    padding: 12px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.18);
+    margin: 0 auto;
+  }
+  .chat-screen {
+    background: white;
+    border-radius: 18px;
+    overflow: hidden;
+    min-height: 360px;
+  }
+  .chat-header {
+    padding: 12px 16px 10px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    background: var(--primary);
+  }
+  .chat-body { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .chat-msg {
+    padding: 8px 12px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    line-height: 1.5;
+    max-width: 85%;
+  }
+  .msg-ai {
+    background: var(--gray-100);
+    color: var(--gray-700);
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+  }
+  .msg-student {
+    background: var(--primary);
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+  }
+  .msg-system {
+    background: var(--accent-light);
+    color: #92400e;
+    align-self: center;
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  /* ======= SLIDE 5: HOW IT WORKS ======= */
+  .slide-flow { background: var(--gray-50); }
+
+  .flow-diagram {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 0;
+    flex-wrap: wrap;
+  }
+  .flow-step {
+    text-align: center;
+    width: 150px;
+  }
+  .flow-circle {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    margin: 0 auto 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    position: relative;
+  }
+  .flow-number {
+    position: absolute;
+    top: -5px; right: -5px;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--gray-900);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .flow-step h4 { font-size: 0.85rem; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+  .flow-step p { font-size: 0.7rem; color: var(--gray-500); line-height: 1.35; padding: 0 6px; }
+  .flow-arrow { display: flex; align-items: center; padding-top: 24px; color: var(--gray-300); font-size: 1.6rem; }
+
+  .flow-section-label {
+    width: 100%;
+    text-align: center;
+    padding: 16px 0 8px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+  }
+
+  .data-flow-visual {
+    margin-top: 24px;
+    padding: 18px;
+    background: white;
+    border-radius: 14px;
+    text-align: center;
+    border: 1px solid var(--gray-200);
+  }
+  .data-flow-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 6px 0;
+  }
+  .df-node {
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .df-arrow { color: var(--gray-400); font-size: 1rem; }
+
+  /* ======= WORKFLOW ======= */
+  .slide-workflow { background: white; }
+
+  .workflow-timeline {
+    position: relative;
+    padding-left: 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .workflow-timeline::before {
+    content: '';
+    position: absolute;
+    left: 27px;
+    top: 20px;
+    bottom: 20px;
+    width: 3px;
+    background: var(--gray-200);
+    border-radius: 2px;
+  }
+  .wf-step {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    position: relative;
+    padding: 16px 0;
+  }
+  .wf-dot {
+    position: absolute;
+    left: -39px;
+    top: 20px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 3px solid var(--primary);
+    background: white;
+    z-index: 1;
+  }
+  .wf-dot.active { background: var(--primary); }
+  .wf-content {
+    flex: 1;
+    background: var(--gray-50);
+    border-radius: 14px;
+    padding: 20px 24px;
+    border: 1px solid var(--gray-200);
+  }
+  .wf-content h4 { font-size: 0.95rem; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+  .wf-content p { font-size: 0.8rem; color: var(--gray-500); line-height: 1.5; }
+  .wf-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .wf-detail {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: white;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    color: var(--gray-600);
+    border: 1px solid var(--gray-200);
+  }
+  .wf-detail code {
+    background: var(--gray-100);
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+
+  /* ======= ARCHITECTURE ======= */
+  .slide-arch { background: white; }
+
+  .arch-diagram {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  .arch-layer {
+    display: flex;
+    align-items: stretch;
+    gap: 14px;
+  }
+  .arch-label {
+    width: 110px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-radius: 12px;
+    text-align: center;
+    padding: 10px 6px;
+  }
+  .arch-boxes {
+    flex: 1;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .arch-box {
+    flex: 1;
+    min-width: 120px;
+    padding: 14px 12px;
+    border-radius: 10px;
+    border: 2px solid;
+    text-align: center;
+  }
+  .arch-box h5 { font-size: 0.8rem; font-weight: 700; margin-bottom: 2px; }
+  .arch-box .tech { font-size: 0.65rem; opacity: 0.6; font-weight: 500; }
+
+  .layer-client .arch-label { background: var(--primary-light); color: var(--primary-dark); }
+  .layer-client .arch-box { border-color: var(--primary); background: rgba(99,102,241,0.03); }
+  .layer-client .arch-box h5 { color: var(--primary-dark); }
+
+  .layer-assistant .arch-label { background: var(--rose-light); color: var(--rose); }
+  .layer-assistant .arch-box { border-color: var(--rose); background: rgba(244,63,94,0.03); }
+  .layer-assistant .arch-box h5 { color: var(--rose); }
+
+  .layer-api .arch-label { background: var(--accent-light); color: #b45309; }
+  .layer-api .arch-box { border-color: var(--accent); background: rgba(245,158,11,0.03); }
+  .layer-api .arch-box h5 { color: #b45309; }
+
+  .layer-data .arch-label { background: var(--success-light); color: #047857; }
+  .layer-data .arch-box { border-color: var(--success); background: rgba(16,185,129,0.03); }
+  .layer-data .arch-box h5 { color: #047857; }
+
+  .layer-algo .arch-label { background: var(--purple-light); color: var(--purple); }
+  .layer-algo .arch-box { border-color: var(--purple); background: rgba(139,92,246,0.03); }
+  .layer-algo .arch-box h5 { color: var(--purple); }
+
+  .arch-connector {
+    display: flex;
+    justify-content: center;
+    padding: 2px 0;
+    margin-left: 124px;
+  }
+  .connector-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--gray-300);
+    font-size: 0.65rem;
+    gap: 0;
+    line-height: 1;
+  }
+  .connector-label {
+    font-size: 0.55rem;
+    color: var(--gray-400);
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* ======= LOW-LEVEL ARCH ======= */
+  .slide-lowlevel { background: var(--gray-50); }
+
+  .ll-section {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid var(--gray-200);
+  }
+  .ll-section h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .db-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.75rem;
+  }
+  .db-table th {
+    text-align: left;
+    padding: 6px 10px;
+    background: var(--gray-50);
+    font-weight: 700;
+    color: var(--gray-600);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 2px solid var(--gray-200);
+  }
+  .db-table td {
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--gray-100);
+    color: var(--gray-600);
+  }
+  .db-table .tbl-name {
+    font-weight: 700;
+    color: var(--gray-800);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.7rem;
+  }
+
+  .lifecycle-flow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 8px 0;
+  }
+  .lf-node {
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .lf-arrow { color: var(--gray-300); font-size: 0.9rem; }
+
+  .api-endpoint {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 0;
+    font-size: 0.75rem;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .api-endpoint:last-child { border-bottom: none; }
+  .api-method {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.6rem;
+    font-weight: 800;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    min-width: 40px;
+    text-align: center;
+  }
+  .method-get { background: var(--success-light); color: #047857; }
+  .method-post { background: var(--primary-light); color: var(--primary-dark); }
+  .method-put { background: var(--accent-light); color: #92400e; }
+  .method-ws { background: var(--purple-light); color: var(--purple); }
+  .api-path {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.7rem;
+    color: var(--gray-700);
+  }
+  .api-desc { color: var(--gray-400); font-size: 0.7rem; margin-left: auto; }
+
+  /* ======= INNOVATION ======= */
+  .innovation-card {
+    background: white;
+    border-radius: 18px;
+    padding: 28px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+    border: 1px solid var(--gray-200);
+  }
+  .innovation-card .card-icon-big {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 14px;
+  }
+  .innovation-card h4 { font-size: 1.05rem; font-weight: 700; color: var(--gray-900); margin-bottom: 6px; }
+  .innovation-card p { font-size: 0.85rem; color: var(--gray-500); line-height: 1.6; }
+
+  .innovation-mini-diagram {
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: var(--gray-50);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+  }
+  .imd-node {
+    text-align: center;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .imd-arrow { color: var(--gray-300); font-size: 1rem; flex-shrink: 0; }
+
+  /* ======= ALGORITHM CARD ======= */
+  .algo-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid var(--gray-200);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+  .algo-card h4 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .algo-card p { font-size: 0.78rem; color: var(--gray-500); line-height: 1.5; }
+  .algo-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.6rem;
+    font-weight: 700;
+    margin-top: 8px;
+  }
+  .algo-formula {
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: var(--gray-50);
+    border-radius: 8px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.65rem;
+    color: var(--gray-600);
+    border: 1px solid var(--gray-100);
+  }
+
+  /* ======= STATUS ======= */
+  .status-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .status-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+  .status-list li.done { background: var(--success-light); color: #047857; }
+  .status-list li.pending { background: var(--accent-light); color: #92400e; }
+  .status-list li.planned { background: var(--gray-100); color: var(--gray-500); }
+
+  /* ======= ROADMAP ======= */
+  .roadmap-phase {
+    flex: 1;
+    padding: 24px 20px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .phase-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 16px;
+    font-size: 0.6rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+  .phase-now .phase-badge { background: var(--success); color: white; }
+  .phase-next .phase-badge { background: var(--accent); color: var(--gray-900); }
+  .phase-later .phase-badge { background: var(--purple); color: white; }
+  .phase-future .phase-badge { background: var(--gray-600); color: white; }
+
+  .roadmap-phase h4 { font-size: 1rem; font-weight: 700; margin-bottom: 12px; color: white; }
+  .roadmap-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .roadmap-list li {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.5);
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.4;
+  }
+  .roadmap-list li::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: rgba(255,255,255,0.25);
+    font-weight: 700;
+  }
+
+  /* ======= CLOSING ======= */
+  .slide-closing {
+    background: linear-gradient(135deg, #0f172a 0%, #312e81 40%, #6366f1 100%);
+    color: white;
+    text-align: center;
+    align-items: center;
+  }
+  .slide-closing h2 { color: white; font-size: 2.8rem; margin-bottom: 20px; }
+  .closing-points {
+    display: flex;
+    gap: 36px;
+    justify-content: center;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  .closing-point { text-align: center; max-width: 200px; }
+  .closing-icon {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem;
+    margin: 0 auto 12px;
+  }
+  .closing-point h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; }
+  .closing-point p { font-size: 0.75rem; opacity: 0.6; line-height: 1.4; }
+
+  /* ======= DOWNLOAD BUTTON ======= */
+  .download-btn {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 100;
+    background: var(--gray-900);
+    color: white;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    transition: background 0.2s, transform 0.2s;
+  }
+  .download-btn:hover { background: var(--primary); transform: translateY(-2px); }
+  .download-btn svg { width: 16px; height: 16px; }
+
+  /* ======= PRINT ======= */
+  @media print {
+    .slide { page-break-after: always; min-height: auto; padding: 40px 50px; }
+    .slide-nav, .download-btn { display: none; }
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+
+  /* ======= RESPONSIVE ======= */
+  @media (max-width: 900px) {
+    .slide { padding: 36px 24px; }
+    .slide h2 { font-size: 1.8rem; }
+    .slide-title h1 { font-size: 2.8rem; }
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .flow-diagram { flex-direction: column; align-items: center; }
+    .flow-arrow { transform: rotate(90deg); }
+    .arch-layer { flex-direction: column; }
+    .arch-label { width: 100%; }
+    .arch-connector { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV DOTS -->
+<nav class="slide-nav">
+  <button class="nav-dot" onclick="document.getElementById('s1').scrollIntoView({behavior:'smooth'})" title="Title"></button>
+  <button class="nav-dot" onclick="document.getElementById('s2').scrollIntoView({behavior:'smooth'})" title="The Problem"></button>
+  <button class="nav-dot" onclick="document.getElementById('s3').scrollIntoView({behavior:'smooth'})" title="Market"></button>
+  <button class="nav-dot" onclick="document.getElementById('s4').scrollIntoView({behavior:'smooth'})" title="Solution"></button>
+  <button class="nav-dot" onclick="document.getElementById('s5').scrollIntoView({behavior:'smooth'})" title="How It Works"></button>
+  <button class="nav-dot" onclick="document.getElementById('s6').scrollIntoView({behavior:'smooth'})" title="Student Workflow"></button>
+  <button class="nav-dot" onclick="document.getElementById('s7').scrollIntoView({behavior:'smooth'})" title="AI Teaching Loop"></button>
+  <button class="nav-dot" onclick="document.getElementById('s8').scrollIntoView({behavior:'smooth'})" title="Algorithm Engine"></button>
+  <button class="nav-dot" onclick="document.getElementById('s9').scrollIntoView({behavior:'smooth'})" title="Architecture"></button>
+  <button class="nav-dot" onclick="document.getElementById('s10').scrollIntoView({behavior:'smooth'})" title="Low-Level Architecture"></button>
+  <button class="nav-dot" onclick="document.getElementById('s11').scrollIntoView({behavior:'smooth'})" title="Data Pipeline"></button>
+  <button class="nav-dot" onclick="document.getElementById('s12').scrollIntoView({behavior:'smooth'})" title="Key Innovations"></button>
+  <button class="nav-dot" onclick="document.getElementById('s13').scrollIntoView({behavior:'smooth'})" title="Status"></button>
+  <button class="nav-dot" onclick="document.getElementById('s14').scrollIntoView({behavior:'smooth'})" title="Roadmap"></button>
+  <button class="nav-dot" onclick="document.getElementById('s15').scrollIntoView({behavior:'smooth'})" title="Close"></button>
+</nav>
+
+
+<!-- ================================================= -->
+<!-- SLIDE 1: TITLE                                     -->
+<!-- ================================================= -->
+<section id="s1" class="slide slide-title">
+  <svg class="logo-icon" viewBox="0 0 100 100" fill="none">
+    <circle cx="50" cy="50" r="46" fill="rgba(255,255,255,0.1)" stroke="white" stroke-width="3"/>
+    <path d="M25 65 Q35 30 50 50 Q65 70 75 35" stroke="#f59e0b" stroke-width="4" stroke-linecap="round" fill="none"/>
+    <circle cx="25" cy="65" r="5" fill="#10b981"/>
+    <circle cx="50" cy="50" r="5" fill="#f59e0b"/>
+    <circle cx="75" cy="35" r="5" fill="#f43f5e"/>
+    <path d="M30 70 L50 55 L70 40" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" stroke-dasharray="4 4" fill="none"/>
+    <text x="50" y="88" text-anchor="middle" fill="white" font-size="9" font-weight="700" letter-spacing="4">LEARNING</text>
+  </svg>
+  <h1>GLS</h1>
+  <p class="tagline">Generative Learning System</p>
+  <p class="subtitle">AI-Powered Adaptive Tutoring for Indian Students</p>
+</section>
+
+
+<!-- ================================================= -->
+<!-- SLIDE 2: THE PROBLEM                               -->
+<!-- ================================================= -->
+<section id="s2" class="slide slide-problem">
+  <p class="section-label">The Problem</p>
+  <h2>One Teacher. Forty Students.<br>Zero Personalization.</h2>
+
+  <div class="grid-2">
+    <!-- Visual: Classroom Scene -->
+    <div class="problem-scene">
+      <div class="classroom-scene">
+        <div class="teacher-icon">&#x1F9D1;&#x200D;&#x1F3EB;</div>
+        <div class="student-icon s1">&#x1F9D1;&#x200D;&#x1F393;</div>
+        <div class="student-icon s2">&#x1F469;&#x200D;&#x1F393;</div>
+        <div class="student-icon s3">&#x1F468;&#x200D;&#x1F393;</div>
+        <div class="student-icon s4">&#x1F9D1;&#x200D;&#x1F393;</div>
+        <div class="student-icon s5">&#x1F469;&#x200D;&#x1F393;</div>
+        <div class="thought-bubble tb1">Too fast for me...</div>
+        <div class="thought-bubble tb2">Already know this</div>
+        <div class="thought-bubble tb3">I don't get it</div>
+        <div class="thought-bubble tb4">So bored...</div>
+        <div class="scene-caption">Every classroom, every day &mdash; one pace for all</div>
+      </div>
+    </div>
+
+    <!-- Pain Points -->
+    <div class="flex-col gap-20">
+      <div class="pain-card">
+        <div class="card-icon-box" style="background: #fee2e2;">&#x1F4DA;</div>
+        <div>
+          <h4>One-Size-Fits-All Teaching</h4>
+          <p>40+ students in a classroom, each with different knowledge gaps, learning speeds, and misconceptions. The teacher can only teach at one pace.</p>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="card-icon-box" style="background: #fef3c7;">&#x1F4B8;</div>
+        <div>
+          <h4>Tutoring is Expensive &amp; Inaccessible</h4>
+          <p>Private tutors cost &#8377;2,000&ndash;10,000/month. Most families in semi-urban and rural India simply cannot afford personalized coaching.</p>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="card-icon-box" style="background: #ede9fe;">&#x1F914;</div>
+        <div>
+          <h4>Misconceptions Go Undetected</h4>
+          <p>Students carry fundamental misunderstandings (e.g., "heavier objects fall faster") that are never identified or corrected in batch teaching.</p>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="card-icon-box" style="background: #dbeafe;">&#x1F4C9;</div>
+        <div>
+          <h4>Rote Learning Dominates</h4>
+          <p>Board exam prep relies on memorization over understanding. Students pass exams but lack conceptual depth &mdash; knowledge doesn't transfer or last.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<!-- SLIDE 3: MARKET OPPORTUNITY                        -->
+<!-- ================================================= -->
+<section id="s3" class="slide slide-dark">
+  <p class="section-label">Why This Matters</p>
+  <h2>India's Education Challenge &mdash; In Numbers</h2>
+
+  <div class="grid-4 gap-30" style="margin-bottom: 40px;">
+    <div class="stat-card dark-stat">
+      <div class="stat-number">260M+</div>
+      <div class="stat-label">Students enrolled in<br>Indian schools (K-12)</div>
+    </div>
+    <div class="stat-card dark-stat">
+      <div class="stat-number">1:40</div>
+      <div class="stat-label">Average teacher to<br>student ratio</div>
+    </div>
+    <div class="stat-card dark-stat">
+      <div class="stat-number">57%</div>
+      <div class="stat-label">Of Grade 8 students<br>can't solve Grade 5 math</div>
+    </div>
+    <div class="stat-card dark-stat">
+      <div class="stat-number">$12B+</div>
+      <div class="stat-label">Indian EdTech market<br>size by 2025</div>
+    </div>
+  </div>
+
+  <div class="grid-2 gap-30">
+    <div class="dark-card">
+      <h4>The Learning Crisis is Real</h4>
+      <p>The ASER (Annual Status of Education Report) consistently shows that learning outcomes are declining even as enrollment increases. Students are in school but not learning. The problem isn't access &mdash; it's the quality and personalization of instruction.</p>
+    </div>
+    <div class="dark-card">
+      <h4>Existing EdTech Fails at Personalization</h4>
+      <p>Platforms like BYJU'S and Unacademy deliver pre-recorded lectures. They digitized the classroom &mdash; but didn't fix the core problem. Every student still gets the same content, at the same pace, with no adaptation to individual gaps.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<!-- SLIDE 4: THE SOLUTION                              -->
+<!-- ================================================= -->
+<section id="s4" class="slide slide-solution">
+  <p class="section-label">The Solution</p>
+  <h2>An AI Tutor That Knows You</h2>
+
+  <div class="grid-2" style="align-items: center;">
+    <!-- Chat Mockup -->
+    <div>
+      <div class="chat-mockup">
+        <div class="chat-screen">
+          <div class="chat-header">
+            <span>&#x1F9E0; GLS Tutor &mdash; Kinematics</span>
+            <span style="font-size:0.55rem; opacity:0.7">LIVE</span>
+          </div>
+          <div class="chat-body">
+            <div class="chat-msg msg-system">Concept: Displacement vs. Distance</div>
+            <div class="chat-msg msg-ai">Imagine you're watching a cricket match &#x1F3CF;. A fielder runs from deep mid-wicket to point &mdash; that's the <strong>distance</strong> they covered. But the <strong>displacement</strong> is just the straight line from where they started to where they ended up. What's the difference?</div>
+            <div class="chat-msg msg-student">Distance is total path, displacement is start to end?</div>
+            <div class="chat-msg msg-ai">Exactly! Now here's a tricky one &mdash; if the fielder runs to point and then runs back to the same spot, what's the displacement?</div>
+            <div class="chat-msg msg-student">Zero?</div>
+            <div class="chat-msg msg-ai">&#x2705; Perfect! Displacement is zero because the start and end points are the same. The distance, however, is the full path covered. You've grasped this &mdash; let's level up to velocity.</div>
+            <div class="chat-msg msg-system">&#x1F4CA; Mastery: Displacement &rarr; 87% | Moving to: Velocity</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key Value Props -->
+    <div class="flex-col" style="gap: 20px;">
+      <div class="sol-point">
+        <div class="sol-icon" style="background: var(--primary-light);">&#x1F3AF;</div>
+        <div>
+          <h4>Socratic Dialogue, Not Lectures</h4>
+          <p>The AI asks guiding questions, never just gives answers. Students build understanding through reasoning, not memorization.</p>
+        </div>
+      </div>
+      <div class="sol-point">
+        <div class="sol-icon" style="background: var(--accent-light);">&#x1F3CF;</div>
+        <div>
+          <h4>Interest-Based Explanations</h4>
+          <p>Loves cricket? Physics is explained through cricket. Into gaming? Concepts use game mechanics. GenAI dynamically contextualizes every explanation.</p>
+        </div>
+      </div>
+      <div class="sol-point">
+        <div class="sol-icon" style="background: var(--success-light);">&#x1F9E0;</div>
+        <div>
+          <h4>Bayesian Knowledge Tracking</h4>
+          <p>The system models what each student knows and doesn't know, concept by concept. It adapts in real-time &mdash; no concept is skipped or repeated unnecessarily.</p>
+        </div>
+      </div>
+      <div class="sol-point">
+        <div class="sol-icon" style="background: var(--rose-light);">&#x1F50D;</div>
+        <div>
+          <h4>Misconception Detection</h4>
+          <p>An inventory of 328 known physics misconceptions powers targeted detection. The AI identifies root misunderstandings and corrects them at the source.</p>
+        </div>
+      </div>
+      <div class="sol-point">
+        <div class="sol-icon" style="background: var(--purple-light);">&#x1F504;</div>
+        <div>
+          <h4>Spaced Repetition Built In</h4>
+          <p>SM-2 algorithm schedules review sessions based on forgetting curves. Concepts don't fade &mdash; they get reinforced at the optimal moment.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<!-- SLIDE 5: HOW IT WORKS (OVERVIEW)                   -->
+<!-- ================================================= -->
+<section id="s5" class="slide slide-flow">
+  <p class="section-label">User Journey</p>
+  <h2>How GLS Works</h2>
+
+  <div class="flow-diagram">
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--primary-light);">&#x1F44B;<span class="flow-number">1</span></div>
+      <h4>Onboard</h4>
+      <p>Register, share interests, grade, and board. Chat-based survey profiles learning style.</p>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--accent-light);">&#x1F9EA;<span class="flow-number">2</span></div>
+      <h4>Diagnose</h4>
+      <p>Diagnostic assessment maps initial knowledge state per concept via BKT.</p>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--success-light);">&#x1F4D6;<span class="flow-number">3</span></div>
+      <h4>Learn</h4>
+      <p>Socratic AI teaches concepts using interest-based examples. Real-time chat with LaTeX math.</p>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--rose-light);">&#x270F;&#xFE0F;<span class="flow-number">4</span></div>
+      <h4>Assess</h4>
+      <p>Stealth assessments embedded in conversation. BKT updates knowledge state after each response.</p>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--purple-light);">&#x1F504;<span class="flow-number">5</span></div>
+      <h4>Review</h4>
+      <p>SM-2 schedules optimal review timing. Weak concepts resurface before they're forgotten.</p>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--teal-light);">&#x1F4C8;<span class="flow-number">6</span></div>
+      <h4>Master</h4>
+      <p>Dashboard shows mastery progression. Bloom's taxonomy tracks cognitive depth.</p>
+    </div>
+  </div>
+
+  <div class="data-flow-visual">
+    <div style="font-size:0.65rem; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:2px; margin-bottom:10px;">Adaptive Learning Loop</div>
+    <div class="data-flow-row">
+      <div class="df-node" style="background:var(--primary-light); color:var(--primary-dark);">&#x1F9D1;&#x200D;&#x1F393; Student Response</div>
+      <div class="df-arrow">&rarr;</div>
+      <div class="df-node" style="background:var(--accent-light); color:#92400e;">&#x1F9E0; BKT Update</div>
+      <div class="df-arrow">&rarr;</div>
+      <div class="df-node" style="background:var(--rose-light); color:var(--rose);">&#x1F50D; Misconception Check</div>
+      <div class="df-arrow">&rarr;</div>
+      <div class="df-node" style="background:var(--purple-light); color:var(--purple);">&#x1F3AF; Next Action</div>
+      <div class="df-arrow">&rarr;</div>
+      <div class="df-node" style="background:var(--success-light); color:#047857;">&#x1F4AC; AI Response</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<!-- SLIDE 6: STUDENT WORKFLOW (DETAILED)               -->
+<!-- ================================================= -->
+<section id="s6" class="slide slide-workflow">
+  <p class="section-label">Workflow Detail</p>
+  <h2>Student Learning Journey &mdash; Step by Step</h2>
+
+  <div class="grid-2" style="align-items: start;">
+    <div class="workflow-timeline">
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--primary-light); color:var(--primary-dark);">Onboarding</div>
+          <h4>Student registers and profiles themselves</h4>
+          <p>Chat-based survey collects name, grade, board (CBSE/ICSE/State), interests (cricket, gaming, movies...), and learning preferences. <strong>VARK</strong> and <strong>MSLQ</strong> frameworks assess learning style and motivation.</p>
+          <div class="wf-detail">
+            <strong>Psychological Profiling:</strong> Dweck Growth Mindset assessment, self-efficacy, and motivation scoring run automatically during onboarding.
+          </div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--accent-light); color:#92400e;">Diagnostic</div>
+          <h4>Initial knowledge state mapped</h4>
+          <p>The system administers a targeted diagnostic using <strong>IRT-calibrated questions</strong> to efficiently map what the student already knows. BKT initializes P(Know) per concept.</p>
+          <div class="wf-detail">
+            <strong>Algorithm:</strong> IRT 3PL model selects maximally informative questions. Fewer questions needed for accurate estimation than traditional tests.
+          </div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--success-light); color:#047857;">Study Plan</div>
+          <h4>Personalized learning path generated</h4>
+          <p><strong>Knowledge Space Theory (KST)</strong> determines which concepts the student is ready to learn based on prerequisite mastery. The system builds an optimal sequence through the curriculum graph.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="workflow-timeline">
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--rose-light); color:var(--rose);">Learning Session</div>
+          <h4>AI teaches through Socratic dialogue</h4>
+          <p>The LLM tutor uses <strong>RAG retrieval</strong> from 1,820 vector-stored concept explanations to ground responses. Teaches using the student's interests as context. Real-time WebSocket chat with LaTeX math rendering.</p>
+          <div class="wf-detail">
+            <strong>Multi-Agent:</strong> Teaching agent, testing agent, review agent, and support agent collaborate via LangGraph orchestrator.
+          </div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--purple-light); color:var(--purple);">Assessment &amp; Adaptation</div>
+          <h4>Stealth assessments update knowledge state</h4>
+          <p>Questions are woven into conversation naturally. After each response: BKT updates P(Know), Elo adjusts difficulty matching, Bloom's tracks cognitive depth. <strong>Misconception detection</strong> triggers targeted remediation.</p>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--teal-light); color:var(--teal);">Spaced Review</div>
+          <h4>SM-2 schedules optimal review timing</h4>
+          <p>Mastered concepts enter the spaced repetition scheduler. Review sessions surface at calculated intervals &mdash; just before the forgetting curve drops below threshold. Each successful review extends the interval.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<!-- SLIDE 7: AI TEACHING LOOP                          -->
+<!-- ================================================= -->
+<section id="s7" class="slide" style="background: var(--gray-50);">
+  <p class="section-label">AI Architecture</p>
+  <h2>The Multi-Agent Teaching System</h2>
+
+  <div class="grid-2 gap-30" style="align-items:start;">
+    <!-- Agent Architecture Diagram -->
+    <div style="background:white; border-radius:20px; padding:32px; border:1px solid var(--gray-200);">
+      <div style="font-size:0.7rem; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:2px; margin-bottom:20px;">LangGraph Agent Orchestration</div>
+
+      <!-- Orchestrator -->
+      <div style="text-align:center; margin-bottom:16px;">
+        <div style="display:inline-block; padding:14px 28px; background:var(--gray-900); color:white; border-radius:14px; font-weight:700; font-size:0.85rem;">
+          &#x1F3AD; Learning Orchestrator
+          <div style="font-size:0.6rem; opacity:0.6; margin-top:2px;">Routes to specialized agents based on context</div>
+        </div>
+      </div>
+
+      <div style="text-align:center; color:var(--gray-300); font-size:1.2rem; margin:8px 0;">&darr;&darr;&darr;&darr;</div>
+
+      <!-- Sub-agents -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        <div style="padding:14px; background:var(--primary-light); border-radius:12px; text-align:center;">
+          <div style="font-size:1.2rem; margin-bottom:4px;">&#x1F4D6;</div>
+          <div style="font-weight:700; font-size:0.8rem; color:var(--primary-dark);">Teaching Agent</div>
+          <div style="font-size:0.6rem; color:var(--gray-500); margin-top:2px;">Socratic dialogue, interest-based examples, concept delivery</div>
+        </div>
+        <div style="padding:14px; background:var(--accent-light); border-radius:12px; text-align:center;">
+          <div style="font-size:1.2rem; margin-bottom:4px;">&#x1F9EA;</div>
+          <div style="font-weight:700; font-size:0.8rem; color:#92400e;">Testing Agent</div>
+          <div style="font-size:0.6rem; color:var(--gray-500); margin-top:2px;">Stealth assessments, question generation, answer grading</div>
+        </div>
+        <div style="padding:14px; background:var(--success-light); border-radius:12px; text-align:center;">
+          <div style="font-size:1.2rem; margin-bottom:4px;">&#x1F504;</div>
+          <div style="font-weight:700; font-size:0.8rem; color:#047857;">Review Agent</div>
+          <div style="font-size:0.6rem; color:var(--gray-500); margin-top:2px;">Spaced repetition sessions, recall evaluation</div>
+        </div>
+        <div style="padding:14px; background:var(--rose-light); border-radius:12px; text-align:center;">
+          <div style="font-size:1.2rem; margin-bottom:4px;">&#x1F91D;</div>
+          <div style="font-weight:700; font-size:0.8rem; color:var(--rose);">Support Agent</div>
+          <div style="font-size:0.6rem; color:var(--gray-500); margin-top:2px;">Frustration detection, motivation support, session monitoring</div>
+        </div>
+      </div>
+
+      <div style="text-align:center; color:var(--gray-300); font-size:1.2rem; margin:12px 0;">&darr;</div>
+
+      <!-- Middleware -->
+      <div style="display:flex; gap:12px;">
+        <div style="flex:1; padding:10px; background:var(--gray-50); border-radius:10px; text-align:center; border:1px dashed var(--gray-200);">
+          <div style="font-weight:700; font-size:0.7rem; color:var(--gray-600);">&#x1F6E1;&#xFE0F; Session Monitor</div>
+          <div style="font-size:0.55rem; color:var(--gray-400);">Tracks engagement, time-on-task</div>
+        </div>
+        <div style="flex:1; padding:10px; background:var(--gray-50); border-radius:10px; text-align:center; border:1px dashed var(--gray-200);">
+          <div style="font-weight:700; font-size:0.7rem; color:var(--gray-600);">&#x1F50D; Support Detector</div>
+          <div style="font-size:0.55rem; color:var(--gray-400);">Emotional state inference</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tools & Integration -->
+    <div class="flex-col gap-20">
+      <div style="background:white; border-radius:16px; padding:24px; border:1px solid var(--gray-200);">
+        <h4 style="font-size:0.95rem; font-weight:700; color:var(--gray-900); margin-bottom:14px;">&#x1F6E0;&#xFE0F; Agent Tool Belt</h4>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <div style="display:flex; gap:10px; align-items:center; padding:8px; background:var(--gray-50); border-radius:8px;">
+            <div style="font-size:1rem;">&#x1F4DA;</div>
+            <div><div style="font-weight:700; font-size:0.75rem; color:var(--gray-800);">RAG Search</div><div style="font-size:0.6rem; color:var(--gray-400);">Retrieves from 1,820 vector embeddings</div></div>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center; padding:8px; background:var(--gray-50); border-radius:8px;">
+            <div style="font-size:1rem;">&#x1F4CA;</div>
+            <div><div style="font-weight:700; font-size:0.75rem; color:var(--gray-800);">Knowledge State</div><div style="font-size:0.6rem; color:var(--gray-400);">Reads/writes BKT per concept</div></div>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center; padding:8px; background:var(--gray-50); border-radius:8px;">
+            <div style="font-size:1rem;">&#x2753;</div>
+            <div><div style="font-weight:700; font-size:0.75rem; color:var(--gray-800);">Question Bank</div><div style="font-size:0.6rem; color:var(--gray-400);">347 questions + 109 numerical problems</div></div>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center; padding:8px; background:var(--gray-50); border-radius:8px;">
+            <div style="font-size:1rem;">&#x1F9E9;</div>
+            <div><div style="font-weight:700; font-size:0.75rem; color:var(--gray-800);">Misconception DB</div><div style="font-size:0.6rem; color:var(--gray-400);">328 catalogued misconceptions</div></div>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center; padding:8px; background:var(--gray-50); border-radius:8px;">
+            <div style="font-size:1rem;">&#x1F4DD;</div>
+            <div><div style="font-weight:700; font-size:0.75rem; color:var(--gray-800);">Curriculum Graph</div><div style="font-size:0.6rem; color:var(--gray-400);">116 topics, 36 sections, 5 units</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:white; border-radius:16px; padding:24px; border:1px solid var(--gray-200);">
+        <h4 style="font-size:0.95rem; font-weight:700; color:var(--gray-900); margin-bottom:12px;">&#x1F4AC; Prompt Architecture</h4>
+        <p style="font-size:0.8rem; color:var(--gray-500); line-height:1.6; margin-bottom:10px;">Structured prompt templates (<code>.poml</code> format) for each agent mode:</p>
+        <div style="display:flex; flex-wrap:wrap; gap:6px;">
+          <span style="padding:4px 10px; background:var(--primary-light); color:var(--primary-dark); border-radius:6px; font-size:0.65rem; font-weight:600;">teaching/system.poml</span>
+          <span style="padding:4px 10px; background:var(--accent-light); color:#92400e; border-radius:6px; font-size:0.65rem; font-weight:600;">testing/evaluate-answer.poml</span>
+          <span style="padding:4px 10px; background:var(--success-light); color:#047857; border-radius:6px; font-size:0.65rem; font-weight:600;">review/evaluate-recall.poml</span>
+          <span style="padding:4px 10px; background:var(--rose-light); color:var(--rose); border-radius:6px; font-size:0.65rem; font-weight:600;">support/system.poml</span>
+          <span style="padding:4px 10px; background:var(--gray-100); color:var(--gray-600); border-radius:6px; font-size:0.65rem; font-weight:600;">shared/socratic-rules.poml</span>
+          <span style="padding:4px 10px; background:var(--gray-100); color:var(--gray-600); border-radius:6px; font-size:0.65rem; font-weight:600;">shared/bloom-taxonomy.poml</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<!-- SLIDE 8: ALGORITHM ENGINE                          -->
+<!-- ================================================= -->
+<section id="s8" class="slide" style="background:white;">
+  <p class="section-label">Learning Science Engine</p>
+  <h2>9 Algorithms Working in Concert</h2>
+
+  <div class="grid-3 gap-20">
+    <div class="algo-card">
+      <h4>&#x1F9E0; Bayesian Knowledge Tracing</h4>
+      <p>Estimates P(Know) per concept. Accounts for guessing, slipping, and learning from each attempt.</p>
+      <div class="algo-formula">P(Know|correct) = P(K)*(1-p_slip) / P(correct)</div>
+      <div class="algo-tag" style="background:var(--primary-light); color:var(--primary-dark);">Knowledge State</div>
+    </div>
+
+    <div class="algo-card">
+      <h4>&#x1F4CA; Item Response Theory (3PL)</h4>
+      <p>Matches question difficulty to student ability. Maximum information question selection for efficient assessment.</p>
+      <div class="algo-formula">P(correct|&theta;) = c + (1-c)/(1+exp(-a*(&theta;-b)))</div>
+      <div class="algo-tag" style="background:var(--accent-light); color:#92400e;">Adaptive Assessment</div>
+    </div>
+
+    <div class="algo-card">
+      <h4>&#x1F3AF; Knowledge Space Theory</h4>
+      <p>Models concept prerequisites as a partial order. Identifies the "outer fringe" &mdash; concepts the student is ready to learn next.</p>
+      <div class="algo-tag" style="background:var(--success-light); color:#047857;">Learning Path</div>
+    </div>
+
+    <div class="algo-card">
+      <h4>&#x2694;&#xFE0F; Elo Rating System</h4>
+      <p>Dynamic difficulty calibration. Both students and questions have Elo ratings that update after each interaction.</p>
+      <div class="algo-formula">R_new = R_old + K * (S - E)</div>
+      <div class="algo-tag" style="background:var(--rose-light); color:var(--rose);">Difficulty Matching</div>
+    </div>
+
+    <div class="algo-card">
+      <h4>&#x1F33F; Bloom's Taxonomy Progression</h4>
+      <p>Tracks cognitive depth: Remember &rarr; Understand &rarr; Apply &rarr; Analyze. Ensures students don't just memorize &mdash; they truly understand.</p>
+      <div class="algo-tag" style="background:var(--purple-light); color:var(--purple);">Cognitive Depth</div>
+    </div>
+
+    <div class="algo-card">
+      <h4>&#x1F504; SM-2 Spaced Repetition</h4>
+      <p>Schedules reviews at optimal intervals based on forgetting curves. Each successful review increases the interval exponentially.</p>
+      <div class="algo-formula">interval = prev_interval * ease_factor</div>
+      <div class="algo-tag" style="background:var(--teal-light); color:var(--teal);">Retention</div>
+    </div>
+
+    <div class="algo-card">
+      <h4>&#x1F50D; Misconception Detection</h4>
+      <p>328 catalogued misconceptions matched to student responses. Detects root misunderstandings, not just wrong answers.</p>
+      <div class="algo-tag" style="background:var(--danger-light); color:var(--danger);">Error Diagnosis</div>
+    </div>
+
+    <div class="algo-card">
+      <h4>&#x1F4D0; Hake's Normalized Gain</h4>
+      <p>Measures learning effectiveness: g = (post - pre) / (100 - pre). Benchmarks whether the system is actually teaching.</p>
+      <div class="algo-formula">g = (post_score - pre_score) / (max - pre_score)</div>
+      <div class="algo-tag" style="background:var(--sky-light); color:var(--sky);">Effectiveness</div>
+    </div>
+
+    <div class="algo-card">
+      <h4>&#x1F9D8; Cognitive Load Monitoring</h4>
+      <p>Tracks response times, error patterns, and engagement signals to estimate mental effort. Prevents overload by adjusting pace.</p>
+      <div class="algo-tag" style="background:var(--gray-100); color:var(--gray-600);">Pacing</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<!-- SLIDE 9: HIGH-LEVEL ARCHITECTURE                   -->
+<!-- ================================================= -->
+<section id="s9" class="slide slide-arch">
+  <p class="section-label">System Architecture</p>
+  <h2>Three Services, One Adaptive System</h2>
+
+  <div class="arch-diagram">
+    <div class="arch-layer layer-client">
+      <div class="arch-label">FRONTEND</div>
+      <div class="arch-boxes">
+        <div class="arch-box">
+          <h5>&#x1F4BB; Student Dashboard</h5>
+          <div class="tech">React 18 + TypeScript + Vite</div>
+        </div>
+        <div class="arch-box">
+          <h5>&#x1F4AC; Chat Interface</h5>
+          <div class="tech">WebSocket + KaTeX Math</div>
+        </div>
+        <div class="arch-box">
+          <h5>&#x1F4CA; Progress Views</h5>
+          <div class="tech">Zustand + TailwindCSS</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arch-connector">
+      <div class="connector-arrow"><span>&darr;&uarr;</span><span class="connector-label">REST + WebSocket</span></div>
+    </div>
+
+    <div class="arch-layer layer-assistant">
+      <div class="arch-label">AI<br>ASSISTANT</div>
+      <div class="arch-boxes">
+        <div class="arch-box">
+          <h5>&#x1F3AD; Agent Orchestrator</h5>
+          <div class="tech">LangGraph + Gemini API</div>
+        </div>
+        <div class="arch-box">
+          <h5>&#x1F50D; RAG Pipeline</h5>
+          <div class="tech">ChromaDB + qwen3-embedding</div>
+        </div>
+        <div class="arch-box">
+          <h5>&#x1F4DD; Prompt Engine</h5>
+          <div class="tech">POML Templates + Socratic Rules</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arch-connector">
+      <div class="connector-arrow"><span>&darr;&uarr;</span><span class="connector-label">HTTP API calls</span></div>
+    </div>
+
+    <div class="arch-layer layer-api">
+      <div class="arch-label">BACKEND<br>API</div>
+      <div class="arch-boxes">
+        <div class="arch-box"><h5>&#x1F512; Auth</h5><div class="tech">JWT + bcrypt</div></div>
+        <div class="arch-box"><h5>&#x1F4DA; Curriculum</h5><div class="tech">CRUD + Unlocking</div></div>
+        <div class="arch-box"><h5>&#x1F9EA; Assessment</h5><div class="tech">Responses + Grading</div></div>
+        <div class="arch-box"><h5>&#x1F9E0; Knowledge</h5><div class="tech">BKT + IRT + KST</div></div>
+      </div>
+    </div>
+
+    <div class="arch-connector">
+      <div class="connector-arrow"><span>&darr;&uarr;</span><span class="connector-label">SQLAlchemy ORM</span></div>
+    </div>
+
+    <div class="arch-layer layer-data">
+      <div class="arch-label">DATA<br>LAYER</div>
+      <div class="arch-boxes">
+        <div class="arch-box"><h5>&#x1F418; PostgreSQL</h5><div class="tech">20+ model groups &bull; Relational</div></div>
+        <div class="arch-box"><h5>&#x1F52E; ChromaDB</h5><div class="tech">1,820 vectors &bull; 2,560 dim</div></div>
+        <div class="arch-box"><h5>&#x1F343; MongoDB</h5><div class="tech">Conversations &bull; Sessions</div></div>
+        <div class="arch-box"><h5>&#x26A1; Redis</h5><div class="tech">Cache &bull; Sessions (planned)</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<!-- SLIDE 10: LOW-LEVEL ARCHITECTURE                   -->
+<!-- ================================================= -->
+<section id="s10" class="slide slide-lowlevel">
+  <p class="section-label">Low-Level Architecture</p>
+  <h2>Database, APIs &amp; Domain Models</h2>
+
+  <div class="grid-2 gap-30" style="align-items: start;">
+    <!-- Left: DB Schema + Content Stats -->
+    <div class="flex-col gap-20">
+      <div class="ll-section">
+        <h4>&#x1F5C4;&#xFE0F; Database Schema (20+ Model Groups)</h4>
+        <table class="db-table">
+          <thead><tr><th>Domain</th><th>Models</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td class="tbl-name">Student</td><td><code>student</code>, <code>learner_profile</code></td><td>Auth, preferences, learning pace</td></tr>
+            <tr><td class="tbl-name">Curriculum</td><td><code>book</code>, <code>unit</code>, <code>section</code>, <code>topic</code></td><td>Hierarchical content structure</td></tr>
+            <tr><td class="tbl-name">Content</td><td><code>definition</code>, <code>formula</code>, <code>misconception</code>, <code>question</code></td><td>Teaching &amp; assessment material</td></tr>
+            <tr><td class="tbl-name">Knowledge</td><td><code>knowledge_state</code>, <code>review_schedule</code>, <code>concept_inventory</code></td><td>BKT states, SM-2 scheduling</td></tr>
+            <tr><td class="tbl-name">Assessment</td><td><code>question</code>, <code>response</code>, <code>rubric</code>, <code>framework</code></td><td>Questions, grading, standards</td></tr>
+            <tr><td class="tbl-name">Psychology</td><td><code>growth_mindset</code>, <code>motivation</code>, <code>cognitive_load</code></td><td>Learner psychological state</td></tr>
+            <tr><td class="tbl-name">Evidence</td><td><code>stealth_assessment</code>, <code>learning_record</code>, <code>hake_gain</code></td><td>Evidence-Centered Design</td></tr>
+            <tr><td class="tbl-name">Teaching</td><td><code>concept</code>, <code>strategy</code>, <code>framework</code></td><td>Pedagogy &amp; approach mapping</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="ll-section">
+        <h4>&#x1F4CA; Content Database Statistics</h4>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div style="padding:12px; background:var(--primary-light); border-radius:10px; text-align:center;">
+            <div style="font-size:1.6rem; font-weight:900; color:var(--primary-dark);">498</div>
+            <div style="font-size:0.7rem; color:var(--gray-500);">Definitions</div>
+          </div>
+          <div style="padding:12px; background:var(--accent-light); border-radius:10px; text-align:center;">
+            <div style="font-size:1.6rem; font-weight:900; color:#92400e;">379</div>
+            <div style="font-size:0.7rem; color:var(--gray-500);">Formulas</div>
+          </div>
+          <div style="padding:12px; background:var(--danger-light); border-radius:10px; text-align:center;">
+            <div style="font-size:1.6rem; font-weight:900; color:var(--danger);">328</div>
+            <div style="font-size:0.7rem; color:var(--gray-500);">Misconceptions</div>
+          </div>
+          <div style="padding:12px; background:var(--success-light); border-radius:10px; text-align:center;">
+            <div style="font-size:1.6rem; font-weight:900; color:#047857;">347</div>
+            <div style="font-size:0.7rem; color:var(--gray-500);">Questions</div>
+          </div>
+          <div style="padding:12px; background:var(--purple-light); border-radius:10px; text-align:center;">
+            <div style="font-size:1.6rem; font-weight:900; color:var(--purple);">109</div>
+            <div style="font-size:0.7rem; color:var(--gray-500);">Numerical Problems</div>
+          </div>
+          <div style="padding:12px; background:var(--teal-light); border-radius:10px; text-align:center;">
+            <div style="font-size:1.6rem; font-weight:900; color:var(--teal);">1,820</div>
+            <div style="font-size:0.7rem; color:var(--gray-500);">Vector Embeddings</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: API Endpoints + Algorithm Pipeline -->
+    <div class="flex-col gap-20">
+      <div class="ll-section">
+        <h4>&#x1F310; Key API Endpoints</h4>
+        <div style="display:flex; flex-direction:column; gap:2px;">
+          <div style="font-size:0.65rem; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:1px; padding:6px 0 2px;">Authentication</div>
+          <div class="api-endpoint"><span class="api-method method-post">POST</span><span class="api-path">/api/v1/auth/register</span><span class="api-desc">Student signup</span></div>
+          <div class="api-endpoint"><span class="api-method method-post">POST</span><span class="api-path">/api/v1/auth/login</span><span class="api-desc">JWT token</span></div>
+
+          <div style="font-size:0.65rem; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:1px; padding:8px 0 2px;">Learning</div>
+          <div class="api-endpoint"><span class="api-method method-get">GET</span><span class="api-path">/api/v1/learning/dashboard</span><span class="api-desc">Today's agenda</span></div>
+          <div class="api-endpoint"><span class="api-method method-get">GET</span><span class="api-path">/api/v1/learning/next-topic</span><span class="api-desc">KST-based next</span></div>
+          <div class="api-endpoint"><span class="api-method method-post">POST</span><span class="api-path">/api/v1/learning/start-session</span><span class="api-desc">Begin session</span></div>
+
+          <div style="font-size:0.65rem; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:1px; padding:8px 0 2px;">Knowledge &amp; Assessment</div>
+          <div class="api-endpoint"><span class="api-method method-get">GET</span><span class="api-path">/api/v1/knowledge/mastery-levels</span><span class="api-desc">BKT per concept</span></div>
+          <div class="api-endpoint"><span class="api-method method-post">POST</span><span class="api-path">/api/v1/assessment/submit-response</span><span class="api-desc">Grade + update</span></div>
+          <div class="api-endpoint"><span class="api-method method-get">GET</span><span class="api-path">/api/v1/knowledge/review-items</span><span class="api-desc">SM-2 due items</span></div>
+
+          <div style="font-size:0.65rem; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:1px; padding:8px 0 2px;">RAG &amp; Real-Time</div>
+          <div class="api-endpoint"><span class="api-method method-post">POST</span><span class="api-path">/api/v1/rag/search</span><span class="api-desc">Vector search</span></div>
+          <div class="api-endpoint"><span class="api-method method-ws">WS</span><span class="api-path">/ws/chat/{session_id}</span><span class="api-desc">Live tutoring</span></div>
+
+          <div style="font-size:0.65rem; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:1px; padding:8px 0 2px;">Psychology</div>
+          <div class="api-endpoint"><span class="api-method method-get">GET</span><span class="api-path">/api/v1/vark/assessment</span><span class="api-desc">Learning style</span></div>
+          <div class="api-endpoint"><span class="api-method method-get">GET</span><span class="api-path">/api/v1/mslq/assessment</span><span class="api-desc">Motivation</span></div>
+          <div class="api-endpoint"><span class="api-method method-get">GET</span><span class="api-path">/api/v1/dweck/assessment</span><span class="api-desc">Growth mindset</span></div>
+        </div>
+      </div>
+
+      <div class="ll-section">
+        <h4>&#x1F504; Algorithm Pipeline (Per Response)</h4>
+        <div class="lifecycle-flow">
+          <div class="lf-node" style="background:var(--gray-100); color:var(--gray-600);">Student Responds</div>
+          <div class="lf-arrow">&rarr;</div>
+          <div class="lf-node" style="background:var(--primary-light); color:var(--primary-dark);">BKT Update</div>
+          <div class="lf-arrow">&rarr;</div>
+          <div class="lf-node" style="background:var(--accent-light); color:#92400e;">Elo Adjust</div>
+        </div>
+        <div class="lifecycle-flow">
+          <div class="lf-arrow">&rarr;</div>
+          <div class="lf-node" style="background:var(--danger-light); color:var(--danger);">Misconception Check</div>
+          <div class="lf-arrow">&rarr;</div>
+          <div class="lf-node" style="background:var(--purple-light); color:var(--purple);">Bloom Level</div>
+          <div class="lf-arrow">&rarr;</div>
+          <div class="lf-node" style="background:var(--success-light); color:#047857;">SM-2 Schedule</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<!-- SLIDE 11: DATA PIPELINE                            -->
+<!-- ================================================= -->
+<section id="s11" class="slide" style="background: white;">
+  <p class="section-label">Data Pipeline</p>
+  <h2>From Textbook to Vector Store</h2>
+
+  <!-- Pipeline diagram -->
+  <div style="background:var(--gray-50); border-radius:20px; padding:32px; border:1px solid var(--gray-200); margin-bottom:30px;">
+    <div style="font-size:0.7rem; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:2px; margin-bottom:20px;">Content Extraction &amp; Embedding Pipeline</div>
+
+    <div style="display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap;">
+      <div style="padding:16px 20px; background:var(--gray-900); color:white; border-radius:14px; text-align:center;">
+        <div style="font-size:1.4rem; margin-bottom:4px;">&#x1F4D5;</div>
+        <div style="font-weight:700; font-size:0.8rem;">Physics Textbook</div>
+        <div style="font-size:0.6rem; opacity:0.6;">PDF Source</div>
+      </div>
+      <div style="color:var(--gray-300); font-size:1.4rem;">&rarr;</div>
+      <div style="padding:16px 20px; background:var(--primary-light); border-radius:14px; text-align:center;">
+        <div style="font-size:1.4rem; margin-bottom:4px;">&#x1F916;</div>
+        <div style="font-weight:700; font-size:0.8rem; color:var(--primary-dark);">LLM Extraction</div>
+        <div style="font-size:0.6rem; color:var(--gray-500);">OpenAI / Gemini</div>
+      </div>
+      <div style="color:var(--gray-300); font-size:1.4rem;">&rarr;</div>
+      <div style="padding:16px 20px; background:var(--accent-light); border-radius:14px; text-align:center;">
+        <div style="font-size:1.4rem; margin-bottom:4px;">&#x1F4CB;</div>
+        <div style="font-weight:700; font-size:0.8rem; color:#92400e;">Structured JSON</div>
+        <div style="font-size:0.6rem; color:var(--gray-500);">5 Units Extracted</div>
+      </div>
+      <div style="color:var(--gray-300); font-size:1.4rem;">&rarr;</div>
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <div style="padding:12px 18px; background:var(--success-light); border-radius:12px; text-align:center;">
+          <div style="font-weight:700; font-size:0.75rem; color:#047857;">&#x1F418; PostgreSQL</div>
+          <div style="font-size:0.55rem; color:var(--gray-500);">1,776 content records</div>
+        </div>
+        <div style="padding:12px 18px; background:var(--purple-light); border-radius:12px; text-align:center;">
+          <div style="font-weight:700; font-size:0.75rem; color:var(--purple);">&#x1F52E; ChromaDB</div>
+          <div style="font-size:0.55rem; color:var(--gray-500);">1,820 vector embeddings</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-3 gap-20">
+    <div style="background:var(--gray-50); border-radius:16px; padding:24px; border:1px solid var(--gray-200);">
+      <h4 style="font-size:0.95rem; font-weight:700; color:var(--gray-900); margin-bottom:12px;">&#x1F4D6; Extraction Output</h4>
+      <div style="display:flex; flex-direction:column; gap:8px; font-size:0.8rem; color:var(--gray-600);">
+        <div style="display:flex; justify-content:space-between;"><span>Curriculum Units</span><strong>5</strong></div>
+        <div style="display:flex; justify-content:space-between;"><span>Sections</span><strong>36</strong></div>
+        <div style="display:flex; justify-content:space-between;"><span>Topics</span><strong>116</strong></div>
+        <div style="display:flex; justify-content:space-between;"><span>Definitions</span><strong>498</strong></div>
+        <div style="display:flex; justify-content:space-between;"><span>Formulas</span><strong>379</strong></div>
+        <div style="display:flex; justify-content:space-between;"><span>Misconceptions</span><strong>328</strong></div>
+        <div style="display:flex; justify-content:space-between;"><span>Questions</span><strong>347</strong></div>
+      </div>
+    </div>
+
+    <div style="background:var(--gray-50); border-radius:16px; padding:24px; border:1px solid var(--gray-200);">
+      <h4 style="font-size:0.95rem; font-weight:700; color:var(--gray-900); margin-bottom:12px;">&#x1F52E; Vector Store Collections</h4>
+      <div style="display:flex; flex-direction:column; gap:8px; font-size:0.8rem; color:var(--gray-600);">
+        <div style="display:flex; justify-content:space-between;"><span>Enriched Definitions</span><strong>877</strong></div>
+        <div style="display:flex; justify-content:space-between;"><span>Concept Explanations</span><strong>834</strong></div>
+        <div style="display:flex; justify-content:space-between;"><span>Worked Examples</span><strong>109</strong></div>
+        <div style="display:flex; justify-content:space-between; padding-top:8px; border-top:1px solid var(--gray-200); font-weight:700;"><span>Total Vectors</span><strong>1,820</strong></div>
+      </div>
+    </div>
+
+    <div style="background:var(--gray-50); border-radius:16px; padding:24px; border:1px solid var(--gray-200);">
+      <h4 style="font-size:0.95rem; font-weight:700; color:var(--gray-900); margin-bottom:12px;">&#x2699;&#xFE0F; Embedding Config</h4>
+      <div style="display:flex; flex-direction:column; gap:8px; font-size:0.8rem; color:var(--gray-600);">
+        <div style="display:flex; justify-content:space-between;"><span>Model</span><strong>qwen3-embedding:4b</strong></div>
+        <div style="display:flex; justify-content:space-between;"><span>Provider</span><strong>Ollama (local)</strong></div>
+        <div style="display:flex; justify-content:space-between;"><span>Dimensions</span><strong>2,560</strong></div>
+        <div style="display:flex; justify-content:space-between;"><span>Cached</span><strong>2,057 embeddings</strong></div>
+        <div style="display:flex; justify-content:space-between;"><span>Cache Size</span><strong>45.8 MB</strong></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<!-- SLIDE 12: KEY INNOVATIONS                          -->
+<!-- ================================================= -->
+<section id="s12" class="slide" style="background: linear-gradient(135deg, #fefce8 0%, #faf5ff 100%);">
+  <p class="section-label">What Makes It Different</p>
+  <h2>Key Design Decisions</h2>
+
+  <div class="grid-2 gap-30">
+    <div class="innovation-card">
+      <div class="card-icon-big" style="background: var(--accent-light);">&#x1F3CF;</div>
+      <h4>Interest-Based Contextual Generation</h4>
+      <p>Unlike static content platforms, GLS generates <strong>unique explanations for every student-concept pair</strong> using their interests. A cricket fan learns projectile motion through ball trajectories. A gamer through in-game physics. This is impossible to pre-author at scale &mdash; only GenAI can do it.</p>
+      <div class="innovation-mini-diagram">
+        <div class="imd-node" style="background:var(--primary-light); color:var(--primary-dark);">Student Interests</div>
+        <div class="imd-arrow">&rarr;</div>
+        <div class="imd-node" style="background:var(--accent-light); color:#92400e;">RAG + Context</div>
+        <div class="imd-arrow">&rarr;</div>
+        <div class="imd-node" style="background:var(--success-light); color:#047857;">Personalized Explanation</div>
+      </div>
+    </div>
+
+    <div class="innovation-card">
+      <div class="card-icon-big" style="background: var(--primary-light);">&#x1F3AD;</div>
+      <h4>Multi-Agent Orchestration</h4>
+      <p>Not a single chatbot. A <strong>team of specialized AI agents</strong> &mdash; teaching, testing, reviewing, and supporting &mdash; coordinated by a LangGraph orchestrator. Each agent has its own prompt strategy, tools, and behavioral rules.</p>
+      <div class="innovation-mini-diagram">
+        <div class="imd-node" style="background:var(--gray-900); color:white;">Orchestrator</div>
+        <div class="imd-arrow">&rarr;</div>
+        <div class="imd-node" style="background:var(--primary-light); color:var(--primary-dark);">Teach</div>
+        <div class="imd-arrow">|</div>
+        <div class="imd-node" style="background:var(--accent-light); color:#92400e;">Test</div>
+        <div class="imd-arrow">|</div>
+        <div class="imd-node" style="background:var(--success-light); color:#047857;">Review</div>
+        <div class="imd-arrow">|</div>
+        <div class="imd-node" style="background:var(--rose-light); color:var(--rose);">Support</div>
+      </div>
+    </div>
+
+    <div class="innovation-card">
+      <div class="card-icon-big" style="background: var(--success-light);">&#x1F9EC;</div>
+      <h4>Stealth Assessment</h4>
+      <p>Questions are woven into natural conversation using <strong>Evidence-Centered Design</strong>. Students don't feel tested &mdash; they feel like they're having a discussion. This reduces test anxiety while capturing authentic understanding signals.</p>
+    </div>
+
+    <div class="innovation-card">
+      <div class="card-icon-big" style="background: var(--purple-light);">&#x1F9E0;</div>
+      <h4>Holistic Student Modeling</h4>
+      <p>Three-dimensional profiling: <strong>Academic</strong> (knowledge gaps), <strong>Psychological</strong> (motivation, mindset), and <strong>Learning Style</strong> (VARK preferences). The AI adapts not just <em>what</em> to teach, but <em>how</em> to teach each individual.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<!-- SLIDE 13: CURRENT STATUS                           -->
+<!-- ================================================= -->
+<section id="s13" class="slide" style="background: var(--gray-50);">
+  <p class="section-label">Implementation Status</p>
+  <h2>Where We Are Today</h2>
+
+  <div class="grid-2 gap-30">
+    <div>
+      <h3 style="color: var(--success);">Built &amp; Working</h3>
+      <ul class="status-list">
+        <li class="done"><span>&#x2705;</span> Data extraction pipeline (5 physics units, 1,776 records)</li>
+        <li class="done"><span>&#x2705;</span> ChromaDB vector store (1,820 embeddings, 3 collections)</li>
+        <li class="done"><span>&#x2705;</span> FastAPI backend with 15+ API route groups</li>
+        <li class="done"><span>&#x2705;</span> JWT authentication system</li>
+        <li class="done"><span>&#x2705;</span> SQLAlchemy ORM with 20+ model groups</li>
+        <li class="done"><span>&#x2705;</span> 9 learning algorithms (BKT, IRT, KST, Elo, Bloom, SM-2, etc.)</li>
+        <li class="done"><span>&#x2705;</span> RAG search endpoint with vector retrieval</li>
+        <li class="done"><span>&#x2705;</span> Curriculum unlocking engine</li>
+        <li class="done"><span>&#x2705;</span> VARK, MSLQ, Dweck psychological frameworks seeded</li>
+        <li class="done"><span>&#x2705;</span> Multi-agent assistant (teaching, testing, review, support)</li>
+        <li class="done"><span>&#x2705;</span> Prompt template system (.poml format)</li>
+        <li class="done"><span>&#x2705;</span> Frontend scaffolding (React + TypeScript + Vite)</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 style="color: var(--accent);">In Progress &amp; Next</h3>
+      <ul class="status-list">
+        <li class="pending"><span>&#x1F51C;</span> End-to-end API testing with Postman</li>
+        <li class="pending"><span>&#x1F51C;</span> Algorithm service integration testing</li>
+        <li class="pending"><span>&#x1F51C;</span> Frontend UI implementation (auth, dashboard, chat)</li>
+        <li class="pending"><span>&#x1F51C;</span> WebSocket chat integration (frontend &harr; assistant)</li>
+        <li class="pending"><span>&#x1F51C;</span> Agent logic completion (beyond scaffolding)</li>
+        <li class="pending"><span>&#x1F51C;</span> Onboarding flow (chat + UI hybrid)</li>
+        <li class="planned"><span>&#x1F4CB;</span> Performance optimization</li>
+        <li class="planned"><span>&#x1F4CB;</span> Gamification layer (streaks, points)</li>
+        <li class="planned"><span>&#x1F4CB;</span> Teacher/parent progress view</li>
+        <li class="planned"><span>&#x1F4CB;</span> Beta testing with 5-10 students</li>
+        <li class="planned"><span>&#x1F4CB;</span> Cloud deployment (Docker Compose)</li>
+        <li class="planned"><span>&#x1F4CB;</span> Multiple subject support</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<!-- SLIDE 14: ROADMAP                                  -->
+<!-- ================================================= -->
+<section id="s14" class="slide slide-dark">
+  <p class="section-label">Looking Ahead</p>
+  <h2>Product Roadmap</h2>
+
+  <div style="display: flex; gap: 20px;">
+    <div class="roadmap-phase phase-now">
+      <div class="phase-badge">Current</div>
+      <h4>Foundation &amp; Data</h4>
+      <ul class="roadmap-list">
+        <li>Physics curriculum extraction (5 units)</li>
+        <li>Backend API &amp; algorithms (85% complete)</li>
+        <li>Vector store &amp; RAG pipeline</li>
+        <li>Multi-agent assistant scaffolding</li>
+        <li>Psychological framework seeding</li>
+        <li>Frontend project scaffolding</li>
+      </ul>
+    </div>
+    <div class="roadmap-phase phase-next">
+      <div class="phase-badge">Phase 1</div>
+      <h4>Working MVP</h4>
+      <ul class="roadmap-list">
+        <li>Frontend UI (auth, dashboard, chat)</li>
+        <li>WebSocket tutoring integration</li>
+        <li>Agent logic completion</li>
+        <li>Onboarding flow (chat + UI)</li>
+        <li>End-to-end testing</li>
+        <li>Beta with 5-10 students</li>
+      </ul>
+    </div>
+    <div class="roadmap-phase phase-later">
+      <div class="phase-badge">Phase 2</div>
+      <h4>Polish &amp; Expand</h4>
+      <ul class="roadmap-list">
+        <li>Gamification (streaks, points, levels)</li>
+        <li>Teacher/parent dashboard</li>
+        <li>More physics topics</li>
+        <li>Mathematics curriculum</li>
+        <li>Performance optimization</li>
+        <li>Cloud deployment</li>
+      </ul>
+    </div>
+    <div class="roadmap-phase phase-future">
+      <div class="phase-badge">Phase 3+</div>
+      <h4>Scale</h4>
+      <ul class="roadmap-list">
+        <li>Chemistry curriculum</li>
+        <li>Advanced affective computing</li>
+        <li>Peer tutoring features</li>
+        <li>Multi-language support</li>
+        <li>Mobile app (Capacitor)</li>
+        <li>Institutional partnerships</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<!-- SLIDE 15: CLOSING                                  -->
+<!-- ================================================= -->
+<section id="s15" class="slide slide-closing">
+  <p class="section-label" style="color: rgba(255,255,255,0.4);">The Vision</p>
+  <h2>Every Student Deserves<br>a World-Class Tutor</h2>
+
+  <div class="closing-points">
+    <div class="closing-point">
+      <div class="closing-icon">&#x1F3AF;</div>
+      <h4>Truly Personalized</h4>
+      <p>Adapts to knowledge, interests, psychology, and learning style &mdash; individually</p>
+    </div>
+    <div class="closing-point">
+      <div class="closing-icon">&#x1F9EC;</div>
+      <h4>Research-Backed</h4>
+      <p>9 learning science algorithms, not opinions. Every decision grounded in pedagogy.</p>
+    </div>
+    <div class="closing-point">
+      <div class="closing-icon">&#x1F4B0;</div>
+      <h4>Affordable at Scale</h4>
+      <p>~&#8377;50-100/month operational cost. Personalized tutoring for every family, not just the wealthy.</p>
+    </div>
+    <div class="closing-point">
+      <div class="closing-icon">&#x1F680;</div>
+      <h4>Built to Expand</h4>
+      <p>Subject-agnostic architecture. Physics today, every STEM subject tomorrow.</p>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOAD AS PDF BUTTON -->
+<button class="download-btn" onclick="downloadPDF()" title="Download as PDF">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+    <polyline points="7 10 12 15 17 10"/>
+    <line x1="12" y1="15" x2="12" y2="3"/>
+  </svg>
+  Download PDF
+</button>
+
+<script>
+function downloadPDF() {
+  window.print();
+}
+</script>
+
+</body>
+</html>

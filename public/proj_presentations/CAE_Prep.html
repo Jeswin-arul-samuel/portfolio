@@ -1,0 +1,2005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CAE C1 Advanced Prep Platform - Portfolio Presentation</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  :root {
+    --primary: #6366f1;
+    --primary-dark: #4f46e5;
+    --primary-light: #e0e7ff;
+    --accent: #f59e0b;
+    --accent-light: #fef3c7;
+    --success: #10b981;
+    --success-light: #d1fae5;
+    --danger: #ef4444;
+    --danger-light: #fee2e2;
+    --purple: #8b5cf6;
+    --purple-light: #ede9fe;
+    --teal: #14b8a6;
+    --teal-light: #ccfbf1;
+    --rose: #f43f5e;
+    --rose-light: #ffe4e6;
+    --sky: #0ea5e9;
+    --sky-light: #e0f2fe;
+    --gray-50: #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-300: #cbd5e1;
+    --gray-400: #94a3b8;
+    --gray-500: #64748b;
+    --gray-600: #475569;
+    --gray-700: #334155;
+    --gray-800: #1e293b;
+    --gray-900: #0f172a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--gray-50);
+    color: var(--gray-800);
+    line-height: 1.6;
+  }
+
+  .slide {
+    min-height: 100vh;
+    padding: 60px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .slide + .slide { border-top: 1px solid var(--gray-200); }
+
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: var(--primary);
+    margin-bottom: 12px;
+  }
+
+  .slide h2 {
+    font-size: 2.6rem;
+    font-weight: 800;
+    color: var(--gray-900);
+    margin-bottom: 36px;
+    letter-spacing: -1px;
+    line-height: 1.15;
+  }
+
+  .slide h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 16px;
+  }
+
+  /* ── NAV ── */
+  .slide-nav {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 100;
+  }
+
+  .nav-dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--gray-300);
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+  }
+  .nav-dot:hover { background: var(--primary); transform: scale(1.4); }
+
+  /* ═══════════ SLIDE 1: TITLE ═══════════ */
+  .slide-title {
+    background: linear-gradient(135deg, #0f172a 0%, #312e81 40%, #6366f1 100%);
+    color: white;
+    text-align: center;
+    align-items: center;
+  }
+  .slide-title::before {
+    content: '';
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(245,158,11,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .slide-title::after {
+    content: '';
+    position: absolute;
+    bottom: -150px; left: -150px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(99,102,241,0.2) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .logo-icon { width: 110px; height: 110px; margin-bottom: 30px; position: relative; z-index: 1; }
+
+  .slide-title h1 {
+    font-size: 4.2rem;
+    font-weight: 900;
+    letter-spacing: -2px;
+    margin-bottom: 16px;
+    position: relative; z-index: 1;
+  }
+  .slide-title .tagline {
+    font-size: 1.5rem;
+    font-weight: 300;
+    opacity: 0.9;
+    margin-bottom: 40px;
+    position: relative; z-index: 1;
+  }
+  .slide-title .subtitle {
+    font-size: 1rem;
+    opacity: 0.6;
+    position: relative; z-index: 1;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+  .slide-title .tech-badges {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 32px;
+    position: relative; z-index: 1;
+    flex-wrap: wrap;
+  }
+  .tech-badge {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.85);
+  }
+
+  /* ═══════════ COMMON COMPONENTS ═══════════ */
+  .pain-card, .feature-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 22px 24px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .pain-card { border-left: 4px solid var(--danger); }
+  .feature-card { border-left: 4px solid var(--success); }
+  .card-icon-box {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+  }
+  .pain-card h4, .feature-card h4 { font-size: 1rem; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+  .pain-card p, .feature-card p { font-size: 0.85rem; color: var(--gray-500); line-height: 1.5; }
+
+  /* Grid helpers */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 20px; }
+  .gap-20 { gap: 20px; }
+  .gap-30 { gap: 30px; }
+  .flex-col { display: flex; flex-direction: column; }
+
+  /* Stat cards */
+  .stat-card {
+    text-align: center;
+    padding: 32px 24px;
+    border-radius: 20px;
+  }
+  .stat-number {
+    font-size: 3.2rem;
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .stat-label { font-size: 0.9rem; font-weight: 400; }
+
+  /* ═══════════ SLIDE 2: MOTIVATION ═══════════ */
+  .slide-motivation { background: white; }
+
+  .motivation-scene {
+    background: var(--gray-100);
+    border-radius: 24px;
+    padding: 40px;
+    position: relative;
+  }
+
+  .exam-scene {
+    position: relative;
+    height: 260px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: linear-gradient(180deg, #e0e7ff 0%, #c7d2fe 40%, #f5f3ff 100%);
+  }
+
+  .desk-row {
+    position: absolute;
+    bottom: 10%;
+    left: 5%;
+    right: 5%;
+    display: flex;
+    justify-content: space-around;
+  }
+  .student-icon {
+    font-size: 2rem;
+    position: relative;
+  }
+  .student-thought {
+    position: absolute;
+    background: white;
+    border-radius: 10px;
+    padding: 4px 8px;
+    font-size: 0.55rem;
+    font-weight: 600;
+    color: var(--gray-700);
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    top: -32px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .student-thought::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid white;
+  }
+  .exam-paper {
+    position: absolute;
+    top: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    padding: 12px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    text-align: center;
+  }
+  .exam-paper .title { font-weight: 800; color: var(--primary-dark); font-size: 0.8rem; }
+  .exam-paper .sub { font-size: 0.6rem; color: var(--gray-500); }
+
+  .scene-caption {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 5px 14px;
+    border-radius: 16px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  /* ═══════════ DARK SLIDE ═══════════ */
+  .slide-dark { background: var(--gray-900); color: white; }
+  .slide-dark h2 { color: white; }
+  .slide-dark .section-label { color: var(--accent); }
+
+  .dark-stat .stat-number {
+    background: linear-gradient(135deg, var(--accent) 0%, #fbbf24 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .dark-stat .stat-label { color: rgba(255,255,255,0.55); }
+  .dark-stat { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); }
+
+  .dark-card {
+    padding: 24px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .dark-card h4 { font-size: 1rem; font-weight: 700; color: var(--accent); margin-bottom: 8px; }
+  .dark-card p { font-size: 0.85rem; color: rgba(255,255,255,0.5); line-height: 1.5; }
+
+  /* ═══════════ SOLUTION SLIDE ═══════════ */
+  .slide-solution { background: white; }
+
+  .module-card {
+    background: white;
+    border-radius: 20px;
+    padding: 28px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    border: 2px solid;
+    position: relative;
+    overflow: hidden;
+  }
+  .module-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+  }
+  .module-card .module-icon {
+    width: 56px; height: 56px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem;
+    margin-bottom: 16px;
+  }
+  .module-card h4 { font-size: 1.15rem; font-weight: 800; margin-bottom: 8px; }
+  .module-card p { font-size: 0.85rem; color: var(--gray-500); line-height: 1.5; margin-bottom: 14px; }
+  .module-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .module-features li {
+    font-size: 0.78rem;
+    color: var(--gray-600);
+    padding-left: 18px;
+    position: relative;
+  }
+  .module-features li::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    font-weight: 800;
+    opacity: 0.4;
+  }
+
+  /* ═══════════ FLOW ═══════════ */
+  .slide-flow { background: var(--gray-50); }
+
+  .flow-diagram {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 0;
+    flex-wrap: wrap;
+  }
+  .flow-step {
+    text-align: center;
+    width: 160px;
+  }
+  .flow-circle {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    margin: 0 auto 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    position: relative;
+  }
+  .flow-number {
+    position: absolute;
+    top: -5px; right: -5px;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--gray-900);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .flow-step h4 { font-size: 0.85rem; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+  .flow-step p { font-size: 0.7rem; color: var(--gray-500); line-height: 1.35; padding: 0 6px; }
+  .flow-arrow { display: flex; align-items: center; padding-top: 24px; color: var(--gray-300); font-size: 1.6rem; }
+
+  .data-flow-visual {
+    margin-top: 24px;
+    padding: 18px;
+    background: white;
+    border-radius: 14px;
+    text-align: center;
+    border: 1px solid var(--gray-200);
+  }
+  .data-flow-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 6px 0;
+  }
+  .df-node {
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .df-arrow { color: var(--gray-400); font-size: 1rem; }
+
+  /* ═══════════ WORKFLOW ═══════════ */
+  .slide-workflow { background: white; }
+
+  .workflow-timeline {
+    position: relative;
+    padding-left: 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .workflow-timeline::before {
+    content: '';
+    position: absolute;
+    left: 27px;
+    top: 20px;
+    bottom: 20px;
+    width: 3px;
+    background: var(--gray-200);
+    border-radius: 2px;
+  }
+  .wf-step {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    position: relative;
+    padding: 16px 0;
+  }
+  .wf-dot {
+    position: absolute;
+    left: -39px;
+    top: 20px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 3px solid var(--primary);
+    background: white;
+    z-index: 1;
+  }
+  .wf-dot.active { background: var(--primary); }
+  .wf-content {
+    flex: 1;
+    background: var(--gray-50);
+    border-radius: 14px;
+    padding: 20px 24px;
+    border: 1px solid var(--gray-200);
+  }
+  .wf-content h4 { font-size: 0.95rem; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+  .wf-content p { font-size: 0.8rem; color: var(--gray-500); line-height: 1.5; }
+  .wf-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .wf-detail {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: white;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    color: var(--gray-600);
+    border: 1px solid var(--gray-200);
+  }
+  .wf-detail code {
+    background: var(--gray-100);
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+
+  /* ═══════════ ARCHITECTURE ═══════════ */
+  .slide-arch { background: white; }
+
+  .arch-diagram {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 920px;
+    margin: 0 auto;
+  }
+  .arch-layer {
+    display: flex;
+    align-items: stretch;
+    gap: 14px;
+  }
+  .arch-label {
+    width: 110px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-radius: 12px;
+    text-align: center;
+    padding: 10px 6px;
+  }
+  .arch-boxes {
+    flex: 1;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .arch-box {
+    flex: 1;
+    min-width: 120px;
+    padding: 14px 12px;
+    border-radius: 10px;
+    border: 2px solid;
+    text-align: center;
+  }
+  .arch-box h5 { font-size: 0.8rem; font-weight: 700; margin-bottom: 2px; }
+  .arch-box .tech { font-size: 0.65rem; opacity: 0.6; font-weight: 500; }
+
+  .layer-client .arch-label { background: var(--primary-light); color: var(--primary-dark); }
+  .layer-client .arch-box { border-color: var(--primary); background: rgba(99,102,241,0.03); }
+  .layer-client .arch-box h5 { color: var(--primary-dark); }
+
+  .layer-ai .arch-label { background: var(--purple-light); color: var(--purple); }
+  .layer-ai .arch-box { border-color: var(--purple); background: rgba(139,92,246,0.03); }
+  .layer-ai .arch-box h5 { color: var(--purple); }
+
+  .layer-api .arch-label { background: var(--accent-light); color: #b45309; }
+  .layer-api .arch-box { border-color: var(--accent); background: rgba(245,158,11,0.03); }
+  .layer-api .arch-box h5 { color: #b45309; }
+
+  .layer-data .arch-label { background: var(--success-light); color: #047857; }
+  .layer-data .arch-box { border-color: var(--success); background: rgba(16,185,129,0.03); }
+  .layer-data .arch-box h5 { color: #047857; }
+
+  .arch-connector {
+    display: flex;
+    justify-content: center;
+    padding: 2px 0;
+    margin-left: 124px;
+  }
+  .connector-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--gray-300);
+    font-size: 0.65rem;
+    gap: 0;
+    line-height: 1;
+  }
+  .connector-label {
+    font-size: 0.55rem;
+    color: var(--gray-400);
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* ═══════════ LOW LEVEL ═══════════ */
+  .slide-lowlevel { background: var(--gray-50); }
+
+  .ll-section {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid var(--gray-200);
+  }
+  .ll-section h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .db-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.75rem;
+  }
+  .db-table th {
+    text-align: left;
+    padding: 6px 10px;
+    background: var(--gray-50);
+    font-weight: 700;
+    color: var(--gray-600);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 2px solid var(--gray-200);
+  }
+  .db-table td {
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--gray-100);
+    color: var(--gray-600);
+  }
+  .db-table .tbl-name {
+    font-weight: 700;
+    color: var(--gray-800);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.7rem;
+  }
+
+  .lifecycle-flow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 8px 0;
+  }
+  .lf-node {
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .lf-arrow { color: var(--gray-300); font-size: 0.9rem; }
+
+  .api-endpoint {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 0;
+    font-size: 0.75rem;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .api-endpoint:last-child { border-bottom: none; }
+  .api-method {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.6rem;
+    font-weight: 800;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    min-width: 40px;
+    text-align: center;
+  }
+  .method-get { background: var(--success-light); color: #047857; }
+  .method-post { background: var(--primary-light); color: var(--primary-dark); }
+  .method-patch { background: var(--accent-light); color: #92400e; }
+  .api-path {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.7rem;
+    color: var(--gray-700);
+  }
+  .api-desc { color: var(--gray-400); font-size: 0.7rem; margin-left: auto; }
+
+  /* ═══════════ AI ENGINE ═══════════ */
+  .ai-pipeline {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .ai-step {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    background: white;
+    border-radius: 14px;
+    border: 1px solid var(--gray-200);
+  }
+  .ai-step-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+  }
+  .ai-step h4 { font-size: 0.9rem; font-weight: 700; color: var(--gray-900); margin-bottom: 2px; }
+  .ai-step p { font-size: 0.78rem; color: var(--gray-500); line-height: 1.4; }
+
+  /* ═══════════ INNOVATION ═══════════ */
+  .innovation-card {
+    background: white;
+    border-radius: 18px;
+    padding: 28px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+    border: 1px solid var(--gray-200);
+  }
+  .innovation-card .card-icon-big {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 14px;
+  }
+  .innovation-card h4 { font-size: 1.05rem; font-weight: 700; color: var(--gray-900); margin-bottom: 6px; }
+  .innovation-card p { font-size: 0.85rem; color: var(--gray-500); line-height: 1.6; }
+
+  .innovation-mini-diagram {
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: var(--gray-50);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+  }
+  .imd-node {
+    text-align: center;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .imd-arrow { color: var(--gray-300); font-size: 1rem; flex-shrink: 0; }
+
+  /* ═══════════ MOCKUP ═══════════ */
+  .app-mockup {
+    background: var(--gray-900);
+    border-radius: 16px;
+    padding: 8px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+  }
+  .app-screen {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .app-topbar {
+    padding: 10px 14px;
+    font-weight: 700;
+    font-size: 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+  }
+  .app-body { padding: 12px; }
+  .mock-card {
+    background: var(--gray-50);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    font-size: 0.65rem;
+    border: 1px solid var(--gray-200);
+  }
+  .mock-card .label { color: var(--gray-400); font-size: 0.5rem; text-transform: uppercase; letter-spacing: 1px; }
+  .mock-card .value { font-weight: 700; color: var(--gray-800); margin-top: 2px; }
+
+  .score-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 4px 0;
+  }
+  .score-bar .bar-label {
+    font-size: 0.55rem;
+    color: var(--gray-500);
+    width: 80px;
+    flex-shrink: 0;
+  }
+  .score-bar .bar-track {
+    flex: 1;
+    height: 6px;
+    background: var(--gray-200);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .score-bar .bar-fill {
+    height: 100%;
+    border-radius: 3px;
+  }
+  .score-bar .bar-value {
+    font-size: 0.55rem;
+    font-weight: 800;
+    width: 24px;
+    text-align: right;
+  }
+
+  /* ═══════════ STATUS ═══════════ */
+  .status-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .status-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+  .status-list li.done { background: var(--success-light); color: #047857; }
+  .status-list li.pending { background: var(--accent-light); color: #92400e; }
+  .status-list li.planned { background: var(--gray-100); color: var(--gray-500); }
+
+  /* ═══════════ ROADMAP ═══════════ */
+  .roadmap-phase {
+    flex: 1;
+    padding: 24px 20px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .phase-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 16px;
+    font-size: 0.6rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+  .phase-now .phase-badge { background: var(--success); color: white; }
+  .phase-next .phase-badge { background: var(--accent); color: var(--gray-900); }
+  .phase-later .phase-badge { background: var(--purple); color: white; }
+
+  .roadmap-phase h4 { font-size: 1rem; font-weight: 700; margin-bottom: 12px; color: white; }
+  .roadmap-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .roadmap-list li {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.5);
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.4;
+  }
+  .roadmap-list li::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: rgba(255,255,255,0.25);
+    font-weight: 700;
+  }
+
+  /* ═══════════ CLOSING ═══════════ */
+  .slide-closing {
+    background: linear-gradient(135deg, #0f172a 0%, #312e81 40%, #6366f1 100%);
+    color: white;
+    text-align: center;
+    align-items: center;
+  }
+  .slide-closing h2 { color: white; font-size: 2.8rem; margin-bottom: 20px; }
+  .closing-points {
+    display: flex;
+    gap: 36px;
+    justify-content: center;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  .closing-point { text-align: center; max-width: 200px; }
+  .closing-icon {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem;
+    margin: 0 auto 12px;
+  }
+  .closing-point h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; }
+  .closing-point p { font-size: 0.75rem; opacity: 0.6; line-height: 1.4; }
+
+  /* ═══════════ EVAL CRITERIA ═══════════ */
+  .criteria-card {
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    border: 1px solid var(--gray-200);
+    text-align: center;
+  }
+  .criteria-card .score-ring {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 10px;
+    font-size: 1.2rem;
+    font-weight: 900;
+    border: 4px solid;
+  }
+  .criteria-card h4 { font-size: 0.85rem; font-weight: 700; margin-bottom: 4px; }
+  .criteria-card p { font-size: 0.7rem; color: var(--gray-500); line-height: 1.4; }
+
+  /* ═══════════ DOWNLOAD BUTTON ═══════════ */
+  .download-btn {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 100;
+    background: var(--gray-900);
+    color: white;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    transition: background 0.2s, transform 0.2s;
+  }
+  .download-btn:hover { background: var(--primary); transform: translateY(-2px); }
+  .download-btn svg { width: 16px; height: 16px; }
+
+  /* ═══════════ PRINT ═══════════ */
+  @media print {
+    .slide { page-break-after: always; min-height: auto; padding: 40px 50px; }
+    .slide-nav, .download-btn { display: none; }
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+
+  /* ═══════════ RESPONSIVE ═══════════ */
+  @media (max-width: 900px) {
+    .slide { padding: 36px 24px; }
+    .slide h2 { font-size: 1.8rem; }
+    .slide-title h1 { font-size: 2.8rem; }
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .flow-diagram { flex-direction: column; align-items: center; }
+    .flow-arrow { transform: rotate(90deg); }
+    .arch-layer { flex-direction: column; }
+    .arch-label { width: 100%; }
+    .arch-connector { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV DOTS -->
+<nav class="slide-nav">
+  <button class="nav-dot" onclick="document.getElementById('s1').scrollIntoView({behavior:'smooth'})" title="Title"></button>
+  <button class="nav-dot" onclick="document.getElementById('s2').scrollIntoView({behavior:'smooth'})" title="The Problem"></button>
+  <button class="nav-dot" onclick="document.getElementById('s3').scrollIntoView({behavior:'smooth'})" title="Key Stats"></button>
+  <button class="nav-dot" onclick="document.getElementById('s4').scrollIntoView({behavior:'smooth'})" title="Solution Overview"></button>
+  <button class="nav-dot" onclick="document.getElementById('s5').scrollIntoView({behavior:'smooth'})" title="Core Modules"></button>
+  <button class="nav-dot" onclick="document.getElementById('s6').scrollIntoView({behavior:'smooth'})" title="Writing Workflow"></button>
+  <button class="nav-dot" onclick="document.getElementById('s7').scrollIntoView({behavior:'smooth'})" title="Speaking Workflow"></button>
+  <button class="nav-dot" onclick="document.getElementById('s8').scrollIntoView({behavior:'smooth'})" title="AI Engine"></button>
+  <button class="nav-dot" onclick="document.getElementById('s9').scrollIntoView({behavior:'smooth'})" title="High-Level Architecture"></button>
+  <button class="nav-dot" onclick="document.getElementById('s10').scrollIntoView({behavior:'smooth'})" title="Low-Level Architecture"></button>
+  <button class="nav-dot" onclick="document.getElementById('s11').scrollIntoView({behavior:'smooth'})" title="UI Walkthrough"></button>
+  <button class="nav-dot" onclick="document.getElementById('s12').scrollIntoView({behavior:'smooth'})" title="Key Design Decisions"></button>
+  <button class="nav-dot" onclick="document.getElementById('s13').scrollIntoView({behavior:'smooth'})" title="Status & Features"></button>
+  <button class="nav-dot" onclick="document.getElementById('s14').scrollIntoView({behavior:'smooth'})" title="Roadmap"></button>
+  <button class="nav-dot" onclick="document.getElementById('s15').scrollIntoView({behavior:'smooth'})" title="Close"></button>
+</nav>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 1: TITLE                                    -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s1" class="slide slide-title">
+  <svg class="logo-icon" viewBox="0 0 120 120" fill="none">
+    <circle cx="60" cy="60" r="54" fill="rgba(255,255,255,0.08)" stroke="white" stroke-width="3"/>
+    <text x="60" y="52" text-anchor="middle" fill="white" font-size="28" font-weight="900">CAE</text>
+    <text x="60" y="72" text-anchor="middle" fill="#f59e0b" font-size="11" font-weight="700" letter-spacing="2">C1 ADVANCED</text>
+    <path d="M25 88 Q60 78 95 88" stroke="rgba(255,255,255,0.3)" stroke-width="2" fill="none"/>
+    <circle cx="35" cy="86" r="3" fill="#f59e0b"/>
+    <circle cx="60" cy="82" r="3" fill="#a78bfa"/>
+    <circle cx="85" cy="86" r="3" fill="#34d399"/>
+  </svg>
+  <h1>CAE Prep Platform</h1>
+  <p class="tagline">AI-Powered Cambridge C1 Advanced Exam Preparation</p>
+  <p class="subtitle">Full-Stack Application &mdash; Portfolio Project</p>
+  <div class="tech-badges">
+    <span class="tech-badge">React 18</span>
+    <span class="tech-badge">FastAPI</span>
+    <span class="tech-badge">OpenAI GPT-4o-mini</span>
+    <span class="tech-badge">Whisper API</span>
+    <span class="tech-badge">SQLAlchemy</span>
+    <span class="tech-badge">Vite</span>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 2: THE PROBLEM                              -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s2" class="slide slide-motivation">
+  <p class="section-label">The Problem</p>
+  <h2>Preparing for CAE is Hard.<br>Feedback is Expensive.</h2>
+
+  <div class="grid-2">
+    <!-- Visual Scene -->
+    <div class="motivation-scene">
+      <div class="exam-scene">
+        <div class="exam-paper">
+          <div class="title">Cambridge C1 Advanced</div>
+          <div class="sub">Writing &bull; Speaking &bull; Listening &bull; Reading</div>
+        </div>
+        <div class="desk-row">
+          <div class="student-icon">
+            <div class="student-thought">How do I improve?</div>
+            👩‍🎓
+          </div>
+          <div class="student-icon">
+            <div class="student-thought">No tutor feedback...</div>
+            👨‍🎓
+          </div>
+          <div class="student-icon">
+            <div class="student-thought">Is this Grade A?</div>
+            👩‍💻
+          </div>
+        </div>
+        <div class="scene-caption">Students preparing without structured AI feedback</div>
+      </div>
+    </div>
+
+    <!-- Pain Points -->
+    <div class="flex-col gap-20">
+      <div class="pain-card">
+        <div class="card-icon-box" style="background: #fee2e2;">💸</div>
+        <div>
+          <h4>Professional Feedback is Expensive</h4>
+          <p>A single session with a CAE tutor costs $40-80. Most students can't afford regular feedback on their writing and speaking practice.</p>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="card-icon-box" style="background: #fef3c7;">🎯</div>
+        <div>
+          <h4>No Structured Scoring</h4>
+          <p>Students practice blindly without understanding how Cambridge examiners evaluate. They can't map their weaknesses to the 4 official scoring criteria.</p>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="card-icon-box" style="background: #ede9fe;">🗣️</div>
+        <div>
+          <h4>Speaking Practice is Lonely</h4>
+          <p>No way to practice the 4-part speaking exam format with realistic prompts, timed conditions, and pronunciation feedback.</p>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="card-icon-box" style="background: #e0e7ff;">📊</div>
+        <div>
+          <h4>No Progress Tracking</h4>
+          <p>Without analytics, students can't see improvement patterns, identify recurring mistakes, or understand which areas need targeted practice.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 3: KEY STATS                                -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s3" class="slide slide-dark">
+  <p class="section-label">Why This Matters</p>
+  <h2>The CAE Exam at a Glance</h2>
+
+  <div class="grid-4 gap-30" style="margin-bottom: 40px;">
+    <div class="stat-card dark-stat">
+      <div class="stat-number">250K+</div>
+      <div class="stat-label">Candidates take the CAE<br>exam globally each year</div>
+    </div>
+    <div class="stat-card dark-stat">
+      <div class="stat-number">4</div>
+      <div class="stat-label">Papers: Reading, Writing,<br>Listening, Speaking</div>
+    </div>
+    <div class="stat-card dark-stat">
+      <div class="stat-number">$40+</div>
+      <div class="stat-label">Cost per tutoring session<br>for exam feedback</div>
+    </div>
+    <div class="stat-card dark-stat">
+      <div class="stat-number">&lt;$1</div>
+      <div class="stat-label">Cost per AI evaluation<br>with this platform</div>
+    </div>
+  </div>
+
+  <div class="grid-2 gap-30">
+    <div class="dark-card">
+      <h4>AI as an Affordable Tutor</h4>
+      <p>By leveraging GPT-4o-mini and Whisper, this platform provides instant, structured feedback on writing and speaking at a fraction of the cost of human tutors &mdash; making quality exam prep accessible to everyone.</p>
+    </div>
+    <div class="dark-card">
+      <h4>Aligned with Cambridge Standards</h4>
+      <p>Every evaluation follows the official Cambridge Assessment scoring criteria. Writing is scored on Content, Communicative Achievement, Organisation, and Language &mdash; exactly as the real exam.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 4: SOLUTION OVERVIEW                        -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s4" class="slide slide-solution">
+  <p class="section-label">The Solution</p>
+  <h2>An AI-Powered Exam Prep Platform</h2>
+
+  <div class="grid-2" style="align-items: center;">
+    <!-- App Mockups -->
+    <div style="display: flex; gap: 20px; justify-content: center;">
+      <!-- Writing Mockup -->
+      <div class="app-mockup" style="width: 200px;">
+        <div class="app-screen">
+          <div class="app-topbar" style="background: var(--primary);">
+            <span>Writing Module</span>
+            <span style="font-size:0.55rem; opacity:0.7;">PRACTICE</span>
+          </div>
+          <div class="app-body">
+            <div class="mock-card">
+              <div class="label">Task Type</div>
+              <div class="value">Essay &mdash; C1 Advanced</div>
+            </div>
+            <div class="mock-card" style="background:var(--primary-light); border-color:var(--primary);">
+              <div style="font-size:0.55rem; color:var(--primary-dark); font-weight:600;">AI Prompt</div>
+              <div style="font-size:0.55rem; color:var(--gray-700); margin-top:2px;">"Discuss the role of technology in modern education..."</div>
+            </div>
+            <div style="font-size:0.5rem; color:var(--gray-400); text-align:center; margin: 6px 0;">Word Count: 245 / 260</div>
+            <div class="mock-card">
+              <div class="label">AI Evaluation</div>
+              <div style="margin-top:4px;">
+                <div class="score-bar">
+                  <span class="bar-label">Content</span>
+                  <div class="bar-track"><div class="bar-fill" style="width:85%; background:var(--success);"></div></div>
+                  <span class="bar-value" style="color:var(--success);">4.2</span>
+                </div>
+                <div class="score-bar">
+                  <span class="bar-label">Organisation</span>
+                  <div class="bar-track"><div class="bar-fill" style="width:78%; background:var(--primary);"></div></div>
+                  <span class="bar-value" style="color:var(--primary);">3.9</span>
+                </div>
+                <div class="score-bar">
+                  <span class="bar-label">Language</span>
+                  <div class="bar-track"><div class="bar-fill" style="width:72%; background:var(--accent);"></div></div>
+                  <span class="bar-value" style="color:var(--accent);">3.6</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Speaking Mockup -->
+      <div class="app-mockup" style="width: 200px;">
+        <div class="app-screen">
+          <div class="app-topbar" style="background: var(--rose);">
+            <span>Speaking Module</span>
+            <span style="font-size:0.55rem; opacity:0.7;">PART 2</span>
+          </div>
+          <div class="app-body">
+            <div class="mock-card">
+              <div class="label">Task</div>
+              <div class="value">Compare two photos</div>
+            </div>
+            <div style="display:flex; gap:4px; margin-bottom:8px;">
+              <div style="flex:1; height:50px; background:var(--gray-200); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:1.2rem;">🖼️</div>
+              <div style="flex:1; height:50px; background:var(--gray-200); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:1.2rem;">🖼️</div>
+            </div>
+            <div style="text-align:center; margin:8px 0;">
+              <div style="width:48px; height:48px; border-radius:50%; background:var(--danger-light); border:3px solid var(--danger); margin:0 auto; display:flex; align-items:center; justify-content:center; font-size:1.2rem;">🎙️</div>
+              <div style="font-size:0.5rem; color:var(--danger); font-weight:700; margin-top:4px;">Recording... 1:32</div>
+            </div>
+            <div class="mock-card">
+              <div class="label">Prep Time</div>
+              <div class="value" style="color:var(--accent);">60 seconds countdown</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key Value Props -->
+    <div class="flex-col" style="gap: 18px;">
+      <div style="display:flex; gap:16px; align-items:flex-start;">
+        <div style="width:46px; height:46px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0; background:var(--primary-light);">✍️</div>
+        <div>
+          <h4 style="font-size:1rem; font-weight:700; margin-bottom:3px;">AI Writing Evaluation</h4>
+          <p style="font-size:0.85rem; color:var(--gray-500);">Submit essays, letters, reports, and reviews. Get instant scores on all 4 Cambridge criteria with detailed, actionable feedback.</p>
+        </div>
+      </div>
+      <div style="display:flex; gap:16px; align-items:flex-start;">
+        <div style="width:46px; height:46px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0; background:var(--rose-light);">🎙️</div>
+        <div>
+          <h4 style="font-size:1rem; font-weight:700; margin-bottom:3px;">Speaking with Whisper Transcription</h4>
+          <p style="font-size:0.85rem; color:var(--gray-500);">Record audio responses. Whisper transcribes. GPT evaluates grammar, discourse management, pronunciation, and interactive communication.</p>
+        </div>
+      </div>
+      <div style="display:flex; gap:16px; align-items:flex-start;">
+        <div style="width:46px; height:46px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0; background:var(--success-light);">📊</div>
+        <div>
+          <h4 style="font-size:1rem; font-weight:700; margin-bottom:3px;">Analytics Dashboard</h4>
+          <p style="font-size:0.85rem; color:var(--gray-500);">Track score trends, visualize skill breakdowns with radar charts, and identify weak areas with the intelligent mistake tracker.</p>
+        </div>
+      </div>
+      <div style="display:flex; gap:16px; align-items:flex-start;">
+        <div style="width:46px; height:46px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0; background:var(--accent-light);">🎯</div>
+        <div>
+          <h4 style="font-size:1rem; font-weight:700; margin-bottom:3px;">Targeted Practice</h4>
+          <p style="font-size:0.85rem; color:var(--gray-500);">The system identifies your weak areas and generates tasks focused specifically on improving those skills. Practice smarter, not harder.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 5: CORE MODULES DEEP DIVE                   -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s5" class="slide" style="background: var(--gray-50);">
+  <p class="section-label">Platform Modules</p>
+  <h2>Three Modules. Complete Exam Coverage.</h2>
+
+  <div class="grid-3 gap-30">
+    <!-- Writing Module -->
+    <div class="module-card" style="border-color: var(--primary);">
+      <div style="position:absolute; top:0; left:0; right:0; height:4px; background:var(--primary);"></div>
+      <div class="module-icon" style="background: var(--primary-light);">✍️</div>
+      <h4 style="color: var(--primary-dark);">Writing Module</h4>
+      <p>Practice all 4 CAE writing task types with AI-generated prompts and instant evaluation against Cambridge scoring criteria.</p>
+      <ul class="module-features">
+        <li>Essay, Letter, Report, Review task types</li>
+        <li>Practice mode (AI tasks) + Validate mode (own text)</li>
+        <li>Auto-save drafts every 3 seconds</li>
+        <li>Word count targeting (220-260 words)</li>
+        <li>CAE phrase bank with exam expressions</li>
+        <li>Grade A rewrite generation</li>
+        <li>Side-by-side comparison view</li>
+        <li>Keyboard shortcuts (Ctrl+Enter, Ctrl+S)</li>
+      </ul>
+    </div>
+
+    <!-- Speaking Module -->
+    <div class="module-card" style="border-color: var(--rose);">
+      <div style="position:absolute; top:0; left:0; right:0; height:4px; background:var(--rose);"></div>
+      <div class="module-icon" style="background: var(--rose-light);">🎙️</div>
+      <h4 style="color: var(--rose);">Speaking Module</h4>
+      <p>All 4 parts of the CAE speaking exam with real exam images, timed recording, and AI evaluation of your spoken response.</p>
+      <ul class="module-features">
+        <li>Part 1: Personal interview (2 min)</li>
+        <li>Part 2: Photo comparison with real images (2 min)</li>
+        <li>Part 3: Collaborative task with diagrams (3 min)</li>
+        <li>Part 4: Discussion follow-up (4 min)</li>
+        <li>Prep time countdown (60s for Parts 2 & 3)</li>
+        <li>Browser audio recording (WebM)</li>
+        <li>Whisper API transcription</li>
+        <li>Auto-stop at time limit</li>
+      </ul>
+    </div>
+
+    <!-- Dashboard & Analytics -->
+    <div class="module-card" style="border-color: var(--success);">
+      <div style="position:absolute; top:0; left:0; right:0; height:4px; background:var(--success);"></div>
+      <div class="module-icon" style="background: var(--success-light);">📊</div>
+      <h4 style="color: #047857;">Analytics & Tools</h4>
+      <p>Comprehensive progress tracking, mistake analysis, practice history, and examples library to accelerate learning.</p>
+      <ul class="module-features">
+        <li>Dashboard with line, bar, & radar charts</li>
+        <li>Score trends over time (writing vs speaking)</li>
+        <li>Skill breakdown visualization</li>
+        <li>Mistake pattern analysis</li>
+        <li>Targeted practice generation</li>
+        <li>Filterable practice history</li>
+        <li>Grade A examples library</li>
+        <li>Comparison view for improvement</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 6: WRITING WORKFLOW                         -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s6" class="slide slide-workflow">
+  <p class="section-label">Workflow Detail</p>
+  <h2>Writing Module &mdash; Step by Step</h2>
+
+  <div class="grid-2" style="align-items: start;">
+    <div class="workflow-timeline">
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--primary-light); color:var(--primary-dark);">Choose Mode</div>
+          <h4>User selects Practice or Validate</h4>
+          <p><strong>Practice:</strong> AI generates a CAE-style prompt for essays, letters, reports, or reviews. <strong>Validate:</strong> User pastes their own writing to get scored.</p>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--accent-light); color:#92400e;">Generate Task</div>
+          <h4>AI creates an exam-style prompt</h4>
+          <p>GPT-4o-mini generates a realistic CAE prompt with context, instructions, and target word count. User sees it exactly as they would in the real exam.</p>
+          <div class="wf-detail">
+            <strong>API:</strong> <code>POST /api/writing/generate-task</code> &mdash; temperature 0.8 for creative variety
+          </div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--success-light); color:#047857;">Write & Auto-Save</div>
+          <h4>User writes with real-time assistance</h4>
+          <p>Drafts auto-save to <strong>localStorage</strong> every 3 seconds. Word count indicator shows progress toward 220-260 target. Phrase bank provides CAE-level expressions.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="workflow-timeline">
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--purple-light); color:var(--purple);">AI Evaluation</div>
+          <h4>GPT-4o-mini scores on 4 Cambridge criteria</h4>
+          <p>The AI evaluates using official criteria: <strong>Content</strong> (task fulfillment), <strong>Communicative Achievement</strong> (register & tone), <strong>Organisation</strong> (coherence & cohesion), and <strong>Language</strong> (grammar & vocabulary).</p>
+          <div class="wf-detail">
+            <strong>Model:</strong> <code>gpt-4o-mini</code> at temperature <code>0.3</code> for consistent, deterministic evaluation
+          </div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--teal-light); color:var(--teal);">Grade A Rewrite</div>
+          <h4>Optional: Generate an improved version</h4>
+          <p>AI produces a Grade A version of the user's text, preserving their ideas but elevating language. Shown side-by-side in the <strong>ComparisonView</strong> component for learning.</p>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--danger-light); color:var(--danger);">Track & Improve</div>
+          <h4>Results saved to database</h4>
+          <p>Score, evaluation, and full text saved. Updates the user's progress tracking, feeds into mistake analysis, and adjusts difficulty level for future tasks.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 7: SPEAKING WORKFLOW                        -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s7" class="slide slide-workflow" style="background: var(--gray-50);">
+  <p class="section-label">Workflow Detail</p>
+  <h2>Speaking Module &mdash; Step by Step</h2>
+
+  <div class="grid-2" style="align-items: start;">
+    <div class="workflow-timeline">
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--rose-light); color:var(--rose);">Select Part</div>
+          <h4>User chooses Speaking Part 1-4</h4>
+          <p>Each part mirrors the real CAE exam structure with appropriate time limits: Part 1 (2 min), Part 2 (2 min), Part 3 (3 min), Part 4 (4 min).</p>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--primary-light); color:var(--primary-dark);">Generate Task + Images</div>
+          <h4>AI generates prompt, backend serves exam images</h4>
+          <p>GPT-4o-mini creates the speaking task. For Part 2, <strong>image_service.py</strong> serves 3 real CAE exam images (user compares 2). Part 3 includes discussion diagrams.</p>
+          <div class="wf-detail">
+            <strong>Image Source:</strong> 4 sets of 3 images each for Part 2; 8 diagrams for Part 3 &mdash; curated from real CAE materials
+          </div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--accent-light); color:#92400e;">Prep Time</div>
+          <h4>60-second countdown for Parts 2 & 3</h4>
+          <p>Visual timer counts down. User reviews images/diagrams and prepares response. Timer automatically transitions to recording phase when complete.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="workflow-timeline">
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--danger-light); color:var(--danger);">Record Audio</div>
+          <h4>Browser records audio using MediaRecorder API</h4>
+          <p>Native browser recording captures audio in <strong>WebM</strong> format. Live timer shows elapsed time. Auto-stops at the part's time limit.</p>
+          <div class="wf-detail">
+            <strong>Tech:</strong> <code>navigator.mediaDevices.getUserMedia()</code> &rarr; <code>MediaRecorder</code> &rarr; Blob upload
+          </div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--purple-light); color:var(--purple);">Whisper Transcription</div>
+          <h4>Audio uploaded, Whisper converts to text</h4>
+          <p>Audio file uploaded to backend. OpenAI Whisper API transcribes the recording. The transcription becomes the input for AI evaluation.</p>
+          <div class="wf-detail">
+            <strong>Pipeline:</strong> WebM audio &rarr; <code>/api/speaking/submit</code> &rarr; Whisper API &rarr; Transcription &rarr; GPT Evaluation
+          </div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--success-light); color:#047857;">AI Evaluation</div>
+          <h4>Scored on speaking criteria with detailed feedback</h4>
+          <p>Evaluated on <strong>Grammar & Vocabulary</strong>, <strong>Discourse Management</strong>, <strong>Pronunciation</strong>, and <strong>Interactive Communication</strong>. Provides specific improvement suggestions.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 8: AI ENGINE DEEP DIVE                      -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s8" class="slide" style="background: linear-gradient(135deg, #faf5ff 0%, #f0e7ff 50%, #ede9fe 100%);">
+  <p class="section-label">AI Engine</p>
+  <h2>How the AI Powers Everything</h2>
+
+  <div class="grid-2 gap-30">
+    <!-- Left: AI Pipeline -->
+    <div>
+      <h3 style="margin-bottom:20px;">OpenAI Integration Pipeline</h3>
+      <div class="ai-pipeline">
+        <div class="ai-step">
+          <div class="ai-step-icon" style="background: var(--primary-light);">📝</div>
+          <div>
+            <h4>Task Generation</h4>
+            <p><strong>GPT-4o-mini</strong> at temperature <strong>0.8</strong> generates diverse, creative CAE-style prompts for writing and speaking tasks.</p>
+          </div>
+        </div>
+        <div class="ai-step">
+          <div class="ai-step-icon" style="background: var(--accent-light);">🔍</div>
+          <div>
+            <h4>Writing Evaluation</h4>
+            <p><strong>GPT-4o-mini</strong> at temperature <strong>0.3</strong> scores writing on 4 criteria with structured JSON output. Deterministic for consistent grading.</p>
+          </div>
+        </div>
+        <div class="ai-step">
+          <div class="ai-step-icon" style="background: var(--rose-light);">🎙️</div>
+          <div>
+            <h4>Audio Transcription</h4>
+            <p><strong>Whisper-1</strong> converts speech to text. Handles accents, hesitations, and natural speech patterns. The transcript feeds into evaluation.</p>
+          </div>
+        </div>
+        <div class="ai-step">
+          <div class="ai-step-icon" style="background: var(--success-light);">🗣️</div>
+          <div>
+            <h4>Speaking Evaluation</h4>
+            <p><strong>GPT-4o-mini</strong> analyzes the transcript for grammar, vocabulary range, discourse management, and pronunciation indicators.</p>
+          </div>
+        </div>
+        <div class="ai-step">
+          <div class="ai-step-icon" style="background: var(--purple-light);">✨</div>
+          <div>
+            <h4>Rewrite & Pattern Analysis</h4>
+            <p>Generates Grade A improved versions and analyzes mistake patterns across multiple submissions to identify recurring weaknesses.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Evaluation Criteria -->
+    <div>
+      <h3 style="margin-bottom:20px;">Cambridge C1 Scoring Criteria</h3>
+
+      <div style="margin-bottom:24px;">
+        <div style="font-size:0.75rem; font-weight:700; color:var(--primary-dark); text-transform:uppercase; letter-spacing:2px; margin-bottom:12px;">Writing Evaluation (Scale 0-5)</div>
+        <div class="grid-2 gap-20">
+          <div class="criteria-card">
+            <div class="score-ring" style="border-color: var(--primary); color: var(--primary);">C</div>
+            <h4>Content</h4>
+            <p>Does the response address all parts of the task? Is the target reader fully informed?</p>
+          </div>
+          <div class="criteria-card">
+            <div class="score-ring" style="border-color: var(--accent); color: var(--accent);">CA</div>
+            <h4>Communicative Achievement</h4>
+            <p>Is the register and tone appropriate? Does it hold the reader's attention?</p>
+          </div>
+          <div class="criteria-card">
+            <div class="score-ring" style="border-color: var(--success); color: var(--success);">O</div>
+            <h4>Organisation</h4>
+            <p>Is the text well-organized with clear paragraphing and cohesive devices?</p>
+          </div>
+          <div class="criteria-card">
+            <div class="score-ring" style="border-color: var(--purple); color: var(--purple);">L</div>
+            <h4>Language</h4>
+            <p>Range and accuracy of vocabulary and grammar. Use of C1-level structures.</p>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-size:0.75rem; font-weight:700; color:var(--rose); text-transform:uppercase; letter-spacing:2px; margin-bottom:12px;">Speaking Evaluation</div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <div style="flex:1; min-width:100px; padding:12px; background:white; border-radius:10px; border:1px solid var(--gray-200); text-align:center;">
+            <div style="font-size:1rem; margin-bottom:4px;">📖</div>
+            <div style="font-size:0.7rem; font-weight:700; color:var(--gray-800);">Grammar & Vocabulary</div>
+          </div>
+          <div style="flex:1; min-width:100px; padding:12px; background:white; border-radius:10px; border:1px solid var(--gray-200); text-align:center;">
+            <div style="font-size:1rem; margin-bottom:4px;">🔗</div>
+            <div style="font-size:0.7rem; font-weight:700; color:var(--gray-800);">Discourse Management</div>
+          </div>
+          <div style="flex:1; min-width:100px; padding:12px; background:white; border-radius:10px; border:1px solid var(--gray-200); text-align:center;">
+            <div style="font-size:1rem; margin-bottom:4px;">🗣️</div>
+            <div style="font-size:0.7rem; font-weight:700; color:var(--gray-800);">Pronunciation</div>
+          </div>
+          <div style="flex:1; min-width:100px; padding:12px; background:white; border-radius:10px; border:1px solid var(--gray-200); text-align:center;">
+            <div style="font-size:1rem; margin-bottom:4px;">💬</div>
+            <div style="font-size:0.7rem; font-weight:700; color:var(--gray-800);">Interactive Communication</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 9: HIGH-LEVEL ARCHITECTURE                  -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s9" class="slide slide-arch">
+  <p class="section-label">System Architecture</p>
+  <h2>Full-Stack Architecture Overview</h2>
+
+  <div class="arch-diagram">
+    <div class="arch-layer layer-client">
+      <div class="arch-label">FRONTEND</div>
+      <div class="arch-boxes">
+        <div class="arch-box">
+          <h5>React 18 SPA</h5>
+          <div class="tech">Vite + React Router DOM</div>
+        </div>
+        <div class="arch-box">
+          <h5>8 Components</h5>
+          <div class="tech">Writing, Speaking, Dashboard, History...</div>
+        </div>
+        <div class="arch-box">
+          <h5>Recharts</h5>
+          <div class="tech">Line, Bar, Radar charts</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arch-connector">
+      <div class="connector-arrow"><span>&darr;&uarr;</span><span class="connector-label">Axios HTTP &bull; REST API</span></div>
+    </div>
+
+    <div class="arch-layer layer-api">
+      <div class="arch-label">BACKEND<br>API</div>
+      <div class="arch-boxes">
+        <div class="arch-box"><h5>FastAPI</h5><div class="tech">Python async framework</div></div>
+        <div class="arch-box"><h5>Uvicorn</h5><div class="tech">ASGI server</div></div>
+        <div class="arch-box"><h5>Pydantic</h5><div class="tech">Data validation</div></div>
+        <div class="arch-box"><h5>CORS</h5><div class="tech">Cross-origin handling</div></div>
+      </div>
+    </div>
+
+    <div class="arch-connector">
+      <div class="connector-arrow"><span>&darr;&uarr;</span><span class="connector-label">OpenAI SDK &bull; HTTP Requests</span></div>
+    </div>
+
+    <div class="arch-layer layer-ai">
+      <div class="arch-label">AI<br>LAYER</div>
+      <div class="arch-boxes">
+        <div class="arch-box"><h5>GPT-4o-mini</h5><div class="tech">Task gen, evaluation, rewrite</div></div>
+        <div class="arch-box"><h5>Whisper-1</h5><div class="tech">Speech-to-text transcription</div></div>
+        <div class="arch-box"><h5>Image Service</h5><div class="tech">Real CAE exam images</div></div>
+      </div>
+    </div>
+
+    <div class="arch-connector">
+      <div class="connector-arrow"><span>&darr;&uarr;</span><span class="connector-label">SQLAlchemy ORM</span></div>
+    </div>
+
+    <div class="arch-layer layer-data">
+      <div class="arch-label">DATA<br>LAYER</div>
+      <div class="arch-boxes">
+        <div class="arch-box"><h5>SQLite</h5><div class="tech">Relational database</div></div>
+        <div class="arch-box"><h5>File Storage</h5><div class="tech">Audio uploads (WebM)</div></div>
+        <div class="arch-box"><h5>localStorage</h5><div class="tech">Draft auto-save (client)</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data flow -->
+  <div class="data-flow-visual" style="margin-top:30px;">
+    <div style="font-size:0.65rem; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:2px; margin-bottom:10px;">Request Flow: Writing Evaluation</div>
+    <div class="data-flow-row">
+      <div class="df-node" style="background:var(--primary-light); color:var(--primary-dark);">React Frontend<br><span style="font-size:0.55rem; opacity:0.7;">User submits text</span></div>
+      <div class="df-arrow">&rarr;</div>
+      <div class="df-node" style="background:var(--accent-light); color:#92400e;">FastAPI Router<br><span style="font-size:0.55rem; opacity:0.7;">/api/writing/submit</span></div>
+      <div class="df-arrow">&rarr;</div>
+      <div class="df-node" style="background:var(--purple-light); color:var(--purple);">openai_service.py<br><span style="font-size:0.55rem; opacity:0.7;">evaluate_writing()</span></div>
+      <div class="df-arrow">&rarr;</div>
+      <div class="df-node" style="background:var(--success-light); color:#047857;">GPT-4o-mini<br><span style="font-size:0.55rem; opacity:0.7;">Structured JSON score</span></div>
+      <div class="df-arrow">&rarr;</div>
+      <div class="df-node" style="background:var(--gray-100); color:var(--gray-700);">SQLite DB<br><span style="font-size:0.55rem; opacity:0.7;">Save + return</span></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 10: LOW-LEVEL ARCHITECTURE                  -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s10" class="slide slide-lowlevel">
+  <p class="section-label">Low-Level Architecture</p>
+  <h2>Database, APIs & Evaluation Flow</h2>
+
+  <div class="grid-2 gap-30" style="align-items: start;">
+    <!-- Left: DB Schema + Evaluation -->
+    <div class="flex-col gap-20">
+      <div class="ll-section">
+        <h4>🗄️ Database Schema (5 Tables)</h4>
+        <table class="db-table">
+          <thead><tr><th>Table</th><th>Key Fields</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td class="tbl-name">users</td><td><code>id, name, email</code></td><td>User identity and auth</td></tr>
+            <tr><td class="tbl-name">writing_submissions</td><td><code>user_id, task_type, content, evaluation, score</code></td><td>Full writing history with AI scores</td></tr>
+            <tr><td class="tbl-name">speaking_submissions</td><td><code>user_id, task_type, audio_path, transcription, evaluation</code></td><td>Audio recordings + transcripts</td></tr>
+            <tr><td class="tbl-name">listening_submissions</td><td><code>user_id, answers, correct_answers, score</code></td><td>MCQ answers and scoring</td></tr>
+            <tr><td class="tbl-name">progress</td><td><code>user_id, module, difficulty_level, avg_score</code></td><td>Adaptive difficulty tracking</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="ll-section">
+        <h4>🔄 Evaluation Pipeline</h4>
+        <div class="lifecycle-flow">
+          <div class="lf-node" style="background:var(--primary-light); color:var(--primary-dark);">User Input</div>
+          <div class="lf-arrow">&rarr;</div>
+          <div class="lf-node" style="background:var(--accent-light); color:#92400e;">FastAPI Route</div>
+          <div class="lf-arrow">&rarr;</div>
+          <div class="lf-node" style="background:var(--purple-light); color:var(--purple);">OpenAI Service</div>
+          <div class="lf-arrow">&rarr;</div>
+          <div class="lf-node" style="background:var(--success-light); color:#047857;">JSON Score</div>
+        </div>
+        <div style="font-size:0.7rem; color:var(--gray-400); margin-top:8px;">
+          Writing: text &rarr; GPT eval &bull; Speaking: audio &rarr; Whisper &rarr; text &rarr; GPT eval
+        </div>
+      </div>
+
+      <div class="ll-section">
+        <h4>🎯 Adaptive Difficulty System</h4>
+        <div class="lifecycle-flow">
+          <div class="lf-node" style="background:var(--gray-100); color:var(--gray-600);">Submit</div>
+          <div class="lf-arrow">&rarr;</div>
+          <div class="lf-node" style="background:var(--accent-light); color:#92400e;">Evaluate</div>
+          <div class="lf-arrow">&rarr;</div>
+          <div class="lf-node" style="background:var(--primary-light); color:var(--primary-dark);">Update Score</div>
+          <div class="lf-arrow">&rarr;</div>
+          <div class="lf-node" style="background:var(--success-light); color:#047857;">Adjust Level</div>
+        </div>
+        <div style="font-size:0.7rem; color:var(--gray-400); margin-top:4px;">
+          Average score updates after each submission &bull; Difficulty scales with performance
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: API Endpoints -->
+    <div class="flex-col gap-20">
+      <div class="ll-section">
+        <h4>🌐 REST API Endpoints</h4>
+        <div style="display:flex; flex-direction:column; gap:2px;">
+          <div style="font-size:0.65rem; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:1px; padding:6px 0 2px;">User Management</div>
+          <div class="api-endpoint"><span class="api-method method-post">POST</span><span class="api-path">/api/users</span><span class="api-desc">Create user</span></div>
+          <div class="api-endpoint"><span class="api-method method-get">GET</span><span class="api-path">/api/users/:id</span><span class="api-desc">Get user</span></div>
+
+          <div style="font-size:0.65rem; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:1px; padding:8px 0 2px;">Writing Module</div>
+          <div class="api-endpoint"><span class="api-method method-post">POST</span><span class="api-path">/api/writing/generate-task</span><span class="api-desc">AI prompt gen</span></div>
+          <div class="api-endpoint"><span class="api-method method-post">POST</span><span class="api-path">/api/writing/submit</span><span class="api-desc">Submit + evaluate</span></div>
+          <div class="api-endpoint"><span class="api-method method-post">POST</span><span class="api-path">/api/writing/validate</span><span class="api-desc">Score own text</span></div>
+          <div class="api-endpoint"><span class="api-method method-get">GET</span><span class="api-path">/api/writing/history/:userId</span><span class="api-desc">Past submissions</span></div>
+
+          <div style="font-size:0.65rem; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:1px; padding:8px 0 2px;">Speaking Module</div>
+          <div class="api-endpoint"><span class="api-method method-post">POST</span><span class="api-path">/api/speaking/generate-task</span><span class="api-desc">Task + images</span></div>
+          <div class="api-endpoint"><span class="api-method method-post">POST</span><span class="api-path">/api/speaking/submit</span><span class="api-desc">Audio upload</span></div>
+          <div class="api-endpoint"><span class="api-method method-get">GET</span><span class="api-path">/api/speaking/history/:userId</span><span class="api-desc">Past recordings</span></div>
+
+          <div style="font-size:0.65rem; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:1px; padding:8px 0 2px;">Analytics & Learning</div>
+          <div class="api-endpoint"><span class="api-method method-get">GET</span><span class="api-path">/api/progress/:userId</span><span class="api-desc">Score history</span></div>
+          <div class="api-endpoint"><span class="api-method method-get">GET</span><span class="api-path">/api/analytics/:userId</span><span class="api-desc">Charts data</span></div>
+          <div class="api-endpoint"><span class="api-method method-get">GET</span><span class="api-path">/api/history/:userId</span><span class="api-desc">All submissions</span></div>
+          <div class="api-endpoint"><span class="api-method method-post">POST</span><span class="api-path">/api/targeted/generate</span><span class="api-desc">Weak-area task</span></div>
+          <div class="api-endpoint"><span class="api-method method-get">GET</span><span class="api-path">/api/examples/:type</span><span class="api-desc">Grade A samples</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 11: UI WALKTHROUGH                          -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s11" class="slide" style="background: white;">
+  <p class="section-label">UI Components</p>
+  <h2>Frontend Component Architecture</h2>
+
+  <div class="grid-2 gap-30" style="margin-bottom: 30px;">
+    <!-- Component Map -->
+    <div style="background:var(--gray-50); border-radius:20px; padding:28px; border:1px solid var(--gray-200);">
+      <h3 style="font-size:1rem; margin-bottom:16px; display:flex; align-items:center; gap:8px;">
+        <span style="font-size:1.2rem;">🗂️</span> React Component Tree
+      </h3>
+      <div style="font-family:'SF Mono','Fira Code',monospace; font-size:0.72rem; color:var(--gray-700); line-height:2;">
+        <div><strong style="color:var(--primary-dark);">App.jsx</strong> <span style="color:var(--gray-400);">&mdash; Router + Auth</span></div>
+        <div style="padding-left:20px;">├── <strong style="color:var(--primary);">WritingModule.jsx</strong> <span style="color:var(--gray-400);">933 lines</span></div>
+        <div style="padding-left:20px;">├── <strong style="color:var(--rose);">SpeakingModule.jsx</strong> <span style="color:var(--gray-400);">697 lines</span></div>
+        <div style="padding-left:20px;">├── <strong style="color:var(--sky);">ListeningModule.jsx</strong> <span style="color:var(--gray-400);">190 lines</span></div>
+        <div style="padding-left:20px;">├── <strong style="color:var(--success);">Dashboard.jsx</strong> <span style="color:var(--gray-400);">354 lines</span></div>
+        <div style="padding-left:20px;">├── <strong style="color:var(--accent);">MistakeTracker.jsx</strong> <span style="color:var(--gray-400);">440 lines</span></div>
+        <div style="padding-left:20px;">├── <strong style="color:var(--purple);">PracticeHistory.jsx</strong> <span style="color:var(--gray-400);">487 lines</span></div>
+        <div style="padding-left:20px;">├── <strong style="color:var(--teal);">ComparisonView.jsx</strong> <span style="color:var(--gray-400);">337 lines</span></div>
+        <div style="padding-left:20px;">└── <strong style="color:var(--gray-600);">ExamplesLibrary.jsx</strong> <span style="color:var(--gray-400);">464 lines</span></div>
+      </div>
+      <div style="margin-top:14px; padding:10px 14px; background:white; border-radius:8px; font-size:0.72rem; color:var(--gray-500); border:1px solid var(--gray-200);">
+        <strong>Total:</strong> ~3,900 lines of React code &bull; <strong>Shared:</strong> api.js (Axios client)
+      </div>
+    </div>
+
+    <!-- Key UI Features -->
+    <div class="flex-col gap-20">
+      <div style="padding:20px; background:var(--primary-light); border-radius:14px; border:1px solid rgba(99,102,241,0.2);">
+        <h4 style="font-size:0.9rem; font-weight:700; color:var(--primary-dark); margin-bottom:6px;">Dashboard Visualizations</h4>
+        <div style="display:flex; gap:12px; margin-top:10px;">
+          <div style="flex:1; background:white; border-radius:8px; padding:12px; text-align:center;">
+            <div style="font-size:1.4rem;">📈</div>
+            <div style="font-size:0.65rem; font-weight:700; color:var(--gray-700);">Line Chart</div>
+            <div style="font-size:0.55rem; color:var(--gray-400);">Score trends</div>
+          </div>
+          <div style="flex:1; background:white; border-radius:8px; padding:12px; text-align:center;">
+            <div style="font-size:1.4rem;">📊</div>
+            <div style="font-size:0.65rem; font-weight:700; color:var(--gray-700);">Bar Chart</div>
+            <div style="font-size:0.55rem; color:var(--gray-400);">By task type</div>
+          </div>
+          <div style="flex:1; background:white; border-radius:8px; padding:12px; text-align:center;">
+            <div style="font-size:1.4rem;">🕸️</div>
+            <div style="font-size:0.65rem; font-weight:700; color:var(--gray-700);">Radar Chart</div>
+            <div style="font-size:0.55rem; color:var(--gray-400);">Skills breakdown</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="padding:20px; background:var(--accent-light); border-radius:14px; border:1px solid rgba(245,158,11,0.2);">
+        <h4 style="font-size:0.9rem; font-weight:700; color:#92400e; margin-bottom:6px;">Mistake Tracker Flow</h4>
+        <p style="font-size:0.78rem; color:var(--gray-600); line-height:1.5;">Analyzes all submissions &rarr; Identifies patterns &rarr; Shows frequency of errors &rarr; "Practice This" generates targeted tasks &rarr; Links directly to Writing/Speaking modules</p>
+      </div>
+
+      <div style="padding:20px; background:var(--success-light); border-radius:14px; border:1px solid rgba(16,185,129,0.2);">
+        <h4 style="font-size:0.9rem; font-weight:700; color:#047857; margin-bottom:6px;">Smart Features</h4>
+        <div style="font-size:0.78rem; color:var(--gray-600); line-height:1.8;">
+          <div><strong>Auto-save:</strong> localStorage every 3 seconds</div>
+          <div><strong>Phrase Bank:</strong> CAE-level expressions for writing</div>
+          <div><strong>Comparison View:</strong> Side-by-side original vs Grade A</div>
+          <div><strong>Practice History:</strong> Filterable by module, type, date, score</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 12: KEY DESIGN DECISIONS                    -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s12" class="slide" style="background: linear-gradient(135deg, #fefce8 0%, #fff7ed 100%);">
+  <p class="section-label">What Makes It Different</p>
+  <h2>Key Design Decisions</h2>
+
+  <div class="grid-2 gap-30">
+    <div class="innovation-card">
+      <div class="card-icon-big" style="background: var(--primary-light);">🎛️</div>
+      <h4>Dual Temperature Strategy</h4>
+      <p>Task <strong>generation</strong> uses temperature <strong>0.8</strong> for creative diversity in prompts. Task <strong>evaluation</strong> uses temperature <strong>0.3</strong> for consistent, deterministic scoring. This separation ensures varied practice material with reliable grading.</p>
+      <div class="innovation-mini-diagram">
+        <div class="imd-node" style="background:var(--accent-light); color:#92400e;">Generate (0.8)</div>
+        <div class="imd-arrow">&rarr;</div>
+        <div class="imd-node" style="background:var(--gray-100); color:var(--gray-700);">Creative Prompts</div>
+        <div style="width:20px;"></div>
+        <div class="imd-node" style="background:var(--primary-light); color:var(--primary-dark);">Evaluate (0.3)</div>
+        <div class="imd-arrow">&rarr;</div>
+        <div class="imd-node" style="background:var(--gray-100); color:var(--gray-700);">Consistent Scores</div>
+      </div>
+    </div>
+
+    <div class="innovation-card">
+      <div class="card-icon-big" style="background: var(--rose-light);">🎙️</div>
+      <h4>Two-Stage Speaking Pipeline</h4>
+      <p>Audio isn't sent directly to a single model. Instead, <strong>Whisper</strong> first creates a faithful transcription, then <strong>GPT-4o-mini</strong> evaluates the text separately. This gives better results than end-to-end audio evaluation.</p>
+      <div class="innovation-mini-diagram">
+        <div class="imd-node" style="background:var(--rose-light); color:var(--rose);">Audio (WebM)</div>
+        <div class="imd-arrow">&rarr;</div>
+        <div class="imd-node" style="background:var(--purple-light); color:var(--purple);">Whisper</div>
+        <div class="imd-arrow">&rarr;</div>
+        <div class="imd-node" style="background:var(--accent-light); color:#92400e;">Transcript</div>
+        <div class="imd-arrow">&rarr;</div>
+        <div class="imd-node" style="background:var(--success-light); color:#047857;">GPT Eval</div>
+      </div>
+    </div>
+
+    <div class="innovation-card">
+      <div class="card-icon-big" style="background: var(--success-light);">🔄</div>
+      <h4>Feedback Loop Architecture</h4>
+      <p>Submissions feed the Mistake Tracker, which identifies patterns across all attempts. This drives the <strong>Targeted Practice</strong> system &mdash; generating tasks focused specifically on the user's weak areas. Every practice session makes the next one smarter.</p>
+    </div>
+
+    <div class="innovation-card">
+      <div class="card-icon-big" style="background: var(--accent-light);">📐</div>
+      <h4>Real Exam Simulation</h4>
+      <p>Speaking tasks use <strong>real CAE exam images</strong> from curated sources. Timing matches actual exam conditions. Part 2 shows 3 images (compare 2), Part 3 includes discussion diagrams &mdash; exactly mirroring the exam format students will face.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 13: STATUS & TECH STACK                     -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s13" class="slide" style="background: var(--gray-50);">
+  <p class="section-label">Implementation Status</p>
+  <h2>What's Built & What's Next</h2>
+
+  <div class="grid-2 gap-30">
+    <div>
+      <h3 style="color: var(--success);">Built & Working</h3>
+      <ul class="status-list">
+        <li class="done"><span>✅</span> Complete Writing Module (4 task types, AI eval, comparison)</li>
+        <li class="done"><span>✅</span> Complete Speaking Module (4 parts, images, Whisper + GPT)</li>
+        <li class="done"><span>✅</span> Dashboard with Line, Bar & Radar charts</li>
+        <li class="done"><span>✅</span> Mistake Tracker with pattern analysis</li>
+        <li class="done"><span>✅</span> Targeted Practice generation</li>
+        <li class="done"><span>✅</span> Practice History with filtering & search</li>
+        <li class="done"><span>✅</span> Grade A Comparison View</li>
+        <li class="done"><span>✅</span> Examples Library</li>
+        <li class="done"><span>✅</span> Auto-save drafts (localStorage)</li>
+        <li class="done"><span>✅</span> Adaptive difficulty system</li>
+        <li class="done"><span>✅</span> Full REST API (15+ endpoints)</li>
+        <li class="done"><span>✅</span> SQLite database with SQLAlchemy ORM</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 style="color: var(--accent);">Coming Next</h3>
+      <ul class="status-list">
+        <li class="pending"><span>🔜</span> Listening module with audio content</li>
+        <li class="pending"><span>🔜</span> CORS fix for Speaking Part 2 images</li>
+        <li class="pending"><span>🔜</span> Part 3 AI-aware diagram descriptions</li>
+        <li class="planned"><span>📋</span> User authentication with JWT</li>
+        <li class="planned"><span>📋</span> Cloud deployment</li>
+        <li class="planned"><span>📋</span> Reading module</li>
+        <li class="planned"><span>📋</span> PDF export for evaluations</li>
+        <li class="planned"><span>📋</span> Vocabulary builder from submissions</li>
+        <li class="planned"><span>📋</span> Spaced repetition for mistakes</li>
+        <li class="planned"><span>📋</span> Social features (leaderboard)</li>
+      </ul>
+
+      <div style="margin-top:24px; padding:16px 20px; background:white; border-radius:14px; border:1px solid var(--gray-200);">
+        <h4 style="font-size:0.85rem; font-weight:700; color:var(--gray-800); margin-bottom:8px;">Tech Stack Summary</h4>
+        <div style="display:flex; flex-wrap:wrap; gap:6px;">
+          <span style="padding:3px 10px; border-radius:6px; font-size:0.65rem; font-weight:600; background:var(--primary-light); color:var(--primary-dark);">React 18</span>
+          <span style="padding:3px 10px; border-radius:6px; font-size:0.65rem; font-weight:600; background:var(--accent-light); color:#92400e;">Vite</span>
+          <span style="padding:3px 10px; border-radius:6px; font-size:0.65rem; font-weight:600; background:var(--success-light); color:#047857;">FastAPI</span>
+          <span style="padding:3px 10px; border-radius:6px; font-size:0.65rem; font-weight:600; background:var(--purple-light); color:var(--purple);">SQLAlchemy</span>
+          <span style="padding:3px 10px; border-radius:6px; font-size:0.65rem; font-weight:600; background:var(--rose-light); color:var(--rose);">OpenAI API</span>
+          <span style="padding:3px 10px; border-radius:6px; font-size:0.65rem; font-weight:600; background:var(--teal-light); color:var(--teal);">Recharts</span>
+          <span style="padding:3px 10px; border-radius:6px; font-size:0.65rem; font-weight:600; background:var(--sky-light); color:var(--sky);">Axios</span>
+          <span style="padding:3px 10px; border-radius:6px; font-size:0.65rem; font-weight:600; background:var(--gray-100); color:var(--gray-600);">SQLite</span>
+          <span style="padding:3px 10px; border-radius:6px; font-size:0.65rem; font-weight:600; background:var(--gray-100); color:var(--gray-600);">Pydantic</span>
+          <span style="padding:3px 10px; border-radius:6px; font-size:0.65rem; font-weight:600; background:var(--gray-100); color:var(--gray-600);">Uvicorn</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 14: ROADMAP                                 -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s14" class="slide slide-dark">
+  <p class="section-label">Looking Ahead</p>
+  <h2>Product Roadmap</h2>
+
+  <div style="display: flex; gap: 20px;">
+    <div class="roadmap-phase phase-now">
+      <div class="phase-badge">Current</div>
+      <h4>Core MVP</h4>
+      <ul class="roadmap-list">
+        <li>Writing: 4 task types with AI evaluation</li>
+        <li>Speaking: 4 parts with Whisper transcription</li>
+        <li>Dashboard with multi-chart analytics</li>
+        <li>Mistake tracking & targeted practice</li>
+        <li>Grade A comparison & examples library</li>
+        <li>Adaptive difficulty system</li>
+      </ul>
+    </div>
+    <div class="roadmap-phase phase-next">
+      <div class="phase-badge">Phase 1</div>
+      <h4>Complete Platform</h4>
+      <ul class="roadmap-list">
+        <li>Listening module with audio content</li>
+        <li>Reading comprehension module</li>
+        <li>Image proxy for CORS resolution</li>
+        <li>JWT authentication</li>
+        <li>Cloud deployment (AWS/Render)</li>
+        <li>PDF export for evaluations</li>
+      </ul>
+    </div>
+    <div class="roadmap-phase phase-later">
+      <div class="phase-badge">Phase 2</div>
+      <h4>Advanced Learning</h4>
+      <ul class="roadmap-list">
+        <li>Vocabulary builder from submissions</li>
+        <li>Spaced repetition for mistakes</li>
+        <li>Full mock exam mode</li>
+        <li>GPT-4 Vision for image analysis</li>
+        <li>Multi-language interface</li>
+        <li>Mobile-responsive redesign</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 15: CLOSING                                 -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s15" class="slide slide-closing">
+  <p class="section-label" style="color: rgba(255,255,255,0.4);">The Vision</p>
+  <h2>Making Exam Prep<br>Intelligent & Accessible</h2>
+
+  <div class="closing-points">
+    <div class="closing-point">
+      <div class="closing-icon">🤖</div>
+      <h4>AI-First Design</h4>
+      <p>Every feature leverages AI &mdash; from task generation to evaluation to mistake analysis</p>
+    </div>
+    <div class="closing-point">
+      <div class="closing-icon">🎯</div>
+      <h4>Exam-Authentic</h4>
+      <p>Mirrors real CAE format, timing, images, and Cambridge scoring criteria</p>
+    </div>
+    <div class="closing-point">
+      <div class="closing-icon">📊</div>
+      <h4>Data-Driven Learning</h4>
+      <p>Every submission builds a profile that makes future practice smarter and targeted</p>
+    </div>
+    <div class="closing-point">
+      <div class="closing-icon">💡</div>
+      <h4>Full-Stack Engineering</h4>
+      <p>React + FastAPI + OpenAI + SQLAlchemy &mdash; production-grade architecture</p>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOAD AS PDF BUTTON -->
+<button class="download-btn" onclick="downloadPDF()" title="Download as PDF">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+    <polyline points="7 10 12 15 17 10"/>
+    <line x1="12" y1="15" x2="12" y2="3"/>
+  </svg>
+  Save as PDF
+</button>
+
+<script>
+function downloadPDF() {
+  alert('To save as PDF:\n\n1. Press Ctrl+P (or Cmd+P on Mac)\n2. Set Destination to "Save as PDF"\n3. Enable "Background graphics"\n4. Set Margins to "None"\n5. Click Save');
+}
+</script>
+
+</body>
+</html>

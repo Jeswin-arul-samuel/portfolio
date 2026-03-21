@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Attendance System - Project Presentation</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  :root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --primary-light: #dbeafe;
+    --accent: #f59e0b;
+    --accent-light: #fef3c7;
+    --success: #10b981;
+    --success-light: #d1fae5;
+    --danger: #ef4444;
+    --danger-light: #fee2e2;
+    --purple: #8b5cf6;
+    --purple-light: #ede9fe;
+    --teal: #14b8a6;
+    --teal-light: #ccfbf1;
+    --rose: #f43f5e;
+    --rose-light: #ffe4e6;
+    --gray-50: #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-300: #cbd5e1;
+    --gray-400: #94a3b8;
+    --gray-500: #64748b;
+    --gray-600: #475569;
+    --gray-700: #334155;
+    --gray-800: #1e293b;
+    --gray-900: #0f172a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--gray-50);
+    color: var(--gray-800);
+    line-height: 1.6;
+    scroll-behavior: smooth;
+  }
+
+  .slide {
+    min-height: 100vh;
+    padding: 60px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .slide + .slide { border-top: 1px solid var(--gray-200); }
+
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: var(--primary);
+    margin-bottom: 12px;
+  }
+
+  .slide h2 {
+    font-size: 2.6rem;
+    font-weight: 800;
+    color: var(--gray-900);
+    margin-bottom: 36px;
+    letter-spacing: -1px;
+    line-height: 1.15;
+  }
+
+  .slide h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 16px;
+  }
+
+  .slide-desc {
+    font-size: 1.05rem;
+    color: var(--gray-500);
+    max-width: 700px;
+    margin-bottom: 40px;
+    line-height: 1.7;
+  }
+
+  /* ── NAV ── */
+  .slide-nav {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 100;
+  }
+
+  .nav-dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--gray-300);
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+  }
+  .nav-dot:hover { background: var(--primary); transform: scale(1.4); }
+
+  /* ── SLIDE COUNTER ── */
+  .slide-counter {
+    position: absolute;
+    bottom: 24px;
+    right: 40px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--gray-400);
+    letter-spacing: 2px;
+  }
+  .slide-dark .slide-counter,
+  .slide-title .slide-counter,
+  .slide-closing .slide-counter { color: rgba(255,255,255,0.3); }
+
+  /* ═══════════ SLIDE 1: TITLE ═══════════ */
+  .slide-title {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 40%, #2563eb 100%);
+    color: white;
+    text-align: center;
+    align-items: center;
+  }
+  .slide-title::before {
+    content: '';
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(245,158,11,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .slide-title::after {
+    content: '';
+    position: absolute;
+    bottom: -150px; left: -100px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .title-icon {
+    font-size: 5rem;
+    margin-bottom: 24px;
+    position: relative; z-index: 1;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+
+  .slide-title h1 {
+    font-size: 4rem;
+    font-weight: 900;
+    letter-spacing: -2px;
+    margin-bottom: 16px;
+    position: relative; z-index: 1;
+  }
+  .slide-title .tagline {
+    font-size: 1.4rem;
+    font-weight: 300;
+    opacity: 0.9;
+    margin-bottom: 40px;
+    position: relative; z-index: 1;
+  }
+  .slide-title .subtitle {
+    font-size: 0.9rem;
+    opacity: 0.6;
+    position: relative; z-index: 1;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  .title-badges {
+    display: flex;
+    gap: 12px;
+    margin-top: 32px;
+    position: relative; z-index: 1;
+  }
+  .title-badge {
+    padding: 8px 20px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 100px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    backdrop-filter: blur(10px);
+  }
+
+  /* ═══════════ COMMON ═══════════ */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 20px; }
+
+  .card {
+    padding: 28px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+  }
+
+  .card-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 16px;
+  }
+
+  .card h4 { font-size: 1.05rem; font-weight: 700; color: var(--gray-900); margin-bottom: 8px; }
+  .card p { font-size: 0.88rem; color: var(--gray-500); line-height: 1.6; }
+
+  .pain-card { border-left: 4px solid var(--danger); }
+  .solution-card { border-left: 4px solid var(--success); }
+
+  /* Stat cards */
+  .stat-card {
+    text-align: center;
+    padding: 32px 24px;
+    border-radius: 20px;
+    transition: transform 0.2s;
+  }
+  .stat-card:hover { transform: scale(1.05); }
+  .stat-number {
+    font-size: 2.8rem;
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .stat-label { font-size: 0.88rem; font-weight: 400; }
+  .stat-sub { font-size: 0.72rem; color: var(--gray-400); margin-top: 6px; }
+
+  /* ═══════════ SLIDE: DARK ═══════════ */
+  .slide-dark { background: var(--gray-900); color: white; }
+  .slide-dark h2 { color: white; }
+  .slide-dark .section-label { color: var(--accent); }
+  .slide-dark .slide-desc { color: rgba(255,255,255,0.5); }
+
+  .dark-stat .stat-number {
+    background: linear-gradient(135deg, var(--accent) 0%, #fbbf24 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .dark-stat .stat-label { color: rgba(255,255,255,0.55); }
+  .dark-stat { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); }
+
+  .dark-card {
+    padding: 24px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: background 0.2s;
+  }
+  .dark-card:hover { background: rgba(255,255,255,0.08); }
+  .dark-card h4 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+  .dark-card p { font-size: 0.85rem; color: rgba(255,255,255,0.5); line-height: 1.5; }
+
+  /* ═══════════ FLOW ═══════════ */
+  .flow-diagram {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 0;
+  }
+  .flow-step {
+    text-align: center;
+    width: 200px;
+  }
+  .flow-circle {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    margin: 0 auto 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    position: relative;
+    transition: transform 0.2s;
+  }
+  .flow-circle:hover { transform: scale(1.1); }
+  .flow-number {
+    position: absolute;
+    top: -5px; right: -5px;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--gray-900);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .flow-step h4 { font-size: 0.95rem; font-weight: 700; color: var(--gray-900); margin-bottom: 6px; }
+  .flow-step p { font-size: 0.78rem; color: var(--gray-500); line-height: 1.4; padding: 0 8px; }
+  .flow-arrow { display: flex; align-items: center; padding-top: 28px; color: var(--gray-300); font-size: 1.8rem; }
+
+  /* ═══════════ TECH STACK ═══════════ */
+  .tech-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--gray-700);
+    transition: transform 0.15s;
+  }
+  .tech-badge:hover { transform: scale(1.06); }
+  .tech-badge .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .tech-group { margin-bottom: 28px; }
+  .tech-group-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--gray-400);
+    margin-bottom: 12px;
+  }
+  .tech-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  /* ═══════════ COMPARISON TABLE ═══════════ */
+  .compare-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .compare-table th {
+    padding: 16px 24px;
+    text-align: left;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    background: var(--gray-100);
+    color: var(--gray-500);
+  }
+  .compare-table th:last-child { color: var(--primary); }
+  .compare-table td {
+    padding: 16px 24px;
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--gray-100);
+    background: white;
+  }
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table .tag-old {
+    display: inline-block;
+    padding: 3px 10px;
+    background: var(--danger-light);
+    color: var(--danger);
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  .compare-table .tag-new {
+    display: inline-block;
+    padding: 3px 10px;
+    background: var(--success-light);
+    color: var(--success);
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  /* ═══════════ USE CASE CARDS ═══════════ */
+  .usecase-card {
+    padding: 32px;
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s;
+  }
+  .usecase-card:hover { transform: translateY(-4px); }
+  .usecase-icon {
+    font-size: 2.4rem;
+    margin-bottom: 16px;
+  }
+  .usecase-card h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .usecase-card p {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    opacity: 0.7;
+  }
+  .usecase-card .usecase-tag {
+    display: inline-block;
+    margin-top: 14px;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* ═══════════ WORKFLOW DETAIL ═══════════ */
+  .workflow-step {
+    display: flex;
+    gap: 28px;
+    align-items: flex-start;
+    padding: 24px 0;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .workflow-step:last-child { border-bottom: none; }
+  .workflow-num {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    font-weight: 800;
+    flex-shrink: 0;
+    color: white;
+  }
+  .workflow-content h4 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 6px;
+  }
+  .workflow-content p {
+    font-size: 0.88rem;
+    color: var(--gray-500);
+    line-height: 1.6;
+  }
+  .workflow-content .detail-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .detail-badge {
+    padding: 4px 12px;
+    background: var(--gray-100);
+    border-radius: 6px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--gray-600);
+  }
+
+  /* ═══════════ DB SCHEMA VISUAL ═══════════ */
+  .schema-box {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border: 1px solid var(--gray-200);
+  }
+  .schema-header {
+    padding: 14px 20px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .schema-row {
+    padding: 10px 20px;
+    font-size: 0.82rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--gray-100);
+    font-family: 'Inter', monospace;
+  }
+  .schema-row .col-name { font-weight: 600; color: var(--gray-800); }
+  .schema-row .col-type { color: var(--gray-400); font-size: 0.75rem; }
+  .schema-badge {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* ═══════════ TIMELINE ═══════════ */
+  .timeline {
+    position: relative;
+    padding-left: 40px;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, var(--primary), var(--purple), var(--accent));
+    border-radius: 2px;
+  }
+  .timeline-item {
+    position: relative;
+    padding: 20px 0;
+  }
+  .timeline-dot {
+    position: absolute;
+    left: -33px;
+    top: 24px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 0 0 2px var(--primary);
+  }
+  .timeline-item h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 6px;
+  }
+  .timeline-item p {
+    font-size: 0.85rem;
+    color: var(--gray-500);
+    line-height: 1.6;
+  }
+  .timeline-phase {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  /* ═══════════ API ENDPOINT VISUAL ═══════════ */
+  .api-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 20px;
+    background: white;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    transition: transform 0.15s;
+  }
+  .api-row:hover { transform: translateX(6px); }
+  .api-method {
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    flex-shrink: 0;
+    min-width: 56px;
+    text-align: center;
+  }
+  .method-get { background: var(--success-light); color: var(--success); }
+  .method-post { background: var(--primary-light); color: var(--primary); }
+  .api-path {
+    font-family: 'Courier New', monospace;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--gray-800);
+  }
+  .api-desc {
+    font-size: 0.8rem;
+    color: var(--gray-400);
+    margin-left: auto;
+    text-align: right;
+  }
+
+  /* ═══════════ CLOSING ═══════════ */
+  .slide-closing {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 40%, #2563eb 100%);
+    color: white;
+    text-align: center;
+    align-items: center;
+  }
+  .slide-closing::before {
+    content: '';
+    position: absolute;
+    top: -150px; left: -150px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(139,92,246,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .slide-closing h2 { color: white; font-size: 2.8rem; margin-bottom: 20px; position: relative; z-index: 1; }
+  .slide-closing p { opacity: 0.7; font-size: 1.1rem; max-width: 550px; position: relative; z-index: 1; }
+
+  /* ═══════════ GRADIENT ACCENTS ═══════════ */
+  .gradient-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.08;
+    pointer-events: none;
+  }
+
+  /* ═══════════ PRINT ═══════════ */
+  @media print {
+    .slide-nav { display: none; }
+    .slide { page-break-after: always; min-height: auto; padding: 40px; }
+    .slide-title h1 { font-size: 2.8rem; }
+    .slide-counter { display: none; }
+    .gradient-blob { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV DOTS -->
+<nav class="slide-nav">
+  <button class="nav-dot" onclick="document.getElementById('s1').scrollIntoView({behavior:'smooth'})" title="Title"></button>
+  <button class="nav-dot" onclick="document.getElementById('s2').scrollIntoView({behavior:'smooth'})" title="Problem"></button>
+  <button class="nav-dot" onclick="document.getElementById('s3').scrollIntoView({behavior:'smooth'})" title="Comparison"></button>
+  <button class="nav-dot" onclick="document.getElementById('s4').scrollIntoView({behavior:'smooth'})" title="Solution"></button>
+  <button class="nav-dot" onclick="document.getElementById('s5').scrollIntoView({behavior:'smooth'})" title="Workflow"></button>
+  <button class="nav-dot" onclick="document.getElementById('s6').scrollIntoView({behavior:'smooth'})" title="Use Cases"></button>
+  <button class="nav-dot" onclick="document.getElementById('s7').scrollIntoView({behavior:'smooth'})" title="Tech Stack"></button>
+  <button class="nav-dot" onclick="document.getElementById('s8').scrollIntoView({behavior:'smooth'})" title="Architecture"></button>
+  <button class="nav-dot" onclick="document.getElementById('s9').scrollIntoView({behavior:'smooth'})" title="Features"></button>
+  <button class="nav-dot" onclick="document.getElementById('s10').scrollIntoView({behavior:'smooth'})" title="API"></button>
+  <button class="nav-dot" onclick="document.getElementById('s11').scrollIntoView({behavior:'smooth'})" title="Future"></button>
+  <button class="nav-dot" onclick="document.getElementById('s12').scrollIntoView({behavior:'smooth'})" title="Thank You"></button>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SLIDE 1: TITLE                                      -->
+<!-- ═══════════════════════════════════════════════════ -->
+<section id="s1" class="slide slide-title">
+  <div class="title-icon">📸</div>
+  <h1>Smart Attendance System</h1>
+  <div class="tagline">Face Recognition-Powered Automated Attendance</div>
+  <div class="subtitle">Full-Stack Project &bull; React &bull; Flask &bull; OpenCV &bull; dlib</div>
+  <div class="title-badges">
+    <span class="title-badge">Real-Time Detection</span>
+    <span class="title-badge">Zero Proxy</span>
+    <span class="title-badge">CSV Export</span>
+  </div>
+  <div class="slide-counter">01 / 12</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SLIDE 2: PROBLEM                                    -->
+<!-- ═══════════════════════════════════════════════════ -->
+<section id="s2" class="slide" style="background: white;">
+  <div class="gradient-blob" style="width: 500px; height: 500px; background: var(--danger); top: -100px; right: -200px;"></div>
+  <div class="section-label">The Problem</div>
+  <h2>Manual Attendance is Broken</h2>
+  <p class="slide-desc">Traditional methods cost time, enable fraud, and produce unreliable data that's hard to analyze.</p>
+
+  <div class="grid-3">
+    <div class="card pain-card">
+      <div class="card-icon" style="background: var(--danger-light); color: var(--danger);">⏱️</div>
+      <h4>Time Consuming</h4>
+      <p>Roll-call or sign-in sheets waste 5&ndash;10 minutes every session, eating into productive class time across every lecture.</p>
+    </div>
+    <div class="card pain-card">
+      <div class="card-icon" style="background: var(--danger-light); color: var(--danger);">👥</div>
+      <h4>Proxy Attendance</h4>
+      <p>Students easily sign for absent peers. Paper-based methods have zero way to verify who is actually physically present.</p>
+    </div>
+    <div class="card pain-card">
+      <div class="card-icon" style="background: var(--danger-light); color: var(--danger);">📋</div>
+      <h4>Error-Prone Records</h4>
+      <p>Handwritten records are hard to digitize, search, or analyze. Data gets lost, miscounted, or becomes illegible over time.</p>
+    </div>
+  </div>
+
+  <div style="margin-top: 32px;">
+    <div class="grid-3">
+      <div class="stat-card" style="background: var(--danger-light);">
+        <div class="stat-number" style="color: var(--danger);">5&ndash;10</div>
+        <div class="stat-label" style="color: var(--danger);">Minutes wasted per session</div>
+      </div>
+      <div class="stat-card" style="background: var(--accent-light);">
+        <div class="stat-number" style="color: var(--accent);">30%</div>
+        <div class="stat-label" style="color: #92400e;">Proxy attendance in large classes</div>
+      </div>
+      <div class="stat-card" style="background: var(--purple-light);">
+        <div class="stat-number" style="color: var(--purple);">15%</div>
+        <div class="stat-label" style="color: var(--purple);">Data entry errors in manual logs</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-counter">02 / 12</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SLIDE 3: BEFORE vs AFTER                            -->
+<!-- ═══════════════════════════════════════════════════ -->
+<section id="s3" class="slide" style="background: var(--gray-50);">
+  <div class="section-label">Comparison</div>
+  <h2>Before vs. After</h2>
+  <p class="slide-desc">See how the Smart Attendance System transforms every aspect of the attendance workflow.</p>
+
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th style="width: 25%;">Aspect</th>
+        <th style="width: 37%;">Traditional Method</th>
+        <th style="width: 38%;">Smart Attendance System</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="font-weight: 600;">Speed</td>
+        <td><span class="tag-old">Slow</span> &nbsp;5&ndash;10 min roll call</td>
+        <td><span class="tag-new">Instant</span> &nbsp;Under 3 seconds</td>
+      </tr>
+      <tr>
+        <td style="font-weight: 600;">Accuracy</td>
+        <td><span class="tag-old">Low</span> &nbsp;Human counting errors</td>
+        <td><span class="tag-new">High</span> &nbsp;128-dim face matching</td>
+      </tr>
+      <tr>
+        <td style="font-weight: 600;">Proxy Prevention</td>
+        <td><span class="tag-old">None</span> &nbsp;Easy to fake signatures</td>
+        <td><span class="tag-new">Biometric</span> &nbsp;Face = identity proof</td>
+      </tr>
+      <tr>
+        <td style="font-weight: 600;">Record Keeping</td>
+        <td><span class="tag-old">Paper</span> &nbsp;Difficult to search/export</td>
+        <td><span class="tag-new">Digital</span> &nbsp;Search, filter, CSV export</td>
+      </tr>
+      <tr>
+        <td style="font-weight: 600;">Scalability</td>
+        <td><span class="tag-old">Poor</span> &nbsp;Breaks in large classes</td>
+        <td><span class="tag-new">Scalable</span> &nbsp;Works with any class size</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="slide-counter">03 / 12</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SLIDE 4: SOLUTION OVERVIEW                          -->
+<!-- ═══════════════════════════════════════════════════ -->
+<section id="s4" class="slide" style="background: white;">
+  <div class="gradient-blob" style="width: 400px; height: 400px; background: var(--success); bottom: -100px; left: -150px;"></div>
+  <div class="section-label">Our Solution</div>
+  <h2>One Camera. Instant Attendance.</h2>
+  <p class="slide-desc">A three-step process that replaces manual roll calls with automated face recognition.</p>
+
+  <div class="grid-3">
+    <div class="card solution-card">
+      <div class="card-icon" style="background: var(--success-light); color: var(--success);">🧑‍🎓</div>
+      <h4>1. Register Once</h4>
+      <p>Students register their face via webcam or photo upload. The system extracts and stores a unique 128-dimensional facial encoding.</p>
+    </div>
+    <div class="card solution-card">
+      <div class="card-icon" style="background: var(--primary-light); color: var(--primary);">📷</div>
+      <h4>2. Capture &amp; Recognize</h4>
+      <p>Point a webcam at the class, capture a frame. The system detects all faces and matches them against registered students in real-time.</p>
+    </div>
+    <div class="card solution-card">
+      <div class="card-icon" style="background: var(--purple-light); color: var(--purple);">📊</div>
+      <h4>3. View &amp; Export</h4>
+      <p>Browse attendance records with search and date filters. Download as CSV with a single click for reporting or external use.</p>
+    </div>
+  </div>
+  <div class="slide-counter">04 / 12</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SLIDE 5: DETAILED WORKFLOW                          -->
+<!-- ═══════════════════════════════════════════════════ -->
+<section id="s5" class="slide" style="background: var(--gray-50);">
+  <div class="section-label">Workflow</div>
+  <h2>How It Works &mdash; Step by Step</h2>
+
+  <div class="grid-2" style="gap: 60px;">
+    <!-- Registration Flow -->
+    <div>
+      <h3 style="margin-bottom: 24px; display: flex; align-items: center; gap: 10px;">
+        <span style="padding: 4px 14px; background: var(--primary-light); color: var(--primary); border-radius: 8px; font-size: 0.75rem; font-weight: 700; letter-spacing: 1px;">REGISTRATION</span>
+      </h3>
+      <div class="workflow-step">
+        <div class="workflow-num" style="background: var(--primary);">1</div>
+        <div class="workflow-content">
+          <h4>Enter Student Details</h4>
+          <p>Input student name and unique roll number into the registration form.</p>
+          <div class="detail-badges">
+            <span class="detail-badge">Name</span>
+            <span class="detail-badge">Roll Number</span>
+            <span class="detail-badge">Validation</span>
+          </div>
+        </div>
+      </div>
+      <div class="workflow-step">
+        <div class="workflow-num" style="background: var(--primary);">2</div>
+        <div class="workflow-content">
+          <h4>Capture or Upload Face Image</h4>
+          <p>Use the built-in webcam to take a live photo, or upload an existing image file.</p>
+          <div class="detail-badges">
+            <span class="detail-badge">Webcam Capture</span>
+            <span class="detail-badge">File Upload</span>
+            <span class="detail-badge">Base64 Encoding</span>
+          </div>
+        </div>
+      </div>
+      <div class="workflow-step">
+        <div class="workflow-num" style="background: var(--primary);">3</div>
+        <div class="workflow-content">
+          <h4>Face Encoding &amp; Storage</h4>
+          <p>dlib extracts a 128-dimensional face vector. Image saved to disk, encoding stored in the database as a pickled object.</p>
+          <div class="detail-badges">
+            <span class="detail-badge">HOG Detection</span>
+            <span class="detail-badge">128-dim Vector</span>
+            <span class="detail-badge">SQLite</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Attendance Flow -->
+    <div>
+      <h3 style="margin-bottom: 24px; display: flex; align-items: center; gap: 10px;">
+        <span style="padding: 4px 14px; background: var(--success-light); color: var(--success); border-radius: 8px; font-size: 0.75rem; font-weight: 700; letter-spacing: 1px;">ATTENDANCE</span>
+      </h3>
+      <div class="workflow-step">
+        <div class="workflow-num" style="background: var(--success);">1</div>
+        <div class="workflow-content">
+          <h4>Open Webcam &amp; Capture Frame</h4>
+          <p>The teacher opens the attendance page and captures a snapshot of the classroom via webcam.</p>
+          <div class="detail-badges">
+            <span class="detail-badge">React Webcam</span>
+            <span class="detail-badge">Live Preview</span>
+          </div>
+        </div>
+      </div>
+      <div class="workflow-step">
+        <div class="workflow-num" style="background: var(--success);">2</div>
+        <div class="workflow-content">
+          <h4>Face Detection &amp; Recognition</h4>
+          <p>Backend detects all faces in the image, compares each against stored encodings, and identifies matches.</p>
+          <div class="detail-badges">
+            <span class="detail-badge">Multi-Face</span>
+            <span class="detail-badge">Comparison</span>
+            <span class="detail-badge">Confidence</span>
+          </div>
+        </div>
+      </div>
+      <div class="workflow-step">
+        <div class="workflow-num" style="background: var(--success);">3</div>
+        <div class="workflow-content">
+          <h4>Auto-Mark &amp; Deduplicate</h4>
+          <p>Matched students are marked "Present" for today. Duplicate entries for the same day are automatically prevented.</p>
+          <div class="detail-badges">
+            <span class="detail-badge">Present / Absent</span>
+            <span class="detail-badge">Dedup per Day</span>
+            <span class="detail-badge">DB Record</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-counter">05 / 12</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SLIDE 6: USE CASES                                  -->
+<!-- ═══════════════════════════════════════════════════ -->
+<section id="s6" class="slide slide-dark">
+  <div class="section-label">Use Cases</div>
+  <h2>Where It Can Be Used</h2>
+  <p class="slide-desc">The system is designed for educational settings but adapts to any environment where identity-based attendance matters.</p>
+
+  <div class="grid-4">
+    <div class="usecase-card" style="background: linear-gradient(135deg, #1e3a5f, #2563eb);">
+      <div class="usecase-icon">🏫</div>
+      <h4 style="color: white;">Schools &amp; Colleges</h4>
+      <p style="color: rgba(255,255,255,0.7);">Automate daily roll calls across multiple classrooms. Track student attendance patterns over semesters.</p>
+      <span class="usecase-tag" style="background: rgba(255,255,255,0.15); color: white;">Primary</span>
+    </div>
+    <div class="usecase-card" style="background: linear-gradient(135deg, #065f46, #10b981);">
+      <div class="usecase-icon">🏢</div>
+      <h4 style="color: white;">Corporate Offices</h4>
+      <p style="color: rgba(255,255,255,0.7);">Replace badge-swiping with face-based check-ins. No cards to lose, no buddy-punching possible.</p>
+      <span class="usecase-tag" style="background: rgba(255,255,255,0.15); color: white;">Enterprise</span>
+    </div>
+    <div class="usecase-card" style="background: linear-gradient(135deg, #7c2d12, #f59e0b);">
+      <div class="usecase-icon">📚</div>
+      <h4 style="color: white;">Coaching &amp; Tuitions</h4>
+      <p style="color: rgba(255,255,255,0.7);">Small centers can track student attendance without administrative overhead or expensive biometric hardware.</p>
+      <span class="usecase-tag" style="background: rgba(255,255,255,0.15); color: white;">SMB</span>
+    </div>
+    <div class="usecase-card" style="background: linear-gradient(135deg, #581c87, #8b5cf6);">
+      <div class="usecase-icon">🎪</div>
+      <h4 style="color: white;">Events &amp; Workshops</h4>
+      <p style="color: rgba(255,255,255,0.7);">Register attendees once, then verify presence at multi-day events or conference sessions effortlessly.</p>
+      <span class="usecase-tag" style="background: rgba(255,255,255,0.15); color: white;">Events</span>
+    </div>
+  </div>
+  <div class="slide-counter">06 / 12</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SLIDE 7: TECH STACK                                 -->
+<!-- ═══════════════════════════════════════════════════ -->
+<section id="s7" class="slide" style="background: white;">
+  <div class="gradient-blob" style="width: 500px; height: 500px; background: var(--primary); top: -200px; left: -200px;"></div>
+  <div class="section-label">Technology</div>
+  <h2>Tech Stack</h2>
+  <p class="slide-desc">Built with modern, proven technologies across the entire stack.</p>
+
+  <div class="grid-3" style="gap: 32px;">
+    <div>
+      <div class="tech-group">
+        <div class="tech-group-label">Frontend</div>
+        <div class="tech-badges">
+          <div class="tech-badge"><span class="dot" style="background: #61dafb;"></span>React 19</div>
+          <div class="tech-badge"><span class="dot" style="background: #a855f7;"></span>Vite</div>
+          <div class="tech-badge"><span class="dot" style="background: #38bdf8;"></span>Tailwind CSS</div>
+          <div class="tech-badge"><span class="dot" style="background: #f59e0b;"></span>Axios</div>
+          <div class="tech-badge"><span class="dot" style="background: #10b981;"></span>React Webcam</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="tech-group">
+        <div class="tech-group-label">Backend</div>
+        <div class="tech-badges">
+          <div class="tech-badge"><span class="dot" style="background: #3b82f6;"></span>Flask 3.1</div>
+          <div class="tech-badge"><span class="dot" style="background: #ef4444;"></span>SQLAlchemy</div>
+          <div class="tech-badge"><span class="dot" style="background: #f59e0b;"></span>Marshmallow</div>
+          <div class="tech-badge"><span class="dot" style="background: #64748b;"></span>SQLite</div>
+          <div class="tech-badge"><span class="dot" style="background: #10b981;"></span>Flask-CORS</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="tech-group">
+        <div class="tech-group-label">ML / Vision</div>
+        <div class="tech-badges">
+          <div class="tech-badge"><span class="dot" style="background: #22c55e;"></span>face_recognition</div>
+          <div class="tech-badge"><span class="dot" style="background: #8b5cf6;"></span>dlib (HOG)</div>
+          <div class="tech-badge"><span class="dot" style="background: #06b6d4;"></span>OpenCV</div>
+          <div class="tech-badge"><span class="dot" style="background: #f97316;"></span>NumPy</div>
+          <div class="tech-badge"><span class="dot" style="background: #ec4899;"></span>Pillow</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 40px;">
+    <div class="grid-3" style="gap: 20px;">
+      <div class="stat-card" style="background: var(--primary-light);">
+        <div class="stat-number" style="color: var(--primary);">~900</div>
+        <div class="stat-label" style="color: var(--primary);">Lines of Code</div>
+        <div class="stat-sub">381 backend + 531 frontend</div>
+      </div>
+      <div class="stat-card" style="background: var(--success-light);">
+        <div class="stat-number" style="color: var(--success);">5</div>
+        <div class="stat-label" style="color: var(--success);">REST API Endpoints</div>
+        <div class="stat-sub">Register, Mark, View, Download, Health</div>
+      </div>
+      <div class="stat-card" style="background: var(--accent-light);">
+        <div class="stat-number" style="color: #92400e;">4</div>
+        <div class="stat-label" style="color: #92400e;">Frontend Pages</div>
+        <div class="stat-sub">Home, Register, Attend, View</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-counter">07 / 12</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SLIDE 8: ARCHITECTURE + DB SCHEMA                   -->
+<!-- ═══════════════════════════════════════════════════ -->
+<section id="s8" class="slide" style="background: var(--gray-50);">
+  <div class="section-label">Architecture</div>
+  <h2>System Design &amp; Database</h2>
+
+  <div class="grid-2" style="gap: 50px;">
+    <!-- Architecture Diagram -->
+    <div>
+      <h3 style="margin-bottom: 20px;">Layered Architecture</h3>
+      <div style="background: var(--gray-900); border-radius: 16px; padding: 32px; color: white;">
+        <div style="font-family: 'Courier New', monospace; font-size: 0.82rem; line-height: 2.2;">
+          <div style="text-align: center; padding: 12px; background: rgba(97,218,251,0.15); border: 1px solid rgba(97,218,251,0.3); border-radius: 10px; margin-bottom: 12px;">
+            <span style="color: #61dafb; font-weight: 700;">React + Tailwind CSS</span><br>
+            <span style="color: rgba(255,255,255,0.4); font-size: 0.72rem;">Pages &bull; Webcam &bull; Forms &bull; Tables</span>
+          </div>
+          <div style="text-align: center; color: rgba(255,255,255,0.3); font-size: 1.2rem;">&#9660;</div>
+          <div style="text-align: center; padding: 4px; color: rgba(255,255,255,0.3); font-size: 0.7rem; letter-spacing: 2px;">REST API &bull; JSON &bull; BASE64</div>
+          <div style="text-align: center; color: rgba(255,255,255,0.3); font-size: 1.2rem;">&#9660;</div>
+          <div style="text-align: center; padding: 12px; background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.3); border-radius: 10px; margin-bottom: 12px;">
+            <span style="color: #3b82f6; font-weight: 700;">Flask Backend</span><br>
+            <span style="color: rgba(255,255,255,0.4); font-size: 0.72rem;">Routes &bull; Schemas &bull; CORS &bull; Validation</span>
+          </div>
+          <div style="display: flex; justify-content: center; gap: 40px;">
+            <div style="text-align: center;">
+              <div style="color: rgba(255,255,255,0.3); font-size: 1.2rem;">&#9660;</div>
+              <div style="padding: 12px; background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.3); border-radius: 10px;">
+                <span style="color: #22c55e; font-weight: 700;">face_recognition</span><br>
+                <span style="color: rgba(255,255,255,0.4); font-size: 0.72rem;">dlib &bull; OpenCV</span>
+              </div>
+            </div>
+            <div style="text-align: center;">
+              <div style="color: rgba(255,255,255,0.3); font-size: 1.2rem;">&#9660;</div>
+              <div style="padding: 12px; background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.3); border-radius: 10px;">
+                <span style="color: #f59e0b; font-weight: 700;">SQLite</span><br>
+                <span style="color: rgba(255,255,255,0.4); font-size: 0.72rem;">SQLAlchemy ORM</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DB Schema -->
+    <div>
+      <h3 style="margin-bottom: 20px;">Database Schema</h3>
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        <div class="schema-box">
+          <div class="schema-header" style="background: var(--primary-light); color: var(--primary);">
+            <span style="font-size: 1.1rem;">👤</span> Student Table
+          </div>
+          <div class="schema-row">
+            <span class="col-name">id</span>
+            <span class="col-type">INTEGER</span>
+            <span class="schema-badge" style="background: var(--accent-light); color: #92400e;">PK</span>
+          </div>
+          <div class="schema-row">
+            <span class="col-name">name</span>
+            <span class="col-type">VARCHAR(100)</span>
+            <span class="schema-badge" style="background: var(--danger-light); color: var(--danger);">NOT NULL</span>
+          </div>
+          <div class="schema-row">
+            <span class="col-name">roll_number</span>
+            <span class="col-type">VARCHAR(50)</span>
+            <span class="schema-badge" style="background: var(--purple-light); color: var(--purple);">UNIQUE</span>
+          </div>
+          <div class="schema-row">
+            <span class="col-name">face_encoding</span>
+            <span class="col-type">PickleType</span>
+            <span class="schema-badge" style="background: var(--success-light); color: var(--success);">128-dim</span>
+          </div>
+          <div class="schema-row">
+            <span class="col-name">image_path</span>
+            <span class="col-type">VARCHAR(255)</span>
+            <span class="schema-badge" style="background: var(--gray-100); color: var(--gray-500);">NULLABLE</span>
+          </div>
+        </div>
+
+        <div style="text-align: center; color: var(--gray-300); font-size: 0.8rem;">
+          &#9660; roll_number (FK) &#9660;
+        </div>
+
+        <div class="schema-box">
+          <div class="schema-header" style="background: var(--success-light); color: var(--success);">
+            <span style="font-size: 1.1rem;">📅</span> Attendance Table
+          </div>
+          <div class="schema-row">
+            <span class="col-name">id</span>
+            <span class="col-type">INTEGER</span>
+            <span class="schema-badge" style="background: var(--accent-light); color: #92400e;">PK</span>
+          </div>
+          <div class="schema-row">
+            <span class="col-name">roll_number</span>
+            <span class="col-type">VARCHAR(50)</span>
+            <span class="schema-badge" style="background: var(--primary-light); color: var(--primary);">FK</span>
+          </div>
+          <div class="schema-row">
+            <span class="col-name">date</span>
+            <span class="col-type">DATE</span>
+            <span class="schema-badge" style="background: var(--accent-light); color: #92400e;">AUTO</span>
+          </div>
+          <div class="schema-row">
+            <span class="col-name">status</span>
+            <span class="col-type">VARCHAR(10)</span>
+            <span class="schema-badge" style="background: var(--success-light); color: var(--success);">Present/Absent</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-counter">08 / 12</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SLIDE 9: FEATURES DEEP DIVE                         -->
+<!-- ═══════════════════════════════════════════════════ -->
+<section id="s9" class="slide" style="background: white;">
+  <div class="gradient-blob" style="width: 400px; height: 400px; background: var(--purple); bottom: -150px; right: -100px;"></div>
+  <div class="section-label">Features</div>
+  <h2>What the System Can Do</h2>
+
+  <div class="grid-2" style="gap: 24px;">
+    <div class="card" style="border-left: 4px solid var(--primary);">
+      <div class="card-icon" style="background: var(--primary-light); color: var(--primary);">📝</div>
+      <h4>Student Registration</h4>
+      <p>Register with name, roll number, and face image. Supports both file upload and live webcam capture. Face encoded as a 128-dim vector and stored for future matching.</p>
+    </div>
+    <div class="card" style="border-left: 4px solid var(--success);">
+      <div class="card-icon" style="background: var(--success-light); color: var(--success);">🎯</div>
+      <h4>Real-Time Face Recognition</h4>
+      <p>Capture a webcam frame and instantly match all detected faces against registered students. Multi-face detection in a single frame. Prevents duplicate marking per day.</p>
+    </div>
+    <div class="card" style="border-left: 4px solid var(--purple);">
+      <div class="card-icon" style="background: var(--purple-light); color: var(--purple);">🔍</div>
+      <h4>Search &amp; Filter Records</h4>
+      <p>View attendance records in a clean table. Search by student name or roll number. Filter by specific date. Color-coded status indicators &mdash; green for Present, red for Absent.</p>
+    </div>
+    <div class="card" style="border-left: 4px solid var(--accent);">
+      <div class="card-icon" style="background: var(--accent-light); color: var(--accent);">📥</div>
+      <h4>CSV Export</h4>
+      <p>Download attendance data as a date-stamped CSV file (attendance_2024-03-17.csv) for record-keeping, reporting, or integration with other school management systems.</p>
+    </div>
+    <div class="card" style="border-left: 4px solid var(--teal);">
+      <div class="card-icon" style="background: var(--teal-light); color: var(--teal);">🌐</div>
+      <h4>RESTful API Design</h4>
+      <p>Clean API with proper HTTP methods, JSON request/response, FormData support for file uploads, and Marshmallow schema validation for request data integrity.</p>
+    </div>
+    <div class="card" style="border-left: 4px solid var(--rose);">
+      <div class="card-icon" style="background: var(--rose-light); color: var(--rose);">📱</div>
+      <h4>Responsive UI</h4>
+      <p>Built with Tailwind CSS for a clean, responsive interface. Intuitive navigation between registration, attendance marking, and record viewing with a centralized home page.</p>
+    </div>
+  </div>
+  <div class="slide-counter">09 / 12</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SLIDE 10: API ENDPOINTS                             -->
+<!-- ═══════════════════════════════════════════════════ -->
+<section id="s10" class="slide" style="background: var(--gray-50);">
+  <div class="section-label">API Reference</div>
+  <h2>REST API Endpoints</h2>
+  <p class="slide-desc">The backend exposes a clean RESTful API consumed by the React frontend.</p>
+
+  <div style="max-width: 800px;">
+    <div class="api-row">
+      <span class="api-method method-get">GET</span>
+      <span class="api-path">/</span>
+      <span class="api-desc">Health check &mdash; verify API is running</span>
+    </div>
+    <div class="api-row">
+      <span class="api-method method-post">POST</span>
+      <span class="api-path">/register</span>
+      <span class="api-desc">Register student with name, roll number &amp; face image</span>
+    </div>
+    <div class="api-row">
+      <span class="api-method method-post">POST</span>
+      <span class="api-path">/mark_attendance</span>
+      <span class="api-desc">Send webcam frame, recognize faces, mark attendance</span>
+    </div>
+    <div class="api-row">
+      <span class="api-method method-get">GET</span>
+      <span class="api-path">/view_attendance</span>
+      <span class="api-desc">Fetch records with ?date= and ?search= filters</span>
+    </div>
+    <div class="api-row">
+      <span class="api-method method-get">GET</span>
+      <span class="api-path">/download_attendance_csv</span>
+      <span class="api-desc">Export attendance as date-stamped CSV file</span>
+    </div>
+  </div>
+
+  <div style="margin-top: 36px; display: flex; gap: 20px;">
+    <div style="padding: 16px 24px; background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); display: flex; align-items: center; gap: 12px;">
+      <span style="font-size: 1.2rem;">📤</span>
+      <div>
+        <div style="font-size: 0.82rem; font-weight: 700; color: var(--gray-800);">Request Formats</div>
+        <div style="font-size: 0.75rem; color: var(--gray-400);">JSON &bull; FormData &bull; Base64 Image</div>
+      </div>
+    </div>
+    <div style="padding: 16px 24px; background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); display: flex; align-items: center; gap: 12px;">
+      <span style="font-size: 1.2rem;">📥</span>
+      <div>
+        <div style="font-size: 0.82rem; font-weight: 700; color: var(--gray-800);">Response Formats</div>
+        <div style="font-size: 0.75rem; color: var(--gray-400);">JSON &bull; CSV File Download</div>
+      </div>
+    </div>
+    <div style="padding: 16px 24px; background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); display: flex; align-items: center; gap: 12px;">
+      <span style="font-size: 1.2rem;">🔓</span>
+      <div>
+        <div style="font-size: 0.82rem; font-weight: 700; color: var(--gray-800);">CORS Enabled</div>
+        <div style="font-size: 0.75rem; color: var(--gray-400);">Cross-origin requests supported</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-counter">10 / 12</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SLIDE 11: FUTURE ENHANCEMENTS                       -->
+<!-- ═══════════════════════════════════════════════════ -->
+<section id="s11" class="slide" style="background: white;">
+  <div class="gradient-blob" style="width: 600px; height: 600px; background: var(--accent); top: -200px; right: -200px;"></div>
+  <div class="section-label">Roadmap</div>
+  <h2>Future Enhancements</h2>
+  <p class="slide-desc">Planned improvements to make the system production-ready and feature-rich.</p>
+
+  <div class="grid-2" style="gap: 50px;">
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background: var(--primary);"></div>
+        <span class="timeline-phase" style="background: var(--primary-light); color: var(--primary);">Phase 1</span>
+        <h4>Authentication &amp; Role-Based Access</h4>
+        <p>Add login system with Admin and Teacher roles. Secure all API endpoints with JWT tokens. Only authorized users can register students or view records.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background: var(--success);"></div>
+        <span class="timeline-phase" style="background: var(--success-light); color: var(--success);">Phase 2</span>
+        <h4>Dashboard &amp; Analytics</h4>
+        <p>Visual analytics dashboard showing attendance trends, student-wise reports, percentage calculations, and low-attendance alerts with charts and graphs.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background: var(--accent);"></div>
+        <span class="timeline-phase" style="background: var(--accent-light); color: #92400e;">Phase 3</span>
+        <h4>Multi-Class &amp; Subject Support</h4>
+        <p>Support for multiple classes, sections, and subjects. Assign students to courses. Track attendance per subject, not just per day.</p>
+      </div>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background: var(--purple);"></div>
+        <span class="timeline-phase" style="background: var(--purple-light); color: var(--purple);">Phase 4</span>
+        <h4>Liveness Detection</h4>
+        <p>Anti-spoofing measures to prevent attendance fraud using printed photos or screens. Blink detection and head movement verification before marking.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background: var(--teal);"></div>
+        <span class="timeline-phase" style="background: var(--teal-light); color: var(--teal);">Phase 5</span>
+        <h4>Cloud Deployment &amp; PostgreSQL</h4>
+        <p>Migrate from SQLite to PostgreSQL for production scale. Deploy on AWS/GCP with Docker containers. Environment-based configuration with .env files.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background: var(--rose);"></div>
+        <span class="timeline-phase" style="background: var(--rose-light); color: var(--rose);">Phase 6</span>
+        <h4>Notifications &amp; Mobile App</h4>
+        <p>Email or SMS alerts for absent students. Push notifications for parents. A companion mobile app for teachers to mark attendance from their phones.</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-counter">11 / 12</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SLIDE 12: CLOSING                                   -->
+<!-- ═══════════════════════════════════════════════════ -->
+<section id="s12" class="slide slide-closing">
+  <div style="font-size: 4.5rem; margin-bottom: 24px; position: relative; z-index: 1; animation: float 3s ease-in-out infinite;">🎓</div>
+  <h2>Thank You</h2>
+  <p style="margin-bottom: 36px;">Automating attendance with face recognition &mdash;<br>faster, accurate, and tamper-proof.</p>
+  <div style="display: flex; gap: 16px; position: relative; z-index: 1;">
+    <span class="title-badge">React</span>
+    <span class="title-badge">Flask</span>
+    <span class="title-badge">OpenCV</span>
+    <span class="title-badge">dlib</span>
+    <span class="title-badge">SQLite</span>
+  </div>
+  <div style="margin-top: 48px; opacity: 0.4; font-size: 0.85rem; position: relative; z-index: 1;">
+    Smart Attendance System &bull; Full-Stack Project
+  </div>
+  <div class="slide-counter">12 / 12</div>
+</section>
+
+<!-- ═══════════ ACTIVE DOT + KEYBOARD NAV ═══════════ -->
+<script>
+  const dots = document.querySelectorAll('.nav-dot');
+  const slides = document.querySelectorAll('.slide');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const idx = [...slides].indexOf(entry.target);
+        dots.forEach((d, i) => {
+          d.style.background = i === idx ? '#2563eb' : '#cbd5e1';
+          d.style.transform = i === idx ? 'scale(1.4)' : 'scale(1)';
+        });
+      }
+    });
+  }, { threshold: 0.4 });
+
+  slides.forEach(s => observer.observe(s));
+
+  // Keyboard navigation
+  let currentSlide = 0;
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ') {
+      e.preventDefault();
+      currentSlide = Math.min(currentSlide + 1, slides.length - 1);
+      slides[currentSlide].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+      e.preventDefault();
+      currentSlide = Math.max(currentSlide - 1, 0);
+      slides[currentSlide].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+
+  // Sync keyboard nav with scroll
+  const syncObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        currentSlide = [...slides].indexOf(entry.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  slides.forEach(s => syncObserver.observe(s));
+</script>
+
+</body>
+</html>

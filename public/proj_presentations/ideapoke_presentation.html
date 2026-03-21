@@ -1,0 +1,1808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IdeaPoke - AI-Powered Patent Intelligence</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  :root {
+    --primary: #7c3aed;
+    --primary-dark: #6d28d9;
+    --primary-light: #ede9fe;
+    --accent: #f59e0b;
+    --accent-light: #fef3c7;
+    --success: #10b981;
+    --success-light: #d1fae5;
+    --danger: #ef4444;
+    --danger-light: #fee2e2;
+    --blue: #2563eb;
+    --blue-light: #dbeafe;
+    --teal: #14b8a6;
+    --teal-light: #ccfbf1;
+    --rose: #f43f5e;
+    --rose-light: #ffe4e6;
+    --gray-50: #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-300: #cbd5e1;
+    --gray-400: #94a3b8;
+    --gray-500: #64748b;
+    --gray-600: #475569;
+    --gray-700: #334155;
+    --gray-800: #1e293b;
+    --gray-900: #0f172a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--gray-50);
+    color: var(--gray-800);
+    line-height: 1.6;
+  }
+
+  .slide {
+    min-height: 100vh;
+    padding: 60px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .slide + .slide { border-top: 1px solid var(--gray-200); }
+
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: var(--primary);
+    margin-bottom: 12px;
+  }
+
+  .slide h2 {
+    font-size: 2.6rem;
+    font-weight: 800;
+    color: var(--gray-900);
+    margin-bottom: 36px;
+    letter-spacing: -1px;
+    line-height: 1.15;
+  }
+
+  .slide h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 16px;
+  }
+
+  /* ── NAV ── */
+  .slide-nav {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 100;
+  }
+
+  .nav-dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--gray-300);
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+  }
+  .nav-dot:hover { background: var(--primary); transform: scale(1.4); }
+
+  /* ═══════════ SLIDE 1: TITLE ═══════════ */
+  .slide-title {
+    background: linear-gradient(135deg, #0f172a 0%, #2e1065 40%, #7c3aed 100%);
+    color: white;
+    text-align: center;
+    align-items: center;
+  }
+  .slide-title::before {
+    content: '';
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(245,158,11,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .slide-title::after {
+    content: '';
+    position: absolute;
+    bottom: -150px; left: -150px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(124,58,237,0.2) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .logo-icon { width: 100px; height: 100px; margin-bottom: 30px; position: relative; z-index: 1; }
+
+  .slide-title h1 {
+    font-size: 4.5rem;
+    font-weight: 900;
+    letter-spacing: -2px;
+    margin-bottom: 16px;
+    position: relative; z-index: 1;
+  }
+  .slide-title .tagline {
+    font-size: 1.5rem;
+    font-weight: 300;
+    opacity: 0.9;
+    margin-bottom: 40px;
+    position: relative; z-index: 1;
+  }
+  .slide-title .subtitle {
+    font-size: 1rem;
+    opacity: 0.6;
+    position: relative; z-index: 1;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  /* ═══════════ COMMON COMPONENTS ═══════════ */
+
+  /* Pain / Feature cards */
+  .pain-card, .feature-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 22px 24px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .pain-card { border-left: 4px solid var(--danger); }
+  .feature-card { border-left: 4px solid var(--primary); }
+  .card-icon-box {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+  }
+  .pain-card h4, .feature-card h4 { font-size: 1rem; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+  .pain-card p, .feature-card p { font-size: 0.85rem; color: var(--gray-500); line-height: 1.5; }
+
+  /* Grid helpers */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 20px; }
+  .gap-20 { gap: 20px; }
+  .gap-30 { gap: 30px; }
+
+  .flex-col { display: flex; flex-direction: column; }
+
+  /* Stat cards */
+  .stat-card {
+    text-align: center;
+    padding: 32px 24px;
+    border-radius: 20px;
+  }
+  .stat-number {
+    font-size: 3.2rem;
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .stat-label { font-size: 0.9rem; font-weight: 400; }
+
+  /* ═══════════ SLIDE 2: PROBLEM ═══════════ */
+  .slide-problem { background: white; }
+
+  /* ═══════════ DARK SLIDES ═══════════ */
+  .slide-dark { background: var(--gray-900); color: white; }
+  .slide-dark h2 { color: white; }
+  .slide-dark .section-label { color: var(--accent); }
+
+  .dark-stat .stat-number {
+    background: linear-gradient(135deg, var(--accent) 0%, #fbbf24 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .dark-stat .stat-label { color: rgba(255,255,255,0.55); }
+  .dark-stat { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); }
+
+  .dark-card {
+    padding: 24px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .dark-card h4 { font-size: 1rem; font-weight: 700; color: var(--accent); margin-bottom: 8px; }
+  .dark-card p { font-size: 0.85rem; color: rgba(255,255,255,0.5); line-height: 1.5; }
+
+  /* ═══════════ SOLUTION SLIDE ═══════════ */
+  .slide-solution { background: white; }
+
+  .chat-mockup {
+    width: 340px;
+    background: var(--gray-900);
+    border-radius: 24px;
+    padding: 12px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.18);
+    margin: 0 auto;
+  }
+  .chat-screen {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .chat-header {
+    padding: 14px 18px 10px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    background: var(--primary);
+  }
+  .chat-body { padding: 14px; }
+
+  .chat-msg {
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 0.75rem;
+    margin-bottom: 10px;
+    max-width: 85%;
+    line-height: 1.45;
+  }
+  .chat-msg-user {
+    background: var(--primary);
+    color: white;
+    margin-left: auto;
+    border-bottom-right-radius: 4px;
+  }
+  .chat-msg-ai {
+    background: var(--gray-100);
+    color: var(--gray-700);
+    border-bottom-left-radius: 4px;
+  }
+
+  .idea-card-mini {
+    background: linear-gradient(135deg, var(--primary-light), #f5f3ff);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    border-left: 3px solid var(--primary);
+  }
+  .idea-card-mini h5 {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 2px;
+  }
+  .idea-card-mini p {
+    font-size: 0.6rem;
+    color: var(--gray-500);
+    line-height: 1.35;
+  }
+  .idea-card-mini .patent-trail {
+    font-size: 0.55rem;
+    color: var(--gray-400);
+    margin-top: 3px;
+    font-style: italic;
+  }
+
+  .sol-point {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .sol-icon {
+    width: 46px; height: 46px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+  .sol-point h4 { font-size: 1rem; font-weight: 700; color: var(--gray-900); margin-bottom: 3px; }
+  .sol-point p { font-size: 0.85rem; color: var(--gray-500); line-height: 1.5; }
+
+  /* ═══════════ FLOW DIAGRAM ═══════════ */
+  .slide-flow { background: var(--gray-50); }
+
+  .flow-diagram {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 0;
+    flex-wrap: wrap;
+  }
+  .flow-step {
+    text-align: center;
+    width: 180px;
+  }
+  .flow-circle {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    margin: 0 auto 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    position: relative;
+  }
+  .flow-number {
+    position: absolute;
+    top: -5px; right: -5px;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--gray-900);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .flow-step h4 { font-size: 0.85rem; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+  .flow-step p { font-size: 0.7rem; color: var(--gray-500); line-height: 1.35; padding: 0 6px; }
+  .flow-arrow { display: flex; align-items: center; padding-top: 24px; color: var(--gray-300); font-size: 1.6rem; }
+
+  .data-flow-visual {
+    margin-top: 24px;
+    padding: 18px;
+    background: white;
+    border-radius: 14px;
+    text-align: center;
+    border: 1px solid var(--gray-200);
+  }
+  .data-flow-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 6px 0;
+  }
+  .df-node {
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .df-arrow { color: var(--gray-400); font-size: 1rem; }
+
+  /* ═══════════ AGENT DEEP DIVE ═══════════ */
+  .agent-card {
+    background: white;
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    border: 1px solid var(--gray-200);
+    border-top: 4px solid;
+  }
+  .agent-card .agent-icon {
+    width: 48px; height: 48px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 12px;
+  }
+  .agent-card h4 { font-size: 1.05rem; font-weight: 700; color: var(--gray-900); margin-bottom: 6px; }
+  .agent-card p { font-size: 0.82rem; color: var(--gray-500); line-height: 1.5; margin-bottom: 10px; }
+  .agent-detail {
+    font-size: 0.72rem;
+    color: var(--gray-600);
+    padding: 8px 12px;
+    background: var(--gray-50);
+    border-radius: 8px;
+    line-height: 1.5;
+  }
+  .agent-detail code {
+    background: var(--gray-200);
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 0.68rem;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+
+  /* ═══════════ CONVERSATIONAL SLIDE ═══════════ */
+  .slide-conversational { background: white; }
+
+  .conv-flow-card {
+    background: var(--gray-50);
+    border-radius: 16px;
+    padding: 22px;
+    border: 1px solid var(--gray-200);
+  }
+  .conv-flow-card h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .status-active .status-dot { background: var(--success); box-shadow: 0 0 0 3px var(--success-light); }
+  .status-done .status-dot { background: var(--gray-400); }
+  .status-pending .status-dot { background: var(--gray-300); }
+
+  /* ═══════════ ARCHITECTURE ═══════════ */
+  .slide-arch { background: white; }
+
+  .arch-diagram {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 920px;
+    margin: 0 auto;
+  }
+  .arch-layer {
+    display: flex;
+    align-items: stretch;
+    gap: 14px;
+  }
+  .arch-label {
+    width: 110px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-radius: 12px;
+    text-align: center;
+    padding: 10px 6px;
+  }
+  .arch-boxes {
+    flex: 1;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .arch-box {
+    flex: 1;
+    min-width: 120px;
+    padding: 14px 12px;
+    border-radius: 10px;
+    border: 2px solid;
+    text-align: center;
+  }
+  .arch-box h5 { font-size: 0.8rem; font-weight: 700; margin-bottom: 2px; }
+  .arch-box .tech { font-size: 0.65rem; opacity: 0.6; font-weight: 500; }
+
+  .layer-client .arch-label { background: var(--primary-light); color: var(--primary-dark); }
+  .layer-client .arch-box { border-color: var(--primary); background: rgba(124,58,237,0.03); }
+  .layer-client .arch-box h5 { color: var(--primary-dark); }
+
+  .layer-api .arch-label { background: var(--blue-light); color: var(--blue); }
+  .layer-api .arch-box { border-color: var(--blue); background: rgba(37,99,235,0.03); }
+  .layer-api .arch-box h5 { color: var(--blue); }
+
+  .layer-intelligence .arch-label { background: var(--accent-light); color: #b45309; }
+  .layer-intelligence .arch-box { border-color: var(--accent); background: rgba(245,158,11,0.03); }
+  .layer-intelligence .arch-box h5 { color: #b45309; }
+
+  .layer-data .arch-label { background: var(--success-light); color: #047857; }
+  .layer-data .arch-box { border-color: var(--success); background: rgba(16,185,129,0.03); }
+  .layer-data .arch-box h5 { color: #047857; }
+
+  .arch-connector {
+    display: flex;
+    justify-content: center;
+    padding: 2px 0;
+    margin-left: 124px;
+  }
+  .connector-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--gray-300);
+    font-size: 0.65rem;
+    gap: 0;
+    line-height: 1;
+  }
+  .connector-label {
+    font-size: 0.55rem;
+    color: var(--gray-400);
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* ═══════════ LOW-LEVEL ARCH ═══════════ */
+  .slide-lowlevel { background: var(--gray-50); }
+
+  .ll-section {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid var(--gray-200);
+  }
+  .ll-section h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .db-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.75rem;
+  }
+  .db-table th {
+    text-align: left;
+    padding: 6px 10px;
+    background: var(--gray-50);
+    font-weight: 700;
+    color: var(--gray-600);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 2px solid var(--gray-200);
+  }
+  .db-table td {
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--gray-100);
+    color: var(--gray-600);
+  }
+  .db-table .tbl-name {
+    font-weight: 700;
+    color: var(--gray-800);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.7rem;
+  }
+
+  .lifecycle-flow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 8px 0;
+  }
+  .lf-node {
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .lf-arrow { color: var(--gray-300); font-size: 0.9rem; }
+
+  .api-endpoint {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 0;
+    font-size: 0.75rem;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .api-endpoint:last-child { border-bottom: none; }
+  .api-method {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.6rem;
+    font-weight: 800;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    min-width: 40px;
+    text-align: center;
+  }
+  .method-get { background: var(--success-light); color: #047857; }
+  .method-post { background: var(--blue-light); color: var(--blue); }
+  .method-ws { background: var(--primary-light); color: var(--primary); }
+  .method-sse { background: var(--accent-light); color: #92400e; }
+  .api-path {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.7rem;
+    color: var(--gray-700);
+  }
+  .api-desc { color: var(--gray-400); font-size: 0.7rem; margin-left: auto; }
+
+  .conn-diagram {
+    background: white;
+    border-radius: 20px;
+    padding: 32px;
+    border: 1px solid var(--gray-200);
+    margin-bottom: 24px;
+  }
+
+  .conn-layer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px dashed var(--gray-200);
+  }
+  .conn-layer:last-child { border-bottom: none; }
+
+  .conn-label {
+    width: 130px;
+    flex-shrink: 0;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--gray-400);
+  }
+
+  .conn-nodes {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .conn-node {
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 2px solid;
+    white-space: nowrap;
+  }
+  .conn-arrow { color: var(--gray-300); font-size: 1rem; }
+
+  /* ═══════════ TECH STACK ═══════════ */
+  .tech-card {
+    background: white;
+    border-radius: 14px;
+    padding: 16px;
+    border: 1px solid var(--gray-200);
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .tech-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+  .tech-card .tech-emoji { font-size: 1.8rem; margin-bottom: 8px; }
+  .tech-card h5 { font-size: 0.85rem; font-weight: 700; color: var(--gray-900); margin-bottom: 2px; }
+  .tech-card p { font-size: 0.7rem; color: var(--gray-500); }
+
+  .tech-group-label {
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid;
+  }
+
+  /* ═══════════ INNOVATION ═══════════ */
+  .innovation-card {
+    background: white;
+    border-radius: 18px;
+    padding: 28px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+    border: 1px solid var(--gray-200);
+  }
+  .innovation-card .card-icon-big {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 14px;
+  }
+  .innovation-card h4 { font-size: 1.05rem; font-weight: 700; color: var(--gray-900); margin-bottom: 6px; }
+  .innovation-card p { font-size: 0.85rem; color: var(--gray-500); line-height: 1.6; }
+
+  .innovation-mini-diagram {
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: var(--gray-50);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+  }
+  .imd-node {
+    text-align: center;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .imd-arrow { color: var(--gray-300); font-size: 1rem; flex-shrink: 0; }
+
+  /* ═══════════ ROADMAP ═══════════ */
+  .roadmap-phase {
+    flex: 1;
+    padding: 24px 20px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .phase-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 16px;
+    font-size: 0.6rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+  .phase-now .phase-badge { background: var(--success); color: white; }
+  .phase-next .phase-badge { background: var(--accent); color: var(--gray-900); }
+  .phase-later .phase-badge { background: var(--primary); color: white; }
+  .phase-future .phase-badge { background: var(--gray-600); color: white; }
+
+  .roadmap-phase h4 { font-size: 1rem; font-weight: 700; margin-bottom: 12px; color: white; }
+  .roadmap-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .roadmap-list li {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.5);
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.4;
+  }
+  .roadmap-list li::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: rgba(255,255,255,0.25);
+    font-weight: 700;
+  }
+
+  /* ═══════════ CLOSING ═══════════ */
+  .slide-closing {
+    background: linear-gradient(135deg, #0f172a 0%, #2e1065 40%, #7c3aed 100%);
+    color: white;
+    text-align: center;
+    align-items: center;
+  }
+  .slide-closing h2 { color: white; font-size: 2.8rem; margin-bottom: 20px; }
+  .closing-points {
+    display: flex;
+    gap: 36px;
+    justify-content: center;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  .closing-point { text-align: center; max-width: 200px; }
+  .closing-icon {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem;
+    margin: 0 auto 12px;
+  }
+  .closing-point h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; }
+  .closing-point p { font-size: 0.75rem; opacity: 0.6; line-height: 1.4; }
+
+  /* ═══════════ WORKFLOW TIMELINE ═══════════ */
+  .workflow-timeline {
+    position: relative;
+    padding-left: 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .workflow-timeline::before {
+    content: '';
+    position: absolute;
+    left: 27px;
+    top: 20px;
+    bottom: 20px;
+    width: 3px;
+    background: var(--gray-200);
+    border-radius: 2px;
+  }
+  .wf-step {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    position: relative;
+    padding: 16px 0;
+  }
+  .wf-dot {
+    position: absolute;
+    left: -39px;
+    top: 20px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 3px solid var(--primary);
+    background: white;
+    z-index: 1;
+  }
+  .wf-dot.active { background: var(--primary); }
+  .wf-content {
+    flex: 1;
+    background: var(--gray-50);
+    border-radius: 14px;
+    padding: 20px 24px;
+    border: 1px solid var(--gray-200);
+  }
+  .wf-content h4 { font-size: 0.95rem; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+  .wf-content p { font-size: 0.8rem; color: var(--gray-500); line-height: 1.5; }
+  .wf-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+
+  /* ═══════════ DOWNLOAD BUTTON ═══════════ */
+  .download-btn {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 100;
+    background: var(--gray-900);
+    color: white;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    transition: background 0.2s, transform 0.2s;
+  }
+  .download-btn:hover { background: var(--primary); transform: translateY(-2px); }
+  .download-btn svg { width: 16px; height: 16px; }
+
+  /* ═══════════ PRINT ═══════════ */
+  @media print {
+    .slide { page-break-after: always; min-height: auto; padding: 40px 50px; }
+    .slide-nav, .download-btn { display: none; }
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+
+  /* ═══════════ RESPONSIVE ═══════════ */
+  @media (max-width: 900px) {
+    .slide { padding: 36px 24px; }
+    .slide h2 { font-size: 1.8rem; }
+    .slide-title h1 { font-size: 2.8rem; }
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .flow-diagram { flex-direction: column; align-items: center; }
+    .flow-arrow { transform: rotate(90deg); }
+    .arch-layer { flex-direction: column; }
+    .arch-label { width: 100%; }
+    .arch-connector { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV DOTS -->
+<nav class="slide-nav">
+  <button class="nav-dot" onclick="document.getElementById('s1').scrollIntoView({behavior:'smooth'})" title="Title"></button>
+  <button class="nav-dot" onclick="document.getElementById('s2').scrollIntoView({behavior:'smooth'})" title="The Problem"></button>
+  <button class="nav-dot" onclick="document.getElementById('s3').scrollIntoView({behavior:'smooth'})" title="The Solution"></button>
+  <button class="nav-dot" onclick="document.getElementById('s4').scrollIntoView({behavior:'smooth'})" title="How It Works"></button>
+  <button class="nav-dot" onclick="document.getElementById('s5').scrollIntoView({behavior:'smooth'})" title="Agent Deep Dive"></button>
+  <button class="nav-dot" onclick="document.getElementById('s6').scrollIntoView({behavior:'smooth'})" title="Conversational Intelligence"></button>
+  <button class="nav-dot" onclick="document.getElementById('s7').scrollIntoView({behavior:'smooth'})" title="High-Level Architecture"></button>
+  <button class="nav-dot" onclick="document.getElementById('s8').scrollIntoView({behavior:'smooth'})" title="Low-Level Architecture"></button>
+  <button class="nav-dot" onclick="document.getElementById('s9').scrollIntoView({behavior:'smooth'})" title="Tech Stack"></button>
+  <button class="nav-dot" onclick="document.getElementById('s10').scrollIntoView({behavior:'smooth'})" title="Key Innovation"></button>
+  <button class="nav-dot" onclick="document.getElementById('s11').scrollIntoView({behavior:'smooth'})" title="Roadmap"></button>
+  <button class="nav-dot" onclick="document.getElementById('s12').scrollIntoView({behavior:'smooth'})" title="Close"></button>
+</nav>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 1: TITLE                                    -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s1" class="slide slide-title">
+  <svg class="logo-icon" viewBox="0 0 100 100" fill="none">
+    <!-- Lightbulb body -->
+    <path d="M50 8 C30 8 18 24 18 40 C18 52 26 60 32 66 L32 72 L68 72 L68 66 C74 60 82 52 82 40 C82 24 70 8 50 8Z" fill="rgba(245,158,11,0.3)" stroke="#f59e0b" stroke-width="2.5"/>
+    <!-- Lightbulb base -->
+    <rect x="34" y="72" width="32" height="4" rx="2" fill="rgba(255,255,255,0.4)"/>
+    <rect x="36" y="78" width="28" height="4" rx="2" fill="rgba(255,255,255,0.3)"/>
+    <rect x="38" y="84" width="24" height="4" rx="2" fill="rgba(255,255,255,0.2)"/>
+    <!-- Neural network nodes -->
+    <circle cx="50" cy="30" r="5" fill="#f59e0b"/>
+    <circle cx="36" cy="42" r="4" fill="#f59e0b" opacity="0.8"/>
+    <circle cx="64" cy="42" r="4" fill="#f59e0b" opacity="0.8"/>
+    <circle cx="42" cy="56" r="3.5" fill="#f59e0b" opacity="0.6"/>
+    <circle cx="58" cy="56" r="3.5" fill="#f59e0b" opacity="0.6"/>
+    <!-- Neural connections -->
+    <line x1="50" y1="30" x2="36" y2="42" stroke="#f59e0b" stroke-width="1.5" opacity="0.5"/>
+    <line x1="50" y1="30" x2="64" y2="42" stroke="#f59e0b" stroke-width="1.5" opacity="0.5"/>
+    <line x1="36" y1="42" x2="42" y2="56" stroke="#f59e0b" stroke-width="1.5" opacity="0.4"/>
+    <line x1="64" y1="42" x2="58" y2="56" stroke="#f59e0b" stroke-width="1.5" opacity="0.4"/>
+    <line x1="36" y1="42" x2="58" y2="56" stroke="#f59e0b" stroke-width="1" opacity="0.3"/>
+    <line x1="64" y1="42" x2="42" y2="56" stroke="#f59e0b" stroke-width="1" opacity="0.3"/>
+  </svg>
+  <h1>IdeaPoke</h1>
+  <p class="tagline">AI-Powered Patent Intelligence Platform</p>
+  <p class="subtitle">Architecture &amp; Technical Overview</p>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 2: THE PROBLEM                              -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s2" class="slide slide-problem">
+  <p class="section-label">The Problem</p>
+  <h2>Finding the Next Big Innovation<br>Shouldn't Take Months</h2>
+
+  <div class="grid-2">
+    <!-- Stats -->
+    <div class="flex-col gap-20">
+      <div style="background: var(--gray-50); border-radius: 20px; padding: 30px; text-align: center;">
+        <div style="font-size: 3rem; font-weight: 900; color: var(--danger); line-height: 1;">3.5M+</div>
+        <div style="font-size: 0.85rem; color: var(--gray-500); margin-top: 8px;">Patents filed globally every year</div>
+      </div>
+      <div style="background: var(--gray-50); border-radius: 20px; padding: 30px; text-align: center;">
+        <div style="font-size: 3rem; font-weight: 900; color: var(--accent); line-height: 1;">6&ndash;12 mo</div>
+        <div style="font-size: 0.85rem; color: var(--gray-500); margin-top: 8px;">Average time for a patent landscape analysis</div>
+      </div>
+      <div style="background: var(--gray-50); border-radius: 20px; padding: 30px; text-align: center;">
+        <div style="font-size: 3rem; font-weight: 900; color: var(--primary); line-height: 1;">90%</div>
+        <div style="font-size: 0.85rem; color: var(--gray-500); margin-top: 8px;">Of cross-domain connections are missed by human analysts</div>
+      </div>
+    </div>
+
+    <!-- Pain Points -->
+    <div class="flex-col gap-20">
+      <div class="pain-card">
+        <div class="card-icon-box" style="background: #fee2e2;">📄</div>
+        <div>
+          <h4>Information Overload</h4>
+          <p>Thousands of patents filed every day across every domain. No human team can read, categorize, and synthesize them all. Critical innovations get buried in the noise.</p>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="card-icon-box" style="background: #fef3c7;">🕐</div>
+        <div>
+          <h4>Months of Manual Analysis</h4>
+          <p>Companies hire teams of analysts who spend months mapping patent landscapes. By the time the report is done, the landscape has already shifted.</p>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="card-icon-box" style="background: #ede9fe;">🔗</div>
+        <div>
+          <h4>Missed Cross-Domain Connections</h4>
+          <p>Human experts specialize in narrow fields. They miss innovations from adjacent domains that could spark breakthrough ideas when combined.</p>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="card-icon-box" style="background: #dbeafe;">🔮</div>
+        <div>
+          <h4>No Systematic Future Extrapolation</h4>
+          <p>Existing tools catalog what exists today. None systematically analyze patent trends to predict what <strong>should</strong> be invented next.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 3: THE SOLUTION                             -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s3" class="slide slide-solution">
+  <p class="section-label">The Solution</p>
+  <h2>From Patents to Future Ideas<br>in Minutes</h2>
+
+  <div class="grid-2" style="align-items: center;">
+    <!-- Chat Mockup -->
+    <div>
+      <div class="chat-mockup">
+        <div class="chat-screen">
+          <div class="chat-header">
+            <span>IdeaPoke</span>
+            <span style="font-size:0.55rem; opacity:0.7;">AI PATENT INTELLIGENCE</span>
+          </div>
+          <div class="chat-body">
+            <div class="chat-msg chat-msg-user">
+              Analyze recent patents for "Lithium Battery" and generate novel innovation ideas
+            </div>
+            <div style="display:flex; flex-direction:column; gap:4px; margin-bottom:10px;">
+              <div class="status-indicator status-done" style="background: var(--success-light);">
+                <div class="status-dot"></div>
+                <span style="color:#047857;">Fetched 47 patents from Google Patents</span>
+              </div>
+              <div class="status-indicator status-done" style="background: var(--blue-light);">
+                <div class="status-dot" style="background:var(--blue);"></div>
+                <span style="color:var(--blue);">Extracted 142 innovations from PDFs</span>
+              </div>
+              <div class="status-indicator status-done" style="background: var(--accent-light);">
+                <div class="status-dot" style="background:var(--accent);"></div>
+                <span style="color:#92400e;">Synthesized landscape patterns</span>
+              </div>
+              <div class="status-indicator status-active" style="background: var(--primary-light);">
+                <div class="status-dot"></div>
+                <span style="color:var(--primary);">Generating novel ideas...</span>
+              </div>
+            </div>
+            <div class="chat-msg chat-msg-ai" style="max-width:100%;">
+              Based on analysis of 47 patents and 142 innovations, here are 5 novel future ideas:
+            </div>
+            <div class="idea-card-mini">
+              <h5>1. Self-Healing Solid-State Electrolyte Membranes</h5>
+              <p>Bio-inspired polymer membranes that autonomously detect and repair micro-fractures in solid-state battery interfaces.</p>
+              <div class="patent-trail">Based on: US20240123456, US20230789012</div>
+            </div>
+            <div class="idea-card-mini">
+              <h5>2. AI-Optimized Electrolyte Composition Engine</h5>
+              <p>ML-driven platform that designs novel electrolyte formulations based on desired charge/discharge profiles.</p>
+              <div class="patent-trail">Based on: US20240567890, US20230345678</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key Value Props -->
+    <div class="flex-col" style="gap: 24px;">
+      <div class="sol-point">
+        <div class="sol-icon" style="background: var(--primary-light);">🔍</div>
+        <div>
+          <h4>Enter Any Research Area</h4>
+          <p>Type a topic like "Lithium Battery", "CRISPR Gene Editing", or "Autonomous Drones". The system analyzes 3 years of relevant patents from Google Patents.</p>
+        </div>
+      </div>
+      <div class="sol-point">
+        <div class="sol-icon" style="background: var(--accent-light);">🤖</div>
+        <div>
+          <h4>4 AI Agents Work in Sequence</h4>
+          <p>A LangGraph-orchestrated pipeline of specialized agents fetches patents, extracts innovations, synthesizes the landscape, and generates novel ideas.</p>
+        </div>
+      </div>
+      <div class="sol-point">
+        <div class="sol-icon" style="background: var(--success-light);">💡</div>
+        <div>
+          <h4>5&ndash;7 Novel Future Innovation Ideas</h4>
+          <p>Each idea includes a title, a detailed explanation of why it's a logical next step, and a patent trail showing which existing patents inspired it.</p>
+        </div>
+      </div>
+      <div class="sol-point">
+        <div class="sol-icon" style="background: var(--blue-light);">💬</div>
+        <div>
+          <h4>Conversational Follow-Ups</h4>
+          <p>Ask follow-up questions: "Tell me more about idea 3", "Focus on recycling innovations", or even cross-reference previous analyses for cross-domain insight.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 4: HOW IT WORKS                             -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s4" class="slide slide-flow">
+  <p class="section-label">The Agentic Pipeline</p>
+  <h2>How It Works</h2>
+
+  <div class="flow-diagram">
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--primary-light);">🔎<span class="flow-number">1</span></div>
+      <h4>Patent Fetcher</h4>
+      <p>Searches Google Patents via SerpAPI. Filters to last 3 years. Up to 100 patents.</p>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--blue-light);">📑<span class="flow-number">2</span></div>
+      <h4>Innovation Extractor</h4>
+      <p>Downloads PDFs, chunks text, generates embeddings, extracts structured innovations via LLM.</p>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--accent-light);">🧩<span class="flow-number">3</span></div>
+      <h4>Synthesis Agent</h4>
+      <p>Uses pgvector similarity to rank innovations. Identifies patterns, gaps, and trends.</p>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--success-light);">🚀<span class="flow-number">4</span></div>
+      <h4>Ideation Agent</h4>
+      <p>Generates 5&ndash;7 novel future ideas with explanations and patent trail attribution.</p>
+    </div>
+  </div>
+
+  <div class="data-flow-visual">
+    <div style="font-size:0.65rem; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:2px; margin-bottom:10px;">Data Transformation Pipeline</div>
+    <div class="data-flow-row">
+      <div class="df-node" style="background:var(--primary-light); color:var(--primary-dark);">User Query<br><span style="font-size:0.55rem; opacity:0.7;">"Lithium Battery"</span></div>
+      <div class="df-arrow">&rarr;</div>
+      <div class="df-node" style="background:var(--blue-light); color:var(--blue);">100 Patents<br><span style="font-size:0.55rem; opacity:0.7;">Metadata + PDFs</span></div>
+      <div class="df-arrow">&rarr;</div>
+      <div class="df-node" style="background:var(--accent-light); color:#92400e;">142 Innovations<br><span style="font-size:0.55rem; opacity:0.7;">Embeddings + Structured</span></div>
+      <div class="df-arrow">&rarr;</div>
+      <div class="df-node" style="background:var(--teal-light); color:var(--teal);">Landscape Synthesis<br><span style="font-size:0.55rem; opacity:0.7;">Patterns + Gaps + Trends</span></div>
+      <div class="df-arrow">&rarr;</div>
+      <div class="df-node" style="background:var(--success-light); color:#047857;">5&ndash;7 Novel Ideas<br><span style="font-size:0.55rem; opacity:0.7;">Title + Explanation + Trail</span></div>
+    </div>
+  </div>
+
+  <div style="margin-top: 20px; padding: 16px 22px; background: white; border-radius: 14px; border: 1px solid var(--gray-200); display: flex; align-items: center; gap: 16px;">
+    <span style="font-size: 1.6rem;">🔄</span>
+    <div>
+      <div style="font-weight: 700; color: var(--gray-900); font-size: 0.9rem;">Follow-Up Loop</div>
+      <div style="font-size: 0.82rem; color: var(--gray-500);">After initial analysis, follow-up questions loop back to the Ideation Agent with the stored synthesis and ideas as context. Agents 1&ndash;3 don't re-run &mdash; the system leverages the existing analysis for instant, contextual responses streamed via SSE.</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 5: AGENT DEEP DIVE                          -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s5" class="slide" style="background: var(--gray-50);">
+  <p class="section-label">Agent Deep Dive</p>
+  <h2>Four Specialized AI Agents</h2>
+
+  <div class="grid-2 gap-30">
+    <div class="agent-card" style="border-top-color: var(--primary);">
+      <div class="agent-icon" style="background: var(--primary-light);">🔎</div>
+      <h4>Agent 1: Patent Fetcher</h4>
+      <p>Searches Google Patents via SerpAPI for the research area. Filters to the last 3 years and paginates up to 100 results (10 pages of 10) to balance coverage with API cost.</p>
+      <div class="agent-detail">
+        <strong>Tools:</strong> SerpAPI Google Patents search<br>
+        <strong>Extracts:</strong> Title, publication number, dates, inventors, assignee, snippet, PDF links<br>
+        <strong>Stores:</strong> Patent records in <code>patents</code> table with <code>session_id</code>
+      </div>
+    </div>
+
+    <div class="agent-card" style="border-top-color: var(--blue);">
+      <div class="agent-icon" style="background: var(--blue-light);">📑</div>
+      <h4>Agent 2: Innovation Extractor</h4>
+      <p>Downloads patent PDFs using PyMuPDF, chunks the text, generates OpenAI embeddings (text-embedding-3-small, 1536 dims), and uses GPT-4o-mini to extract structured innovations from each patent.</p>
+      <div class="agent-detail">
+        <strong>Tools:</strong> PyMuPDF (PDF download + chunking), OpenAI Embeddings API<br>
+        <strong>LLM:</strong> <code>gpt-4o-mini</code> for extraction (cost-efficient for high volume)<br>
+        <strong>Extracts:</strong> Innovation summary, technology used, problem solved<br>
+        <strong>Resilience:</strong> Skips patents where PDF download fails &mdash; logs warning, does not block pipeline
+      </div>
+    </div>
+
+    <div class="agent-card" style="border-top-color: var(--accent);">
+      <div class="agent-icon" style="background: var(--accent-light);">🧩</div>
+      <h4>Agent 3: Synthesis</h4>
+      <p>Loads all innovations for the session, embeds the original query, and uses pgvector cosine similarity to rank the most relevant innovations. The LLM then identifies patterns, gaps, convergence areas, and emerging trends across the entire landscape.</p>
+      <div class="agent-detail">
+        <strong>Tools:</strong> pgvector similarity search, LLM synthesis<br>
+        <strong>LLM:</strong> <code>gpt-4o-mini</code> for pattern identification<br>
+        <strong>Output:</strong> Structured landscape summary (JSONB stored in <code>analyses.synthesis</code>)
+      </div>
+    </div>
+
+    <div class="agent-card" style="border-top-color: var(--success);">
+      <div class="agent-icon" style="background: var(--success-light);">🚀</div>
+      <h4>Agent 4: Ideation</h4>
+      <p>Takes the synthesis report and raw innovations as context. Uses GPT-4o (the most capable model) to generate 5&ndash;7 novel future innovation ideas. Each idea includes a title, explanation, and patent trail showing which existing patents inspired it.</p>
+      <div class="agent-detail">
+        <strong>LLM:</strong> <code>gpt-4o</code> for creative ideation (highest capability)<br>
+        <strong>Output:</strong> Array of ideas stored in <code>analyses.generated_ideas</code> (JSONB)<br>
+        <strong>Follow-ups:</strong> Handles conversational questions using stored analysis context<br>
+        <strong>Cross-domain:</strong> Can receive previous analysis context for cross-domain connections
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 6: CONVERSATIONAL INTELLIGENCE              -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s6" class="slide slide-conversational">
+  <p class="section-label">Conversational Intelligence</p>
+  <h2>Beyond One-Shot Analysis</h2>
+
+  <div class="grid-2 gap-30">
+    <!-- Left: Conversational Flow -->
+    <div class="flex-col gap-20">
+      <div class="conv-flow-card">
+        <h4><span style="font-size:1.2rem;">1️⃣</span> Initial Analysis with Real-Time Status</h4>
+        <p style="font-size:0.82rem; color:var(--gray-500); margin-bottom:12px;">User submits a research area. The backend creates a session, then the WebSocket connection triggers the full 4-agent pipeline. Status events stream in real-time so users see exactly which agent is working.</p>
+        <div style="display:flex; flex-direction:column; gap:4px;">
+          <div class="status-indicator status-done" style="background: var(--success-light);">
+            <div class="status-dot" style="background:var(--success);"></div>
+            <span style="color:#047857; font-size:0.72rem;">Step 1: Patent Fetcher &mdash; "Found 47 patents"</span>
+          </div>
+          <div class="status-indicator status-done" style="background: var(--blue-light);">
+            <div class="status-dot" style="background:var(--blue);"></div>
+            <span style="color:var(--blue); font-size:0.72rem;">Step 2: Innovation Extractor &mdash; "Extracted 142 innovations"</span>
+          </div>
+          <div class="status-indicator status-done" style="background: var(--accent-light);">
+            <div class="status-dot" style="background:var(--accent);"></div>
+            <span style="color:#92400e; font-size:0.72rem;">Step 3: Synthesis &mdash; "Identified 5 key trends"</span>
+          </div>
+          <div class="status-indicator status-active" style="background: var(--primary-light);">
+            <div class="status-dot"></div>
+            <span style="color:var(--primary); font-size:0.72rem;">Step 4: Ideation &mdash; "Generating novel ideas..."</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="conv-flow-card">
+        <h4><span style="font-size:1.2rem;">2️⃣</span> Follow-Up Questions via SSE</h4>
+        <p style="font-size:0.82rem; color:var(--gray-500); margin-bottom:8px;">After the analysis completes, users can ask follow-up questions that stream responses token-by-token via Server-Sent Events. The Ideation Agent uses stored synthesis and ideas as context.</p>
+        <div style="background: var(--gray-100); border-radius: 10px; padding: 12px 14px;">
+          <div style="font-size: 0.72rem; color: var(--primary); font-weight: 600; margin-bottom: 6px;">Example follow-ups:</div>
+          <div style="font-size: 0.72rem; color: var(--gray-600); line-height: 1.6;">
+            &bull; "Tell me more about idea 3 &mdash; the self-healing membranes"<br>
+            &bull; "Focus on recycling and sustainability innovations"<br>
+            &bull; "Which ideas have the strongest patent evidence?"<br>
+            &bull; "How could idea 1 and idea 5 be combined?"
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Cross-Domain + Real-Time Tech -->
+    <div class="flex-col gap-20">
+      <div class="conv-flow-card">
+        <h4><span style="font-size:1.2rem;">3️⃣</span> Cross-Domain Analysis</h4>
+        <p style="font-size:0.82rem; color:var(--gray-500); margin-bottom:12px;">When starting a new analysis, users can choose to "Build on a previous analysis." This loads the old synthesis and ideas as additional context for the Ideation Agent, enabling cross-domain connections.</p>
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+          <div style="padding: 10px 14px; background: var(--primary-light); border-radius: 10px; font-size: 0.72rem; font-weight: 700; color: var(--primary-dark); text-align: center;">
+            Previous Analysis<br><span style="font-weight:400; opacity:0.7;">"Lithium Battery"</span>
+          </div>
+          <div style="color: var(--gray-300); font-size: 1.2rem;">+</div>
+          <div style="padding: 10px 14px; background: var(--accent-light); border-radius: 10px; font-size: 0.72rem; font-weight: 700; color: #92400e; text-align: center;">
+            New Analysis<br><span style="font-weight:400; opacity:0.7;">"Solar Energy"</span>
+          </div>
+          <div style="color: var(--gray-300); font-size: 1.2rem;">=</div>
+          <div style="padding: 10px 14px; background: var(--success-light); border-radius: 10px; font-size: 0.72rem; font-weight: 700; color: #047857; text-align: center;">
+            Cross-Domain Ideas<br><span style="font-weight:400; opacity:0.7;">Battery + Solar synergies</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="conv-flow-card">
+        <h4><span style="font-size:1.2rem;">🔌</span> Real-Time Communication Stack</h4>
+        <div style="display:flex; flex-direction:column; gap:12px; margin-top:8px;">
+          <div style="display:flex; align-items:flex-start; gap:12px;">
+            <div style="padding:6px 10px; border-radius:8px; background:var(--primary-light); color:var(--primary-dark); font-size:0.7rem; font-weight:700; min-width:80px; text-align:center;">WebSocket</div>
+            <div style="font-size:0.78rem; color:var(--gray-600);">
+              <strong>Agent status streaming</strong> during pipeline execution. Client connects to <code style="background:var(--gray-100); padding:1px 5px; border-radius:3px; font-size:0.7rem;">WS /ws/analysis/:session_id</code>. Receives step-by-step status events in real-time.
+            </div>
+          </div>
+          <div style="display:flex; align-items:flex-start; gap:12px;">
+            <div style="padding:6px 10px; border-radius:8px; background:var(--accent-light); color:#92400e; font-size:0.7rem; font-weight:700; min-width:80px; text-align:center;">SSE</div>
+            <div style="font-size:0.78rem; color:var(--gray-600);">
+              <strong>Follow-up response streaming</strong> via Server-Sent Events. Tokens stream as <code style="background:var(--gray-100); padding:1px 5px; border-radius:3px; font-size:0.7rem;">data: {"token": "..."}</code>. Provides a ChatGPT-like typing experience.
+            </div>
+          </div>
+          <div style="display:flex; align-items:flex-start; gap:12px;">
+            <div style="padding:6px 10px; border-radius:8px; background:var(--blue-light); color:var(--blue); font-size:0.7rem; font-weight:700; min-width:80px; text-align:center;">REST</div>
+            <div style="font-size:0.78rem; color:var(--gray-600);">
+              <strong>Session management and result fetching.</strong> Create sessions, list past analyses, and retrieve full results after pipeline completion.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 7: HIGH-LEVEL ARCHITECTURE                  -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s7" class="slide slide-arch">
+  <p class="section-label">System Architecture</p>
+  <h2>High-Level Architecture</h2>
+
+  <div class="arch-diagram">
+    <div class="arch-layer layer-client">
+      <div class="arch-label">CLIENT</div>
+      <div class="arch-boxes">
+        <div class="arch-box">
+          <h5>💬 Chat UI</h5>
+          <div class="tech">React + TypeScript + Tailwind</div>
+        </div>
+        <div class="arch-box">
+          <h5>💡 Idea Cards</h5>
+          <div class="tech">Title + Explanation + Patent Trail</div>
+        </div>
+        <div class="arch-box">
+          <h5>📊 Agent Status</h5>
+          <div class="tech">Real-time pipeline progress</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arch-connector">
+      <div class="connector-arrow"><span>&darr;&uarr;</span><span class="connector-label">WebSocket + REST + SSE</span></div>
+    </div>
+
+    <div class="arch-layer layer-api">
+      <div class="arch-label">API</div>
+      <div class="arch-boxes">
+        <div class="arch-box"><h5>🌐 REST Routes</h5><div class="tech">FastAPI endpoints</div></div>
+        <div class="arch-box"><h5>🔌 WebSocket Handler</h5><div class="tech">Agent status streaming</div></div>
+        <div class="arch-box"><h5>📡 SSE Streaming</h5><div class="tech">Follow-up responses</div></div>
+      </div>
+    </div>
+
+    <div class="arch-connector">
+      <div class="connector-arrow"><span>&darr;&uarr;</span><span class="connector-label">LangGraph State Machine</span></div>
+    </div>
+
+    <div class="arch-layer layer-intelligence">
+      <div class="arch-label">INTEL</div>
+      <div class="arch-boxes">
+        <div class="arch-box"><h5>🔎 Patent Fetcher</h5><div class="tech">SerpAPI Tools</div></div>
+        <div class="arch-box"><h5>📑 Innovation Extractor</h5><div class="tech">PDF + Embedding Tools</div></div>
+        <div class="arch-box"><h5>🧩 Synthesis</h5><div class="tech">pgvector + LLM</div></div>
+        <div class="arch-box"><h5>🚀 Ideation</h5><div class="tech">GPT-4o Generation</div></div>
+      </div>
+    </div>
+
+    <div class="arch-connector">
+      <div class="connector-arrow"><span>&darr;&uarr;</span><span class="connector-label">SQLAlchemy + pgvector</span></div>
+    </div>
+
+    <div class="arch-layer layer-data">
+      <div class="arch-label">DATA</div>
+      <div class="arch-boxes">
+        <div class="arch-box"><h5>🐘 PostgreSQL</h5><div class="tech">Relational data + JSONB</div></div>
+        <div class="arch-box"><h5>🧮 pgvector</h5><div class="tech">1536-dim embeddings</div></div>
+        <div class="arch-box"><h5>📋 3 Tables</h5><div class="tech">patents, innovations, analyses</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 8: LOW-LEVEL ARCHITECTURE                   -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s8" class="slide slide-lowlevel">
+  <p class="section-label">Low-Level Architecture</p>
+  <h2>Database, APIs &amp; Data Lifecycle</h2>
+
+  <div class="grid-2 gap-30" style="align-items: start;">
+    <!-- Left: DB Schema + Agent-Tool Mapping -->
+    <div class="flex-col gap-20">
+      <div class="ll-section">
+        <h4>🗄️ Database Schema (3 Tables)</h4>
+        <table class="db-table">
+          <thead><tr><th>Table</th><th>Key Columns</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="tbl-name">patents</td>
+              <td><code style="font-size:0.65rem;">session_id, title, publication_number, inventor, assignee, pdf_url</code></td>
+              <td>Raw patent metadata from Google Patents</td>
+            </tr>
+            <tr>
+              <td class="tbl-name">innovations</td>
+              <td><code style="font-size:0.65rem;">patent_id, innovation_summary, technology_used[], embedding VECTOR(1536)</code></td>
+              <td>Extracted innovations with pgvector embeddings</td>
+            </tr>
+            <tr>
+              <td class="tbl-name">analyses</td>
+              <td><code style="font-size:0.65rem;">id (UUID = session_id), synthesis JSONB, generated_ideas JSONB, status</code></td>
+              <td>Session tracking, results, and status</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="ll-section">
+        <h4>🔄 Analysis Status Lifecycle</h4>
+        <div class="lifecycle-flow">
+          <div class="lf-node" style="background:var(--gray-100); color:var(--gray-600);">pending</div>
+          <div class="lf-arrow">&rarr;</div>
+          <div class="lf-node" style="background:var(--accent-light); color:#92400e;">running</div>
+          <div class="lf-arrow">&rarr;</div>
+          <div class="lf-node" style="background:var(--success-light); color:#047857;">completed</div>
+        </div>
+        <div style="font-size:0.7rem; color:var(--gray-400); margin-top:4px; margin-left:4px;">
+          Can also &rarr; <span style="color:var(--danger);">failed</span> from running state
+        </div>
+      </div>
+
+      <div class="ll-section">
+        <h4>🤖 Agent &rarr; Tool Mapping</h4>
+        <div class="conn-layer" style="padding:8px 0; border-bottom: 1px dashed var(--gray-200);">
+          <div class="conn-label" style="width:130px; font-size:0.68rem;">Patent Fetcher</div>
+          <div class="conn-nodes">
+            <div style="padding:4px 10px; border-radius:6px; background:var(--primary-light); color:var(--primary-dark); font-size:0.68rem; font-weight:600;">SerpAPI Search</div>
+            <div style="padding:4px 10px; border-radius:6px; background:var(--primary-light); color:var(--primary-dark); font-size:0.68rem; font-weight:600;">DB Insert</div>
+          </div>
+        </div>
+        <div class="conn-layer" style="padding:8px 0; border-bottom: 1px dashed var(--gray-200);">
+          <div class="conn-label" style="width:130px; font-size:0.68rem;">Innov. Extractor</div>
+          <div class="conn-nodes">
+            <div style="padding:4px 10px; border-radius:6px; background:var(--blue-light); color:var(--blue); font-size:0.68rem; font-weight:600;">PyMuPDF</div>
+            <div style="padding:4px 10px; border-radius:6px; background:var(--blue-light); color:var(--blue); font-size:0.68rem; font-weight:600;">Embedding API</div>
+            <div style="padding:4px 10px; border-radius:6px; background:var(--blue-light); color:var(--blue); font-size:0.68rem; font-weight:600;">GPT-4o-mini</div>
+          </div>
+        </div>
+        <div class="conn-layer" style="padding:8px 0; border-bottom: 1px dashed var(--gray-200);">
+          <div class="conn-label" style="width:130px; font-size:0.68rem;">Synthesis</div>
+          <div class="conn-nodes">
+            <div style="padding:4px 10px; border-radius:6px; background:var(--accent-light); color:#92400e; font-size:0.68rem; font-weight:600;">pgvector Similarity</div>
+            <div style="padding:4px 10px; border-radius:6px; background:var(--accent-light); color:#92400e; font-size:0.68rem; font-weight:600;">GPT-4o-mini</div>
+          </div>
+        </div>
+        <div class="conn-layer" style="padding:8px 0; border-bottom:none;">
+          <div class="conn-label" style="width:130px; font-size:0.68rem;">Ideation</div>
+          <div class="conn-nodes">
+            <div style="padding:4px 10px; border-radius:6px; background:var(--success-light); color:#047857; font-size:0.68rem; font-weight:600;">GPT-4o</div>
+            <div style="padding:4px 10px; border-radius:6px; background:var(--success-light); color:#047857; font-size:0.68rem; font-weight:600;">DB Read/Write</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: API Endpoints + Data Shape -->
+    <div class="flex-col gap-20">
+      <div class="ll-section">
+        <h4>🌐 API Endpoints</h4>
+        <div style="display:flex; flex-direction:column; gap:2px;">
+          <div style="font-size:0.65rem; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:1px; padding:6px 0 2px;">REST</div>
+          <div class="api-endpoint"><span class="api-method method-post">POST</span><span class="api-path">/api/analysis</span><span class="api-desc">Create session (returns session_id)</span></div>
+          <div class="api-endpoint"><span class="api-method method-get">GET</span><span class="api-path">/api/analysis/:id</span><span class="api-desc">Get analysis results</span></div>
+          <div class="api-endpoint"><span class="api-method method-get">GET</span><span class="api-path">/api/analyses</span><span class="api-desc">List past analyses</span></div>
+
+          <div style="font-size:0.65rem; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:1px; padding:8px 0 2px;">Streaming</div>
+          <div class="api-endpoint"><span class="api-method method-sse">SSE</span><span class="api-path">/api/followup</span><span class="api-desc">Follow-up question (token stream)</span></div>
+          <div class="api-endpoint"><span class="api-method method-ws">WS</span><span class="api-path">/ws/analysis/:session_id</span><span class="api-desc">Real-time agent status</span></div>
+        </div>
+      </div>
+
+      <div class="ll-section">
+        <h4>📦 Generated Ideas Shape (JSONB)</h4>
+        <div style="background: var(--gray-50); border-radius: 10px; padding: 14px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.68rem; color: var(--gray-700); line-height: 1.6; white-space: pre; overflow-x: auto;">[
+  {
+    "title": "Self-healing battery membranes",
+    "explanation": "Bio-inspired polymer membranes
+      that detect and repair micro-fractures...",
+    "patent_trail": [
+      "US20240123456",
+      "US20230789012"
+    ]
+  }
+]</div>
+      </div>
+
+      <div class="ll-section">
+        <h4>🔌 WebSocket Event Shape</h4>
+        <div style="background: var(--gray-50); border-radius: 10px; padding: 14px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.68rem; color: var(--gray-700); line-height: 1.6; white-space: pre; overflow-x: auto;">// Status event
+{ "type": "status",
+  "agent": "patent_fetcher",
+  "message": "Found 47 patents",
+  "step": 1 }
+
+// Completion event
+{ "type": "complete",
+  "session_id": "uuid" }</div>
+      </div>
+
+      <div class="ll-section">
+        <h4>📡 Sequencing Protocol</h4>
+        <div class="lifecycle-flow">
+          <div class="lf-node" style="background:var(--blue-light); color:var(--blue);">POST /api/analysis</div>
+          <div class="lf-arrow">&rarr;</div>
+          <div class="lf-node" style="background:var(--primary-light); color:var(--primary-dark);">Connect WebSocket</div>
+          <div class="lf-arrow">&rarr;</div>
+          <div class="lf-node" style="background:var(--accent-light); color:#92400e;">Pipeline Starts</div>
+          <div class="lf-arrow">&rarr;</div>
+          <div class="lf-node" style="background:var(--success-light); color:#047857;">GET Results</div>
+        </div>
+        <div style="font-size:0.7rem; color:var(--gray-400); margin-top:6px;">
+          WebSocket connection triggers pipeline start. This ensures no status events are missed.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 9: TECH STACK                               -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s9" class="slide" style="background: white;">
+  <p class="section-label">Technology</p>
+  <h2>Tech Stack</h2>
+
+  <div class="flex-col gap-30">
+    <!-- Frontend -->
+    <div>
+      <div class="tech-group-label" style="color: var(--primary); border-color: var(--primary);">Frontend</div>
+      <div class="grid-4 gap-20">
+        <div class="tech-card">
+          <div class="tech-emoji">&#9883;</div>
+          <h5>React 19</h5>
+          <p>Component-based UI with hooks</p>
+        </div>
+        <div class="tech-card">
+          <div class="tech-emoji">&#9889;</div>
+          <h5>Vite</h5>
+          <p>Fast dev server and build tool</p>
+        </div>
+        <div class="tech-card">
+          <div class="tech-emoji">&#128309;</div>
+          <h5>TypeScript</h5>
+          <p>Type-safe development</p>
+        </div>
+        <div class="tech-card">
+          <div class="tech-emoji">&#127912;</div>
+          <h5>Tailwind CSS</h5>
+          <p>Utility-first styling</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Backend -->
+    <div>
+      <div class="tech-group-label" style="color: var(--blue); border-color: var(--blue);">Backend</div>
+      <div class="grid-4 gap-20">
+        <div class="tech-card">
+          <div class="tech-emoji">&#128640;</div>
+          <h5>FastAPI</h5>
+          <p>High-perf async Python framework</p>
+        </div>
+        <div class="tech-card">
+          <div class="tech-emoji">&#128013;</div>
+          <h5>Python 3.12</h5>
+          <p>Latest runtime with perf gains</p>
+        </div>
+        <div class="tech-card">
+          <div class="tech-emoji">&#9889;</div>
+          <h5>Uvicorn</h5>
+          <p>ASGI server for async I/O</p>
+        </div>
+        <div class="tech-card">
+          <div class="tech-emoji">&#128279;</div>
+          <h5>SQLAlchemy</h5>
+          <p>ORM + Alembic migrations</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI/ML -->
+    <div>
+      <div class="tech-group-label" style="color: var(--accent); border-color: var(--accent);">AI / ML Pipeline</div>
+      <div class="grid-4 gap-20">
+        <div class="tech-card">
+          <div class="tech-emoji">&#128300;</div>
+          <h5>LangGraph</h5>
+          <p>Agent orchestration state machine</p>
+        </div>
+        <div class="tech-card">
+          <div class="tech-emoji">&#128279;</div>
+          <h5>LangChain</h5>
+          <p>Agent framework with tool binding</p>
+        </div>
+        <div class="tech-card">
+          <div class="tech-emoji">&#129302;</div>
+          <h5>GPT-4o / 4o-mini</h5>
+          <p>Ideation + extraction models</p>
+        </div>
+        <div class="tech-card">
+          <div class="tech-emoji">&#128200;</div>
+          <h5>text-embedding-3-small</h5>
+          <p>1536-dim patent embeddings</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data + Integration -->
+    <div>
+      <div class="tech-group-label" style="color: var(--success); border-color: var(--success);">Data &amp; Integration</div>
+      <div class="grid-4 gap-20">
+        <div class="tech-card">
+          <div class="tech-emoji">&#128024;</div>
+          <h5>PostgreSQL</h5>
+          <p>Relational + JSONB storage</p>
+        </div>
+        <div class="tech-card">
+          <div class="tech-emoji">&#128202;</div>
+          <h5>pgvector</h5>
+          <p>Vector similarity in Postgres</p>
+        </div>
+        <div class="tech-card">
+          <div class="tech-emoji">&#128270;</div>
+          <h5>SerpAPI</h5>
+          <p>Google Patents search API</p>
+        </div>
+        <div class="tech-card">
+          <div class="tech-emoji">&#128196;</div>
+          <h5>PyMuPDF</h5>
+          <p>Patent PDF processing</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 10: KEY INNOVATION                          -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s10" class="slide" style="background: linear-gradient(135deg, #fefce8 0%, #faf5ff 100%);">
+  <p class="section-label">What Makes It Different</p>
+  <h2>Key Design Decisions</h2>
+
+  <div class="grid-3 gap-30">
+    <div class="innovation-card">
+      <div class="card-icon-big" style="background: var(--accent-light);">📊</div>
+      <h4>Evidence-Based Ideation</h4>
+      <p>Ideas aren't random brainstorming. Every generated innovation is grounded in <strong>actual patent data</strong>. The Ideation Agent receives a synthesized landscape of real trends, gaps, and patterns extracted from up to 100 patents. Each idea includes a patent trail that traces back to the evidence that inspired it.</p>
+      <div class="innovation-mini-diagram">
+        <div class="imd-node" style="background:var(--blue-light); color:var(--blue);">100 Patents</div>
+        <div class="imd-arrow">&rarr;</div>
+        <div class="imd-node" style="background:var(--accent-light); color:#92400e;">Trends + Gaps</div>
+        <div class="imd-arrow">&rarr;</div>
+        <div class="imd-node" style="background:var(--success-light); color:#047857;">Grounded Ideas</div>
+      </div>
+    </div>
+
+    <div class="innovation-card">
+      <div class="card-icon-big" style="background: var(--primary-light);">🗄️</div>
+      <h4>pgvector Consolidation</h4>
+      <p>Instead of running a separate vector database (Pinecone, Weaviate, etc.), IdeaPoke stores embeddings directly in PostgreSQL using the <strong>pgvector extension</strong>. One database for structured data AND vector similarity search. This simplifies deployment, reduces infrastructure cost, and eliminates data sync issues between separate stores.</p>
+      <div class="innovation-mini-diagram">
+        <div class="imd-node" style="background:var(--danger-light); color:var(--danger);">No Pinecone</div>
+        <div class="imd-arrow">&rarr;</div>
+        <div class="imd-node" style="background:var(--primary-light); color:var(--primary-dark);">One PostgreSQL</div>
+        <div class="imd-arrow">&rarr;</div>
+        <div class="imd-node" style="background:var(--success-light); color:#047857;">Simpler Ops</div>
+      </div>
+    </div>
+
+    <div class="innovation-card">
+      <div class="card-icon-big" style="background: var(--success-light);">📡</div>
+      <h4>Real-Time Agent Transparency</h4>
+      <p>Users aren't left waiting behind a spinner. The WebSocket connection streams <strong>exactly which agent is working</strong> and what it's doing: "Fetching patents...", "Found 47 patents", "Extracting innovations from PDFs...". This builds trust and makes the multi-minute pipeline feel interactive rather than opaque.</p>
+      <div class="innovation-mini-diagram">
+        <div class="imd-node" style="background:var(--primary-light); color:var(--primary-dark);">Agent Runs</div>
+        <div class="imd-arrow">&rarr;</div>
+        <div class="imd-node" style="background:var(--accent-light); color:#92400e;">WS Event</div>
+        <div class="imd-arrow">&rarr;</div>
+        <div class="imd-node" style="background:var(--success-light); color:#047857;">User Sees Status</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 11: ROADMAP                                 -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s11" class="slide slide-dark">
+  <p class="section-label">Looking Ahead</p>
+  <h2>Future Roadmap</h2>
+
+  <div style="display: flex; gap: 20px;">
+    <div class="roadmap-phase phase-now">
+      <div class="phase-badge">Current</div>
+      <h4>Core Pipeline</h4>
+      <ul class="roadmap-list">
+        <li>4-agent agentic pipeline</li>
+        <li>Chat-based UI with idea cards</li>
+        <li>Real-time WebSocket agent status</li>
+        <li>Follow-up questions via SSE</li>
+        <li>Cross-domain analysis support</li>
+        <li>pgvector similarity search</li>
+      </ul>
+    </div>
+    <div class="roadmap-phase phase-next">
+      <div class="phase-badge">Next</div>
+      <h4>Enhanced Analysis</h4>
+      <ul class="roadmap-list">
+        <li>Exportable PDF/DOCX reports</li>
+        <li>Batch analysis (multiple queries)</li>
+        <li>Cross-domain comparison views</li>
+        <li>Citation graph visualization</li>
+        <li>Analysis sharing via URL</li>
+        <li>User authentication and sessions</li>
+      </ul>
+    </div>
+    <div class="roadmap-phase phase-later">
+      <div class="phase-badge">Future</div>
+      <h4>Intelligence Features</h4>
+      <ul class="roadmap-list">
+        <li>Patent monitoring and alerts</li>
+        <li>Competitive landscape comparison</li>
+        <li>Custom LLM fine-tuning on patent data</li>
+        <li>Innovation scoring and ranking</li>
+        <li>Technology readiness level estimation</li>
+        <li>Trend prediction over time</li>
+      </ul>
+    </div>
+    <div class="roadmap-phase phase-future">
+      <div class="phase-badge">Vision</div>
+      <h4>Full Platform</h4>
+      <ul class="roadmap-list">
+        <li>Team collaboration workspaces</li>
+        <li>Enterprise SSO integration</li>
+        <li>API access for programmatic use</li>
+        <li>Custom agent pipelines</li>
+        <li>Multi-patent-office coverage</li>
+        <li>Innovation portfolio management</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 12: CLOSING                                 -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s12" class="slide slide-closing">
+  <p class="section-label" style="color: rgba(255,255,255,0.4);">IdeaPoke</p>
+  <h2>Patent Intelligence,<br>Reimagined with AI</h2>
+
+  <div class="closing-points">
+    <div class="closing-point">
+      <div class="closing-icon">🤖</div>
+      <h4>Agentic AI Architecture</h4>
+      <p>LangGraph + LangChain multi-agent orchestration with 4 specialized agents</p>
+    </div>
+    <div class="closing-point">
+      <div class="closing-icon">📊</div>
+      <h4>Evidence-Grounded Ideation</h4>
+      <p>Novel future ideas backed by real patent data with traceable patent trails</p>
+    </div>
+    <div class="closing-point">
+      <div class="closing-icon">🏗️</div>
+      <h4>Production-Ready Stack</h4>
+      <p>FastAPI + React + PostgreSQL + pgvector, designed for scale</p>
+    </div>
+    <div class="closing-point">
+      <div class="closing-icon">&#128736;</div>
+      <h4>Built by Jeswin</h4>
+      <p>Full-stack design, architecture, and implementation</p>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOAD AS PDF BUTTON -->
+<button class="download-btn" onclick="downloadPDF()" title="Download as PDF">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+    <polyline points="7 10 12 15 17 10"/>
+    <line x1="12" y1="15" x2="12" y2="3"/>
+  </svg>
+  Download PDF
+</button>
+
+<script>
+function downloadPDF() {
+  window.print();
+}
+</script>
+
+</body>
+</html>

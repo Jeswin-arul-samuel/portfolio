@@ -1,0 +1,2208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product Description Generator AI - Executive Overview</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  :root {
+    --primary: #8b5cf6;
+    --primary-dark: #7c3aed;
+    --primary-light: #ede9fe;
+    --accent: #f59e0b;
+    --accent-light: #fef3c7;
+    --success: #10b981;
+    --success-light: #d1fae5;
+    --danger: #ef4444;
+    --danger-light: #fee2e2;
+    --blue: #2563eb;
+    --blue-light: #dbeafe;
+    --teal: #14b8a6;
+    --teal-light: #ccfbf1;
+    --pink: #ec4899;
+    --pink-light: #fce7f3;
+    --orange: #f97316;
+    --orange-light: #ffedd5;
+    --gray-50: #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-300: #cbd5e1;
+    --gray-400: #94a3b8;
+    --gray-500: #64748b;
+    --gray-600: #475569;
+    --gray-700: #334155;
+    --gray-800: #1e293b;
+    --gray-900: #0f172a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--gray-50);
+    color: var(--gray-800);
+    line-height: 1.6;
+  }
+
+  .slide {
+    min-height: 100vh;
+    padding: 60px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .slide + .slide { border-top: 1px solid var(--gray-200); }
+
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: var(--primary);
+    margin-bottom: 12px;
+  }
+
+  .slide h2 {
+    font-size: 2.6rem;
+    font-weight: 800;
+    color: var(--gray-900);
+    margin-bottom: 36px;
+    letter-spacing: -1px;
+    line-height: 1.15;
+  }
+
+  .slide h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 16px;
+  }
+
+  /* ── NAV ── */
+  .slide-nav {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 100;
+  }
+
+  .nav-dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--gray-300);
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+  }
+  .nav-dot:hover { background: var(--primary); transform: scale(1.4); }
+
+  /* ═══════════ SLIDE 1: TITLE ═══════════ */
+  .slide-title {
+    background: linear-gradient(135deg, #0f172a 0%, #2e1065 40%, #8b5cf6 100%);
+    color: white;
+    text-align: center;
+    align-items: center;
+  }
+  .slide-title::before {
+    content: '';
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(245,158,11,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .slide-title::after {
+    content: '';
+    position: absolute;
+    bottom: -150px; left: -150px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(236,72,153,0.1) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .logo-icon { width: 120px; height: 120px; margin-bottom: 30px; position: relative; z-index: 1; }
+
+  .slide-title h1 {
+    font-size: 4.5rem;
+    font-weight: 900;
+    letter-spacing: -2px;
+    margin-bottom: 16px;
+    position: relative; z-index: 1;
+    background: linear-gradient(135deg, #ffffff 0%, #c4b5fd 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .slide-title .tagline {
+    font-size: 1.5rem;
+    font-weight: 300;
+    opacity: 0.9;
+    margin-bottom: 40px;
+    position: relative; z-index: 1;
+  }
+  .slide-title .subtitle {
+    font-size: 1rem;
+    opacity: 0.6;
+    position: relative; z-index: 1;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+  .slide-title .tech-pills {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 30px;
+    position: relative;
+    z-index: 1;
+    flex-wrap: wrap;
+  }
+  .tech-pill {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
+  }
+
+  /* ═══════════ COMMON COMPONENTS ═══════════ */
+  .pain-card, .feature-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 22px 24px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .pain-card { border-left: 4px solid var(--danger); }
+  .card-icon-box {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+  }
+  .pain-card h4, .feature-card h4 { font-size: 1rem; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+  .pain-card p, .feature-card p { font-size: 0.85rem; color: var(--gray-500); line-height: 1.5; }
+
+  /* Grid helpers */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 20px; }
+  .gap-20 { gap: 20px; }
+  .gap-30 { gap: 30px; }
+
+  .flex-col { display: flex; flex-direction: column; }
+
+  /* Stat cards */
+  .stat-card {
+    text-align: center;
+    padding: 32px 24px;
+    border-radius: 20px;
+  }
+  .stat-number {
+    font-size: 3.2rem;
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .stat-label { font-size: 0.9rem; font-weight: 400; }
+
+  /* ═══════════ SLIDE: PROBLEM ═══════════ */
+  .slide-problem { background: white; }
+
+  /* ═══════════ SLIDE: DARK ═══════════ */
+  .slide-dark { background: var(--gray-900); color: white; }
+  .slide-dark h2 { color: white; }
+  .slide-dark .section-label { color: var(--accent); }
+
+  .dark-stat .stat-number {
+    background: linear-gradient(135deg, var(--accent) 0%, #fbbf24 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .dark-stat .stat-label { color: rgba(255,255,255,0.55); }
+  .dark-stat { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); }
+
+  .dark-card {
+    padding: 24px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .dark-card h4 { font-size: 1rem; font-weight: 700; color: var(--accent); margin-bottom: 8px; }
+  .dark-card p { font-size: 0.85rem; color: rgba(255,255,255,0.5); line-height: 1.5; }
+
+  /* ═══════════ FLOW DIAGRAM ═══════════ */
+  .slide-flow { background: var(--gray-50); }
+
+  .flow-diagram {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 0;
+    flex-wrap: wrap;
+  }
+  .flow-step {
+    text-align: center;
+    width: 170px;
+  }
+  .flow-circle {
+    width: 78px; height: 78px;
+    border-radius: 50%;
+    margin: 0 auto 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    position: relative;
+  }
+  .flow-number {
+    position: absolute;
+    top: -5px; right: -5px;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--gray-900);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .flow-step h4 { font-size: 0.85rem; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+  .flow-step p { font-size: 0.7rem; color: var(--gray-500); line-height: 1.35; padding: 0 6px; }
+  .flow-arrow { display: flex; align-items: center; padding-top: 24px; color: var(--gray-300); font-size: 1.6rem; }
+
+  .flow-section-label {
+    width: 100%;
+    text-align: center;
+    padding: 16px 0 8px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+  }
+
+  .data-flow-visual {
+    margin-top: 24px;
+    padding: 18px;
+    background: white;
+    border-radius: 14px;
+    text-align: center;
+    border: 1px solid var(--gray-200);
+  }
+  .data-flow-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 6px 0;
+  }
+  .df-node {
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .df-arrow { color: var(--gray-400); font-size: 1rem; }
+
+  /* ═══════════ ARCHITECTURE ═══════════ */
+  .slide-arch { background: white; }
+
+  .arch-diagram {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  .arch-layer {
+    display: flex;
+    align-items: stretch;
+    gap: 14px;
+  }
+  .arch-label {
+    width: 120px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-radius: 12px;
+    text-align: center;
+    padding: 10px 6px;
+  }
+  .arch-boxes {
+    flex: 1;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .arch-box {
+    flex: 1;
+    min-width: 120px;
+    padding: 14px 12px;
+    border-radius: 10px;
+    border: 2px solid;
+    text-align: center;
+  }
+  .arch-box h5 { font-size: 0.8rem; font-weight: 700; margin-bottom: 2px; }
+  .arch-box .tech { font-size: 0.65rem; opacity: 0.6; font-weight: 500; }
+
+  .layer-frontend .arch-label { background: var(--blue-light); color: var(--blue); }
+  .layer-frontend .arch-box { border-color: var(--blue); background: rgba(37,99,235,0.03); }
+  .layer-frontend .arch-box h5 { color: var(--blue); }
+
+  .layer-api .arch-label { background: var(--primary-light); color: var(--primary-dark); }
+  .layer-api .arch-box { border-color: var(--primary); background: rgba(139,92,246,0.03); }
+  .layer-api .arch-box h5 { color: var(--primary-dark); }
+
+  .layer-ai .arch-label { background: var(--accent-light); color: #b45309; }
+  .layer-ai .arch-box { border-color: var(--accent); background: rgba(245,158,11,0.03); }
+  .layer-ai .arch-box h5 { color: #b45309; }
+
+  .layer-infra .arch-label { background: var(--success-light); color: #047857; }
+  .layer-infra .arch-box { border-color: var(--success); background: rgba(16,185,129,0.03); }
+  .layer-infra .arch-box h5 { color: #047857; }
+
+  .arch-connector {
+    display: flex;
+    justify-content: center;
+    padding: 2px 0;
+    margin-left: 134px;
+  }
+  .connector-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--gray-300);
+    font-size: 0.65rem;
+    gap: 0;
+    line-height: 1;
+  }
+  .connector-label {
+    font-size: 0.55rem;
+    color: var(--gray-400);
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* ═══════════ LOW LEVEL ═══════════ */
+  .slide-lowlevel { background: var(--gray-50); }
+
+  .ll-section {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid var(--gray-200);
+  }
+  .ll-section h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .api-endpoint {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 0;
+    font-size: 0.75rem;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .api-endpoint:last-child { border-bottom: none; }
+  .api-method {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.6rem;
+    font-weight: 800;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    min-width: 40px;
+    text-align: center;
+  }
+  .method-get { background: var(--success-light); color: #047857; }
+  .method-post { background: var(--blue-light); color: var(--blue); }
+  .api-path {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.7rem;
+    color: var(--gray-700);
+  }
+  .api-desc { color: var(--gray-400); font-size: 0.7rem; margin-left: auto; }
+
+  .file-tree {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.72rem;
+    line-height: 1.8;
+    color: var(--gray-600);
+  }
+  .file-tree .folder { color: var(--primary-dark); font-weight: 700; }
+  .file-tree .file { color: var(--gray-600); }
+  .file-tree .comment { color: var(--gray-400); font-style: italic; font-family: 'Inter', sans-serif; }
+
+  .lifecycle-flow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 8px 0;
+  }
+  .lf-node {
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .lf-arrow { color: var(--gray-300); font-size: 0.9rem; }
+
+  /* ═══════════ USE CASES ═══════════ */
+  .use-case-card {
+    background: white;
+    border-radius: 18px;
+    padding: 28px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+    border: 1px solid var(--gray-200);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .use-case-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+  }
+  .use-case-card .card-icon-big {
+    width: 56px; height: 56px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 14px;
+  }
+  .use-case-card h4 { font-size: 1.05rem; font-weight: 700; color: var(--gray-900); margin-bottom: 6px; }
+  .use-case-card p { font-size: 0.85rem; color: var(--gray-500); line-height: 1.6; }
+
+  /* ═══════════ INNOVATION ═══════════ */
+  .innovation-card {
+    background: white;
+    border-radius: 18px;
+    padding: 28px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+    border: 1px solid var(--gray-200);
+  }
+  .innovation-card .card-icon-big {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 14px;
+  }
+  .innovation-card h4 { font-size: 1.05rem; font-weight: 700; color: var(--gray-900); margin-bottom: 6px; }
+  .innovation-card p { font-size: 0.85rem; color: var(--gray-500); line-height: 1.6; }
+
+  .innovation-mini-diagram {
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: var(--gray-50);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+  }
+  .imd-node {
+    text-align: center;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .imd-arrow { color: var(--gray-300); font-size: 1rem; flex-shrink: 0; }
+
+  /* ═══════════ AGENTIC PIPELINE VISUAL ═══════════ */
+  .pipeline-visual {
+    background: white;
+    border-radius: 24px;
+    padding: 40px;
+    border: 1px solid var(--gray-200);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+  }
+
+  .pipeline-stage {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px dashed var(--gray-200);
+  }
+  .pipeline-stage:last-child { border-bottom: none; }
+
+  .stage-number {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    font-weight: 900;
+    flex-shrink: 0;
+    color: white;
+  }
+
+  .stage-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  .stage-content { flex: 1; }
+  .stage-content h4 { font-size: 1rem; font-weight: 700; color: var(--gray-900); margin-bottom: 3px; }
+  .stage-content p { font-size: 0.82rem; color: var(--gray-500); line-height: 1.5; }
+
+  .stage-tech {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+  }
+  .stage-tech span {
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.6rem;
+    font-weight: 700;
+    background: var(--gray-100);
+    color: var(--gray-600);
+  }
+
+  /* ═══════════ AGENT CARD ═══════════ */
+  .agent-card {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    border: 2px solid;
+    position: relative;
+    overflow: hidden;
+  }
+  .agent-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+  }
+  .agent-card h4 { font-size: 1.05rem; font-weight: 800; margin-bottom: 8px; }
+  .agent-card p { font-size: 0.82rem; color: var(--gray-500); line-height: 1.5; margin-bottom: 12px; }
+  .agent-role {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.6rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+  .agent-tasks {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .agent-tasks li {
+    font-size: 0.75rem;
+    color: var(--gray-600);
+    padding: 4px 0;
+    padding-left: 16px;
+    position: relative;
+  }
+  .agent-tasks li::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: var(--gray-300);
+    font-weight: 700;
+  }
+
+  /* ═══════════ TECH STACK ═══════════ */
+  .tech-card {
+    background: white;
+    border-radius: 18px;
+    padding: 24px;
+    text-align: center;
+    border: 1px solid var(--gray-200);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    transition: transform 0.2s;
+  }
+  .tech-card:hover { transform: translateY(-3px); }
+  .tech-card .tech-icon {
+    width: 60px; height: 60px;
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem;
+    margin: 0 auto 12px;
+  }
+  .tech-card h4 { font-size: 0.95rem; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+  .tech-card .tech-version { font-size: 0.7rem; color: var(--gray-400); font-weight: 500; margin-bottom: 8px; }
+  .tech-card p { font-size: 0.78rem; color: var(--gray-500); line-height: 1.4; }
+
+  /* ═══════════ ROADMAP ═══════════ */
+  .roadmap-phase {
+    flex: 1;
+    padding: 24px 20px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .phase-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 16px;
+    font-size: 0.6rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+  .phase-now .phase-badge { background: var(--success); color: white; }
+  .phase-next .phase-badge { background: var(--accent); color: var(--gray-900); }
+  .phase-later .phase-badge { background: var(--primary); color: white; }
+  .phase-future .phase-badge { background: var(--gray-600); color: white; }
+
+  .roadmap-phase h4 { font-size: 1rem; font-weight: 700; margin-bottom: 12px; color: white; }
+  .roadmap-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .roadmap-list li {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.5);
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.4;
+  }
+  .roadmap-list li::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: rgba(255,255,255,0.25);
+    font-weight: 700;
+  }
+
+  /* ═══════════ CLOSING ═══════════ */
+  .slide-closing {
+    background: linear-gradient(135deg, #0f172a 0%, #2e1065 40%, #8b5cf6 100%);
+    color: white;
+    text-align: center;
+    align-items: center;
+  }
+  .slide-closing h2 { color: white; font-size: 2.8rem; margin-bottom: 20px; }
+  .closing-points {
+    display: flex;
+    gap: 36px;
+    justify-content: center;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  .closing-point { text-align: center; max-width: 200px; }
+  .closing-icon {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem;
+    margin: 0 auto 12px;
+  }
+  .closing-point h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; }
+  .closing-point p { font-size: 0.75rem; opacity: 0.6; line-height: 1.4; }
+
+  /* ═══════════ WORKFLOW TIMELINE ═══════════ */
+  .workflow-timeline {
+    position: relative;
+    padding-left: 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .workflow-timeline::before {
+    content: '';
+    position: absolute;
+    left: 27px;
+    top: 20px;
+    bottom: 20px;
+    width: 3px;
+    background: var(--gray-200);
+    border-radius: 2px;
+  }
+  .wf-step {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    position: relative;
+    padding: 16px 0;
+  }
+  .wf-dot {
+    position: absolute;
+    left: -39px;
+    top: 20px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 3px solid var(--primary);
+    background: white;
+    z-index: 1;
+  }
+  .wf-dot.active { background: var(--primary); }
+  .wf-content {
+    flex: 1;
+    background: var(--gray-50);
+    border-radius: 14px;
+    padding: 20px 24px;
+    border: 1px solid var(--gray-200);
+  }
+  .wf-content h4 { font-size: 0.95rem; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+  .wf-content p { font-size: 0.8rem; color: var(--gray-500); line-height: 1.5; }
+  .wf-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .wf-detail {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: white;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    color: var(--gray-600);
+    border: 1px solid var(--gray-200);
+  }
+  .wf-detail code {
+    background: var(--gray-100);
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+
+  /* ═══════════ SCENARIO CARD ═══════════ */
+  .scenario-card {
+    border-radius: 16px;
+    padding: 24px;
+    border: 2px solid;
+    background: white;
+  }
+  .scenario-card h4 { font-size: 1rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+  .scenario-steps {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .scenario-steps li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.8rem;
+    color: var(--gray-600);
+    line-height: 1.4;
+  }
+  .step-num {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 800;
+    flex-shrink: 0;
+    color: white;
+  }
+
+  /* ═══════════ DOWNLOAD BUTTON ═══════════ */
+  .download-btn {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 100;
+    background: var(--gray-900);
+    color: white;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    transition: background 0.2s, transform 0.2s;
+  }
+  .download-btn:hover { background: var(--primary); transform: translateY(-2px); }
+  .download-btn svg { width: 16px; height: 16px; }
+
+  /* ═══════════ PRINT ═══════════ */
+  @media print {
+    .slide { page-break-after: always; min-height: auto; padding: 40px 50px; }
+    .slide-nav, .download-btn { display: none; }
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+
+  /* ═══════════ RESPONSIVE ═══════════ */
+  @media (max-width: 900px) {
+    .slide { padding: 36px 24px; }
+    .slide h2 { font-size: 1.8rem; }
+    .slide-title h1 { font-size: 2.8rem; }
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .flow-diagram { flex-direction: column; align-items: center; }
+    .flow-arrow { transform: rotate(90deg); }
+    .arch-layer { flex-direction: column; }
+    .arch-label { width: 100%; }
+    .arch-connector { margin-left: 0; }
+  }
+
+  /* ═══════════ COMPARISON TABLE ═══════════ */
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .comparison-table th {
+    padding: 14px 18px;
+    text-align: left;
+    background: var(--gray-900);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .comparison-table td {
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--gray-100);
+    color: var(--gray-600);
+  }
+  .comparison-table tr:last-child td { border-bottom: none; }
+  .comparison-table .highlight { color: var(--primary-dark); font-weight: 600; }
+
+  /* ═══════════ SEQUENCE DIAGRAM ═══════════ */
+  .sequence-diagram {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    border: 1px solid var(--gray-200);
+    overflow-x: auto;
+  }
+  .seq-header {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    gap: 10px;
+  }
+  .seq-entity {
+    text-align: center;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    min-width: 100px;
+  }
+  .seq-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+  }
+  .seq-row {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    position: relative;
+  }
+  .seq-row .seq-label {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+    z-index: 2;
+  }
+  .seq-line {
+    position: absolute;
+    height: 2px;
+    top: 50%;
+    z-index: 1;
+  }
+  .seq-line::after {
+    content: '';
+    position: absolute;
+    right: -1px;
+    top: -4px;
+    border-left: 6px solid;
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV DOTS -->
+<nav class="slide-nav">
+  <button class="nav-dot" onclick="document.getElementById('s1').scrollIntoView({behavior:'smooth'})" title="Title"></button>
+  <button class="nav-dot" onclick="document.getElementById('s2').scrollIntoView({behavior:'smooth'})" title="The Problem"></button>
+  <button class="nav-dot" onclick="document.getElementById('s3').scrollIntoView({behavior:'smooth'})" title="Use Cases"></button>
+  <button class="nav-dot" onclick="document.getElementById('s4').scrollIntoView({behavior:'smooth'})" title="How It Works"></button>
+  <button class="nav-dot" onclick="document.getElementById('s5').scrollIntoView({behavior:'smooth'})" title="Agentic Pipeline"></button>
+  <button class="nav-dot" onclick="document.getElementById('s6').scrollIntoView({behavior:'smooth'})" title="AI Agents"></button>
+  <button class="nav-dot" onclick="document.getElementById('s7').scrollIntoView({behavior:'smooth'})" title="High-Level Architecture"></button>
+  <button class="nav-dot" onclick="document.getElementById('s8').scrollIntoView({behavior:'smooth'})" title="Low-Level Architecture"></button>
+  <button class="nav-dot" onclick="document.getElementById('s9').scrollIntoView({behavior:'smooth'})" title="Function Map"></button>
+  <button class="nav-dot" onclick="document.getElementById('s10').scrollIntoView({behavior:'smooth'})" title="Tech Stack"></button>
+  <button class="nav-dot" onclick="document.getElementById('s11').scrollIntoView({behavior:'smooth'})" title="Data Flow"></button>
+  <button class="nav-dot" onclick="document.getElementById('s12').scrollIntoView({behavior:'smooth'})" title="Market Impact"></button>
+  <button class="nav-dot" onclick="document.getElementById('s13').scrollIntoView({behavior:'smooth'})" title="Future Enhancements"></button>
+  <button class="nav-dot" onclick="document.getElementById('s14').scrollIntoView({behavior:'smooth'})" title="Roadmap"></button>
+  <button class="nav-dot" onclick="document.getElementById('s15').scrollIntoView({behavior:'smooth'})" title="Close"></button>
+</nav>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 1: TITLE                                    -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s1" class="slide slide-title">
+  <svg class="logo-icon" viewBox="0 0 120 120" fill="none">
+    <rect x="6" y="6" width="108" height="108" rx="24" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.3)" stroke-width="3"/>
+    <!-- Camera/eye icon -->
+    <ellipse cx="60" cy="52" rx="30" ry="22" fill="none" stroke="white" stroke-width="3"/>
+    <circle cx="60" cy="52" r="10" fill="none" stroke="#f59e0b" stroke-width="3"/>
+    <circle cx="60" cy="52" r="4" fill="#f59e0b"/>
+    <!-- AI sparkle lines -->
+    <line x1="60" y1="82" x2="40" y2="100" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round"/>
+    <line x1="60" y1="82" x2="60" y2="102" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round"/>
+    <line x1="60" y1="82" x2="80" y2="100" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round"/>
+    <!-- Sparkles -->
+    <circle cx="95" cy="25" r="3" fill="#f59e0b" opacity="0.8"/>
+    <circle cx="25" cy="30" r="2" fill="#ec4899" opacity="0.6"/>
+    <circle cx="100" cy="70" r="2" fill="#10b981" opacity="0.6"/>
+  </svg>
+  <h1>Product Descriptor AI</h1>
+  <p class="tagline">Vision-Powered Product Metadata Generation for E-Commerce</p>
+  <p class="subtitle">Architecture &amp; Technical Deep Dive</p>
+  <div class="tech-pills">
+    <span class="tech-pill">BLIP Vision</span>
+    <span class="tech-pill">GPT-4o</span>
+    <span class="tech-pill">FastAPI</span>
+    <span class="tech-pill">React 19</span>
+    <span class="tech-pill">Agentic AI</span>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 2: THE PROBLEM                              -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s2" class="slide slide-problem">
+  <p class="section-label">The Problem</p>
+  <h2>Manual Product Listings<br>Kill E-Commerce Velocity.</h2>
+
+  <div class="grid-2">
+    <!-- Visual: E-commerce scene -->
+    <div style="background: var(--gray-100); border-radius: 24px; padding: 40px; position: relative;">
+      <div style="position: relative; height: 300px; border-radius: 16px; overflow: hidden; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);">
+        <!-- Product images scattered -->
+        <div style="position: absolute; top: 20px; left: 20px; width: 80px; height: 80px; background: var(--pink-light); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">👗</div>
+        <div style="position: absolute; top: 40px; left: 120px; width: 80px; height: 80px; background: var(--blue-light); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">💻</div>
+        <div style="position: absolute; top: 20px; right: 40px; width: 80px; height: 80px; background: var(--accent-light); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">📱</div>
+        <div style="position: absolute; bottom: 60px; left: 60px; width: 80px; height: 80px; background: var(--success-light); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">👟</div>
+        <div style="position: absolute; bottom: 40px; right: 60px; width: 80px; height: 80px; background: var(--primary-light); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">🎧</div>
+
+        <!-- Frustrated person -->
+        <div style="position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%); font-size: 3rem;">😩</div>
+
+        <!-- Thought bubbles -->
+        <div style="position: absolute; top: 130px; left: 50%; transform: translateX(-50%); background: white; border-radius: 10px; padding: 6px 14px; font-size: 0.65rem; font-weight: 600; color: var(--gray-700); box-shadow: 0 2px 8px rgba(0,0,0,0.15); white-space: nowrap;">
+          "500 products... 3 people... 2 weeks?"
+        </div>
+
+        <div style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); color: white; padding: 5px 14px; border-radius: 16px; font-size: 0.7rem; font-weight: 500; white-space: nowrap;">Typical product cataloguing bottleneck</div>
+      </div>
+    </div>
+
+    <!-- Pain Points -->
+    <div class="flex-col gap-20">
+      <div class="pain-card">
+        <div class="card-icon-box" style="background: #fee2e2;">⏱️</div>
+        <div>
+          <h4>Painfully Slow Manual Process</h4>
+          <p>Writing titles, descriptions, and features for each product takes 10-15 minutes. At scale (1000s of SKUs), this becomes a months-long bottleneck.</p>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="card-icon-box" style="background: #fef3c7;">📝</div>
+        <div>
+          <h4>Inconsistent Quality</h4>
+          <p>Different copywriters produce different tones, styles, and detail levels. Brand voice breaks across the catalog, hurting conversion rates.</p>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="card-icon-box" style="background: #ede9fe;">💰</div>
+        <div>
+          <h4>Expensive Copywriting Teams</h4>
+          <p>Hiring domain-expert copywriters for fashion, electronics, and other verticals is costly. Small and medium businesses often can't afford it.</p>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="card-icon-box" style="background: #dbeafe;">🔍</div>
+        <div>
+          <h4>SEO & Discovery Gaps</h4>
+          <p>Poor descriptions mean poor search rankings. Products with weak metadata get buried on marketplaces and never reach potential buyers.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 3: USE CASES                                -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s3" class="slide" style="background: white;">
+  <p class="section-label">Use Cases</p>
+  <h2>Who Uses This &amp; Why</h2>
+
+  <div class="grid-3 gap-30" style="margin-bottom: 36px;">
+    <div class="use-case-card">
+      <div class="card-icon-big" style="background: var(--pink-light);">🛍️</div>
+      <h4>Fashion E-Commerce</h4>
+      <p>Upload product photos of clothing, shoes, and accessories. Get instant SEO-optimized titles, compelling descriptions, and feature bullet points tailored for fashion buyers.</p>
+      <div style="margin-top: 12px; padding: 10px; background: var(--pink-light); border-radius: 10px; font-size: 0.72rem; color: #be185d;">
+        <strong>Example:</strong> A dress image &rarr; "Elegant Floral Midi Dress" + description + 6 features
+      </div>
+    </div>
+    <div class="use-case-card">
+      <div class="card-icon-big" style="background: var(--blue-light);">🔌</div>
+      <h4>Electronics Retail</h4>
+      <p>Upload images of gadgets, laptops, headphones, or appliances. The AI identifies the product and generates tech-focused metadata with accurate specifications.</p>
+      <div style="margin-top: 12px; padding: 10px; background: var(--blue-light); border-radius: 10px; font-size: 0.72rem; color: #1d4ed8;">
+        <strong>Example:</strong> A headphone image &rarr; "Pro Wireless Noise-Cancelling Headphones" + specs
+      </div>
+    </div>
+    <div class="use-case-card">
+      <div class="card-icon-big" style="background: var(--accent-light);">📦</div>
+      <h4>Marketplace Sellers</h4>
+      <p>Small businesses and individual sellers on Amazon, Flipkart, or Shopify can instantly generate professional product listings without hiring copywriters.</p>
+      <div style="margin-top: 12px; padding: 10px; background: var(--accent-light); border-radius: 10px; font-size: 0.72rem; color: #92400e;">
+        <strong>Example:</strong> Bulk upload &rarr; Consistent, high-quality listings in minutes
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-3 gap-30">
+    <div class="use-case-card">
+      <div class="card-icon-big" style="background: var(--success-light);">🎥</div>
+      <h4>Video Commerce</h4>
+      <p>Upload product videos instead of images. The system extracts the best frame and generates metadata &mdash; ideal for social commerce and live-selling platforms.</p>
+    </div>
+    <div class="use-case-card">
+      <div class="card-icon-big" style="background: var(--primary-light);">🏭</div>
+      <h4>Catalog Digitization</h4>
+      <p>Brands moving from physical catalogs to online stores can photograph products and generate entire digital catalogs with structured metadata automatically.</p>
+    </div>
+    <div class="use-case-card">
+      <div class="card-icon-big" style="background: var(--teal-light);">🌐</div>
+      <h4>Multi-Language Expansion</h4>
+      <p>Future: Generate descriptions in multiple languages from a single product image, enabling instant international marketplace listings.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 4: HOW IT WORKS                             -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s4" class="slide slide-flow">
+  <p class="section-label">User Journey</p>
+  <h2>How It Works</h2>
+
+  <div class="flow-diagram">
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--primary-light);">📸<span class="flow-number">1</span></div>
+      <h4>Upload</h4>
+      <p>User uploads a product image or video via the React frontend.</p>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--accent-light);">🖼️<span class="flow-number">2</span></div>
+      <h4>Extract</h4>
+      <p>Images loaded directly. Videos: middle frame extracted via OpenCV.</p>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--blue-light);">🔍<span class="flow-number">3</span></div>
+      <h4>Caption</h4>
+      <p>BLIP vision model generates a natural language description of the product.</p>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--pink-light);">🏷️<span class="flow-number">4</span></div>
+      <h4>Classify</h4>
+      <p>GPT-4o classifies caption into "fashion" or "electronics" category.</p>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--success-light);">✨<span class="flow-number">5</span></div>
+      <h4>Generate</h4>
+      <p>Category-specific GPT prompt produces title, description &amp; features as JSON.</p>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--teal-light);">🎯<span class="flow-number">6</span></div>
+      <h4>Display</h4>
+      <p>Styled product card shown with image, category badge &amp; generated metadata.</p>
+    </div>
+  </div>
+
+  <!-- Data flow visual -->
+  <div class="data-flow-visual" style="margin-top: 40px;">
+    <div style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--gray-400); margin-bottom: 12px;">End-to-End Data Flow</div>
+    <div class="data-flow-row">
+      <div class="df-node" style="background: var(--primary-light); color: var(--primary-dark);">Image / Video</div>
+      <div class="df-arrow">&rarr;</div>
+      <div class="df-node" style="background: var(--accent-light); color: #b45309;">PIL / OpenCV</div>
+      <div class="df-arrow">&rarr;</div>
+      <div class="df-node" style="background: var(--blue-light); color: var(--blue);">BLIP Caption</div>
+      <div class="df-arrow">&rarr;</div>
+      <div class="df-node" style="background: var(--pink-light); color: #be185d;">GPT-4o Classify</div>
+      <div class="df-arrow">&rarr;</div>
+      <div class="df-node" style="background: var(--success-light); color: #047857;">GPT-4o Generate</div>
+      <div class="df-arrow">&rarr;</div>
+      <div class="df-node" style="background: var(--teal-light); color: #0d9488;">JSON Metadata</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 5: AGENTIC AI PIPELINE                      -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s5" class="slide" style="background: white;">
+  <p class="section-label">Agentic AI Architecture</p>
+  <h2>Multi-Agent Intelligence Pipeline</h2>
+
+  <div class="grid-2" style="align-items: start;">
+    <!-- Pipeline stages -->
+    <div class="pipeline-visual">
+      <div style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--gray-400); margin-bottom: 16px;">Agent Execution Chain</div>
+
+      <div class="pipeline-stage">
+        <div class="stage-number" style="background: var(--primary);">1</div>
+        <div class="stage-icon" style="background: var(--primary-light);">🖼️</div>
+        <div class="stage-content">
+          <h4>Perception Agent</h4>
+          <p>BLIP model observes the image and produces a semantic caption &mdash; translating visual pixels into natural language understanding.</p>
+          <div class="stage-tech">
+            <span>BLIP</span>
+            <span>PIL</span>
+            <span>PyTorch</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pipeline-stage">
+        <div class="stage-number" style="background: var(--pink);">2</div>
+        <div class="stage-icon" style="background: var(--pink-light);">🧠</div>
+        <div class="stage-content">
+          <h4>Classification Agent</h4>
+          <p>GPT-4o reasons about the caption to determine the product domain &mdash; routing to the correct specialist agent downstream.</p>
+          <div class="stage-tech">
+            <span>GPT-4o</span>
+            <span>JSON Output</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pipeline-stage">
+        <div class="stage-number" style="background: var(--accent);">3</div>
+        <div class="stage-icon" style="background: var(--accent-light);">🔀</div>
+        <div class="stage-content">
+          <h4>Router / Orchestrator</h4>
+          <p>The generate endpoint acts as the orchestrator, routing to category-specific prompt builders based on the classification output.</p>
+          <div class="stage-tech">
+            <span>FastAPI</span>
+            <span>Conditional Logic</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pipeline-stage">
+        <div class="stage-number" style="background: var(--success);">4</div>
+        <div class="stage-icon" style="background: var(--success-light);">✍️</div>
+        <div class="stage-content">
+          <h4>Specialist Copywriter Agent</h4>
+          <p>Domain-specific GPT-4o prompt crafts optimized product metadata &mdash; fashion-tuned or tech-tuned copywriting with structured JSON output.</p>
+          <div class="stage-tech">
+            <span>GPT-4o</span>
+            <span>Domain Prompts</span>
+            <span>JSON Schema</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Agentic architecture diagram -->
+    <div>
+      <div style="background: var(--gray-900); border-radius: 20px; padding: 30px; color: white;">
+        <div style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent); margin-bottom: 20px;">Why This Is Agentic</div>
+
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div style="display: flex; gap: 14px; align-items: flex-start;">
+            <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(139,92,246,0.2); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">👁️</div>
+            <div>
+              <div style="font-size: 0.85rem; font-weight: 700; margin-bottom: 2px;">Perception</div>
+              <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5);">BLIP autonomously interprets visual input without explicit instructions &mdash; like a human looking at a product.</div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 14px; align-items: flex-start;">
+            <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(236,72,153,0.2); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">🧭</div>
+            <div>
+              <div style="font-size: 0.85rem; font-weight: 700; margin-bottom: 2px;">Reasoning &amp; Routing</div>
+              <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5);">GPT-4o makes a classification decision that dynamically determines which downstream agent handles the task.</div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 14px; align-items: flex-start;">
+            <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(245,158,11,0.2); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">🔧</div>
+            <div>
+              <div style="font-size: 0.85rem; font-weight: 700; margin-bottom: 2px;">Specialization</div>
+              <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5);">Each category has its own prompt personality &mdash; a fashion copywriter vs. a tech reviewer, each with domain expertise.</div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 14px; align-items: flex-start;">
+            <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(16,185,129,0.2); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">📦</div>
+            <div>
+              <div style="font-size: 0.85rem; font-weight: 700; margin-bottom: 2px;">Structured Output</div>
+              <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5);">The system produces machine-readable JSON, not just free text &mdash; enabling direct integration with product databases and APIs.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mini architecture -->
+      <div style="margin-top: 20px; background: var(--gray-50); border-radius: 16px; padding: 24px; border: 1px solid var(--gray-200);">
+        <div style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--gray-400); margin-bottom: 14px;">Agent Communication Pattern</div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="padding: 6px 12px; border-radius: 8px; background: var(--primary-light); color: var(--primary-dark); font-size: 0.7rem; font-weight: 700;">Image Input</div>
+            <div style="color: var(--gray-300);">&rarr;</div>
+            <div style="padding: 6px 12px; border-radius: 8px; background: var(--blue-light); color: var(--blue); font-size: 0.7rem; font-weight: 700;">BLIP Agent</div>
+            <div style="color: var(--gray-300);">&rarr;</div>
+            <div style="padding: 6px 12px; border-radius: 8px; background: var(--pink-light); color: #be185d; font-size: 0.7rem; font-weight: 700;">Caption</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px; margin-left: 40px;">
+            <div style="color: var(--gray-300);">↓</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="padding: 6px 12px; border-radius: 8px; background: var(--pink-light); color: #be185d; font-size: 0.7rem; font-weight: 700;">Caption</div>
+            <div style="color: var(--gray-300);">&rarr;</div>
+            <div style="padding: 6px 12px; border-radius: 8px; background: var(--accent-light); color: #b45309; font-size: 0.7rem; font-weight: 700;">Classifier Agent</div>
+            <div style="color: var(--gray-300);">&rarr;</div>
+            <div style="padding: 6px 12px; border-radius: 8px; background: var(--success-light); color: #047857; font-size: 0.7rem; font-weight: 700;">Category</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px; margin-left: 40px;">
+            <div style="color: var(--gray-300);">↓</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="padding: 6px 12px; border-radius: 8px; background: var(--success-light); color: #047857; font-size: 0.7rem; font-weight: 700;">Route</div>
+            <div style="color: var(--gray-300);">&rarr;</div>
+            <div style="padding: 6px 12px; border-radius: 8px; background: linear-gradient(135deg, var(--pink-light), var(--blue-light)); font-size: 0.7rem; font-weight: 700; color: var(--gray-800);">Specialist Agent</div>
+            <div style="color: var(--gray-300);">&rarr;</div>
+            <div style="padding: 6px 12px; border-radius: 8px; background: var(--gray-900); color: white; font-size: 0.7rem; font-weight: 700;">JSON Output</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 6: AI AGENTS DEEP DIVE                      -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s6" class="slide slide-dark">
+  <p class="section-label">Agent Breakdown</p>
+  <h2>The Four AI Agents</h2>
+
+  <div class="grid-4 gap-20">
+    <!-- Agent 1: Vision -->
+    <div class="agent-card" style="border-color: var(--primary); background: rgba(139,92,246,0.03);">
+      <div class="agent-card" style="border: none; padding: 0; box-shadow: none;">
+        <div class="agent-role" style="background: var(--primary-light); color: var(--primary-dark);">Vision</div>
+        <h4 style="color: var(--primary-dark);">Perception Agent</h4>
+        <p>Salesforce BLIP model processes raw pixel data and generates natural language captions describing the product.</p>
+        <ul class="agent-tasks">
+          <li>Load image via PIL</li>
+          <li>Encode with BLIP processor</li>
+          <li>Generate caption (max 50 tokens)</li>
+          <li>Handle video frame extraction</li>
+        </ul>
+        <div style="margin-top: 12px; padding: 8px 12px; background: var(--primary-light); border-radius: 8px; font-size: 0.65rem; font-weight: 600; color: var(--primary-dark);">
+          Model: blip-image-captioning-base
+        </div>
+      </div>
+    </div>
+
+    <!-- Agent 2: Classifier -->
+    <div class="agent-card" style="border-color: var(--pink); background: rgba(236,72,153,0.03);">
+      <div class="agent-card" style="border: none; padding: 0; box-shadow: none;">
+        <div class="agent-role" style="background: var(--pink-light); color: #be185d;">Reasoning</div>
+        <h4 style="color: #be185d;">Classification Agent</h4>
+        <p>Takes the BLIP caption and uses GPT-4o to determine product category with structured JSON response.</p>
+        <ul class="agent-tasks">
+          <li>Receive caption string</li>
+          <li>Classify: fashion or electronics</li>
+          <li>Return JSON: {"category": "..."}</li>
+          <li>Fallback to "unknown"</li>
+        </ul>
+        <div style="margin-top: 12px; padding: 8px 12px; background: var(--pink-light); border-radius: 8px; font-size: 0.65rem; font-weight: 600; color: #be185d;">
+          Model: GPT-4o (temperature: 0.7)
+        </div>
+      </div>
+    </div>
+
+    <!-- Agent 3: Fashion -->
+    <div class="agent-card" style="border-color: var(--accent); background: rgba(245,158,11,0.03);">
+      <div class="agent-card" style="border: none; padding: 0; box-shadow: none;">
+        <div class="agent-role" style="background: var(--accent-light); color: #92400e;">Fashion</div>
+        <h4 style="color: #92400e;">Fashion Copywriter</h4>
+        <p>Specialized prompt persona that generates fashion-focused e-commerce copy with style-aware language.</p>
+        <ul class="agent-tasks">
+          <li>Catchy product title</li>
+          <li>40-50 word description</li>
+          <li>5-6 bullet features</li>
+          <li>Product-only focus (no people)</li>
+        </ul>
+        <div style="margin-top: 12px; padding: 8px 12px; background: var(--accent-light); border-radius: 8px; font-size: 0.65rem; font-weight: 600; color: #92400e;">
+          Persona: Fashion E-Commerce Copywriter
+        </div>
+      </div>
+    </div>
+
+    <!-- Agent 4: Electronics -->
+    <div class="agent-card" style="border-color: var(--blue); background: rgba(37,99,235,0.03);">
+      <div class="agent-card" style="border: none; padding: 0; box-shadow: none;">
+        <div class="agent-role" style="background: var(--blue-light); color: var(--blue);">Tech</div>
+        <h4 style="color: var(--blue);">Electronics Copywriter</h4>
+        <p>Tech-focused prompt persona that generates specification-rich product metadata with technical accuracy.</p>
+        <ul class="agent-tasks">
+          <li>Technical product title</li>
+          <li>40-50 word description</li>
+          <li>5-6 spec-focused features</li>
+          <li>BLIP echo detection fallback</li>
+        </ul>
+        <div style="margin-top: 12px; padding: 8px 12px; background: var(--blue-light); border-radius: 8px; font-size: 0.65rem; font-weight: 600; color: var(--blue);">
+          Persona: Tech E-Commerce Copywriter
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 7: HIGH-LEVEL ARCHITECTURE                  -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s7" class="slide slide-arch">
+  <p class="section-label">System Design</p>
+  <h2>High-Level Architecture</h2>
+
+  <div class="arch-diagram">
+    <!-- Frontend Layer -->
+    <div class="arch-layer layer-frontend">
+      <div class="arch-label">Frontend<br>Layer</div>
+      <div class="arch-boxes">
+        <div class="arch-box">
+          <h5>UploadForm</h5>
+          <div class="tech">React Component</div>
+        </div>
+        <div class="arch-box">
+          <h5>ResultDisplay</h5>
+          <div class="tech">React Component</div>
+        </div>
+        <div class="arch-box">
+          <h5>API Service</h5>
+          <div class="tech">Fetch Client</div>
+        </div>
+        <div class="arch-box">
+          <h5>Tailwind UI</h5>
+          <div class="tech">Styling Layer</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arch-connector">
+      <div class="connector-arrow">
+        <span>&#x25BC;</span>
+        <span class="connector-label">HTTP / REST</span>
+        <span>&#x25BC;</span>
+      </div>
+    </div>
+
+    <!-- API Layer -->
+    <div class="arch-layer layer-api">
+      <div class="arch-label">API<br>Layer</div>
+      <div class="arch-boxes">
+        <div class="arch-box">
+          <h5>Upload Route</h5>
+          <div class="tech">POST /upload/</div>
+        </div>
+        <div class="arch-box">
+          <h5>Generate Route</h5>
+          <div class="tech">POST /generate/</div>
+        </div>
+        <div class="arch-box">
+          <h5>Health Route</h5>
+          <div class="tech">GET /health/</div>
+        </div>
+        <div class="arch-box">
+          <h5>Static Files</h5>
+          <div class="tech">/static/uploads/</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arch-connector">
+      <div class="connector-arrow">
+        <span>&#x25BC;</span>
+        <span class="connector-label">Internal Calls</span>
+        <span>&#x25BC;</span>
+      </div>
+    </div>
+
+    <!-- AI Layer -->
+    <div class="arch-layer layer-ai">
+      <div class="arch-label">AI<br>Layer</div>
+      <div class="arch-boxes">
+        <div class="arch-box">
+          <h5>BLIP Captioner</h5>
+          <div class="tech">HuggingFace Transformers</div>
+        </div>
+        <div class="arch-box">
+          <h5>Category Detector</h5>
+          <div class="tech">BLIP + GPT-4o</div>
+        </div>
+        <div class="arch-box">
+          <h5>Fashion Model</h5>
+          <div class="tech">BLIP + GPT-4o Prompt</div>
+        </div>
+        <div class="arch-box">
+          <h5>Electronics Model</h5>
+          <div class="tech">BLIP + GPT-4o Prompt</div>
+        </div>
+        <div class="arch-box">
+          <h5>GPT Wrapper</h5>
+          <div class="tech">OpenAI API Client</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arch-connector">
+      <div class="connector-arrow">
+        <span>&#x25BC;</span>
+        <span class="connector-label">Processing</span>
+        <span>&#x25BC;</span>
+      </div>
+    </div>
+
+    <!-- Infrastructure Layer -->
+    <div class="arch-layer layer-infra">
+      <div class="arch-label">Infra<br>Layer</div>
+      <div class="arch-boxes">
+        <div class="arch-box">
+          <h5>Fly.io</h5>
+          <div class="tech">Deployment Platform</div>
+        </div>
+        <div class="arch-box">
+          <h5>Docker</h5>
+          <div class="tech">Containerization</div>
+        </div>
+        <div class="arch-box">
+          <h5>GitHub Actions</h5>
+          <div class="tech">CI/CD Pipeline</div>
+        </div>
+        <div class="arch-box">
+          <h5>Static Storage</h5>
+          <div class="tech">File System</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 8: LOW-LEVEL ARCHITECTURE                   -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s8" class="slide slide-lowlevel">
+  <p class="section-label">Deep Dive</p>
+  <h2>Low-Level Architecture</h2>
+
+  <div class="grid-2 gap-30">
+    <!-- API Endpoints -->
+    <div class="ll-section">
+      <h4>🔌 API Endpoints</h4>
+      <div class="api-endpoint">
+        <span class="api-method method-post">POST</span>
+        <span class="api-path">/upload/</span>
+        <span class="api-desc">Upload image/video, detect category</span>
+      </div>
+      <div class="api-endpoint">
+        <span class="api-method method-post">POST</span>
+        <span class="api-path">/generate/</span>
+        <span class="api-desc">Generate metadata from image + category</span>
+      </div>
+      <div class="api-endpoint">
+        <span class="api-method method-get">GET</span>
+        <span class="api-path">/health/</span>
+        <span class="api-desc">Server health check</span>
+      </div>
+      <div class="api-endpoint">
+        <span class="api-method method-get">GET</span>
+        <span class="api-path">/static/{"{path}"}</span>
+        <span class="api-desc">Serve uploaded files</span>
+      </div>
+    </div>
+
+    <!-- File Structure -->
+    <div class="ll-section">
+      <h4>📁 Project Structure</h4>
+      <div class="file-tree">
+        <span class="folder">backend/</span><br>
+        &nbsp;&nbsp;<span class="file">main.py</span> <span class="comment">&mdash; FastAPI app entry</span><br>
+        &nbsp;&nbsp;<span class="folder">routes/</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">upload.py</span> <span class="comment">&mdash; File upload + category detection</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">generate.py</span> <span class="comment">&mdash; Metadata generation orchestrator</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">health.py</span> <span class="comment">&mdash; Health check endpoint</span><br>
+        &nbsp;&nbsp;<span class="folder">models/</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">fashion_model.py</span> <span class="comment">&mdash; Fashion BLIP + prompt</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">electronics_model.py</span> <span class="comment">&mdash; Electronics BLIP + prompt</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">gpt_wrapper.py</span> <span class="comment">&mdash; OpenAI API client</span><br>
+        &nbsp;&nbsp;<span class="folder">utils/</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">category_detector.py</span> <span class="comment">&mdash; BLIP + GPT classifier</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">image_utils.py</span> <span class="comment">&mdash; PIL + OpenCV helpers</span><br>
+        <span class="folder">frontend/</span><br>
+        &nbsp;&nbsp;<span class="folder">src/</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">App.jsx</span> <span class="comment">&mdash; Root component</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="folder">components/</span> <span class="comment">&mdash; UploadForm, ResultDisplay</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="folder">services/</span> <span class="comment">&mdash; API client (api.js)</span><br>
+      </div>
+    </div>
+
+    <!-- Upload Flow -->
+    <div class="ll-section">
+      <h4>📤 Upload Processing Pipeline</h4>
+      <div class="lifecycle-flow">
+        <div class="lf-node" style="background: var(--primary-light); color: var(--primary-dark);">File Received</div>
+        <div class="lf-arrow">&rarr;</div>
+        <div class="lf-node" style="background: var(--accent-light); color: #b45309;">UUID Rename</div>
+        <div class="lf-arrow">&rarr;</div>
+        <div class="lf-node" style="background: var(--blue-light); color: var(--blue);">Save to Disk</div>
+        <div class="lf-arrow">&rarr;</div>
+        <div class="lf-node" style="background: var(--pink-light); color: #be185d;">Type Check</div>
+      </div>
+      <div class="lifecycle-flow">
+        <div style="margin-left: 30px; color: var(--gray-400); font-size: 0.7rem;">↓ image/*</div>
+        <div style="margin-left: 70px; color: var(--gray-400); font-size: 0.7rem;">↓ video/*</div>
+      </div>
+      <div class="lifecycle-flow">
+        <div class="lf-node" style="background: var(--success-light); color: #047857;">PIL Load</div>
+        <div style="margin-left: 30px;"></div>
+        <div class="lf-node" style="background: var(--teal-light); color: #0d9488;">OpenCV Extract Frame</div>
+      </div>
+      <div class="lifecycle-flow" style="margin-top: 8px;">
+        <div style="color: var(--gray-400); font-size: 0.7rem; margin-right: 8px;">Both &rarr;</div>
+        <div class="lf-node" style="background: var(--gray-900); color: white;">BLIP Caption</div>
+        <div class="lf-arrow">&rarr;</div>
+        <div class="lf-node" style="background: var(--gray-900); color: white;">GPT Classify</div>
+        <div class="lf-arrow">&rarr;</div>
+        <div class="lf-node" style="background: var(--success-light); color: #047857;">Return Category</div>
+      </div>
+    </div>
+
+    <!-- GPT Wrapper Internals -->
+    <div class="ll-section">
+      <h4>🤖 GPT Wrapper Internals</h4>
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div style="padding: 12px 16px; background: var(--gray-50); border-radius: 10px; border: 1px solid var(--gray-200);">
+          <div style="font-size: 0.7rem; font-weight: 700; color: var(--gray-800); margin-bottom: 4px;">call_gpt(prompt, expect_json)</div>
+          <div style="font-size: 0.72rem; color: var(--gray-500);">Central function for all GPT-4o API calls. Handles both JSON and raw string responses.</div>
+        </div>
+        <div style="padding: 12px 16px; background: var(--gray-50); border-radius: 10px; border: 1px solid var(--gray-200);">
+          <div style="font-size: 0.7rem; font-weight: 700; color: var(--gray-800); margin-bottom: 4px;">clean_json_output(raw)</div>
+          <div style="font-size: 0.72rem; color: var(--gray-500);">Strips markdown code fences (```json...```) from GPT responses. Handles edge cases where GPT wraps JSON in backticks.</div>
+        </div>
+        <div style="padding: 12px 16px; background: var(--accent-light); border-radius: 10px; border: 1px solid #fbbf24;">
+          <div style="font-size: 0.7rem; font-weight: 700; color: #92400e; margin-bottom: 4px;">Configuration</div>
+          <div style="font-size: 0.72rem; color: #92400e;">Model: <code style="background: rgba(0,0,0,0.06); padding: 1px 4px; border-radius: 3px;">gpt-4o</code> &bull; Temperature: <code style="background: rgba(0,0,0,0.06); padding: 1px 4px; border-radius: 3px;">0.7</code> &bull; Max Tokens: <code style="background: rgba(0,0,0,0.06); padding: 1px 4px; border-radius: 3px;">500</code></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 9: FUNCTION MAP                             -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s9" class="slide" style="background: white;">
+  <p class="section-label">Function Architecture</p>
+  <h2>Core Functions &amp; Their Roles</h2>
+
+  <div style="overflow-x: auto;">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Module</th>
+          <th>Function</th>
+          <th>Input</th>
+          <th>Output</th>
+          <th>Purpose</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="highlight">image_utils</span></td>
+          <td><code>load_image(path)</code></td>
+          <td>File path</td>
+          <td>PIL Image (RGB)</td>
+          <td>Opens and converts any image to RGB format</td>
+        </tr>
+        <tr>
+          <td><span class="highlight">image_utils</span></td>
+          <td><code>extract_image_from_video(path)</code></td>
+          <td>Video path</td>
+          <td>PIL Image</td>
+          <td>Extracts middle frame from video using OpenCV</td>
+        </tr>
+        <tr>
+          <td><span class="highlight">category_detector</span></td>
+          <td><code>generate_caption(image)</code></td>
+          <td>PIL Image</td>
+          <td>String caption</td>
+          <td>BLIP model generates image caption</td>
+        </tr>
+        <tr>
+          <td><span class="highlight">category_detector</span></td>
+          <td><code>classify_caption_with_gpt(caption)</code></td>
+          <td>String</td>
+          <td>"fashion" / "electronics" / "unknown"</td>
+          <td>GPT-4o classifies product category</td>
+        </tr>
+        <tr>
+          <td><span class="highlight">category_detector</span></td>
+          <td><code>detect_category(image)</code></td>
+          <td>PIL Image</td>
+          <td>Category string</td>
+          <td>High-level: caption &rarr; classify pipeline</td>
+        </tr>
+        <tr>
+          <td><span class="highlight">fashion_model</span></td>
+          <td><code>generate_fashion_description(image)</code></td>
+          <td>PIL Image</td>
+          <td>{raw_prompt, caption}</td>
+          <td>Builds fashion-specific GPT prompt</td>
+        </tr>
+        <tr>
+          <td><span class="highlight">electronics_model</span></td>
+          <td><code>generate_electronics_description(image)</code></td>
+          <td>PIL Image</td>
+          <td>{raw_prompt, caption}</td>
+          <td>Builds electronics-specific GPT prompt</td>
+        </tr>
+        <tr>
+          <td><span class="highlight">gpt_wrapper</span></td>
+          <td><code>call_gpt(prompt, expect_json)</code></td>
+          <td>Prompt string</td>
+          <td>Dict or string</td>
+          <td>Central GPT-4o API caller with JSON parsing</td>
+        </tr>
+        <tr>
+          <td><span class="highlight">gpt_wrapper</span></td>
+          <td><code>clean_json_output(raw)</code></td>
+          <td>Raw GPT string</td>
+          <td>Clean JSON string</td>
+          <td>Strips markdown fences from GPT output</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 10: TECH STACK                              -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s10" class="slide" style="background: var(--gray-50);">
+  <p class="section-label">Technology</p>
+  <h2>Tech Stack</h2>
+
+  <div class="grid-4 gap-20" style="margin-bottom: 30px;">
+    <div class="tech-card">
+      <div class="tech-icon" style="background: var(--blue-light);">
+        <span style="font-size: 1.4rem;">&#x269B;</span>
+      </div>
+      <h4>React 19</h4>
+      <div class="tech-version">with Vite 6</div>
+      <p>Modern frontend with fast HMR, JSX components, and hooks-based state management.</p>
+    </div>
+    <div class="tech-card">
+      <div class="tech-icon" style="background: var(--teal-light);">
+        <span style="font-size: 1.4rem;">🎨</span>
+      </div>
+      <h4>Tailwind CSS 4</h4>
+      <div class="tech-version">Utility-First</div>
+      <p>Rapid UI development with utility classes. Responsive, category-colored product cards.</p>
+    </div>
+    <div class="tech-card">
+      <div class="tech-icon" style="background: var(--success-light);">
+        <span style="font-size: 1.4rem;">⚡</span>
+      </div>
+      <h4>FastAPI</h4>
+      <div class="tech-version">Python 3.12</div>
+      <p>High-performance async API framework. Auto-generates OpenAPI docs, handles file uploads natively.</p>
+    </div>
+    <div class="tech-card">
+      <div class="tech-icon" style="background: var(--accent-light);">
+        <span style="font-size: 1.4rem;">🧠</span>
+      </div>
+      <h4>GPT-4o</h4>
+      <div class="tech-version">OpenAI API</div>
+      <p>State-of-the-art LLM for classification, reasoning, and domain-specific copywriting.</p>
+    </div>
+  </div>
+
+  <div class="grid-4 gap-20" style="margin-bottom: 30px;">
+    <div class="tech-card">
+      <div class="tech-icon" style="background: var(--primary-light);">
+        <span style="font-size: 1.4rem;">👁️</span>
+      </div>
+      <h4>BLIP</h4>
+      <div class="tech-version">Salesforce / HuggingFace</div>
+      <p>Vision-language model for image captioning. Converts product images into descriptive text.</p>
+    </div>
+    <div class="tech-card">
+      <div class="tech-icon" style="background: var(--danger-light);">
+        <span style="font-size: 1.4rem;">🔥</span>
+      </div>
+      <h4>PyTorch</h4>
+      <div class="tech-version">v2.6</div>
+      <p>Deep learning framework powering BLIP inference. GPU-accelerated tensor operations.</p>
+    </div>
+    <div class="tech-card">
+      <div class="tech-icon" style="background: var(--pink-light);">
+        <span style="font-size: 1.4rem;">🎬</span>
+      </div>
+      <h4>OpenCV</h4>
+      <div class="tech-version">v4.11</div>
+      <p>Computer vision library for video frame extraction. Reads video, gets middle frame, converts to RGB.</p>
+    </div>
+    <div class="tech-card">
+      <div class="tech-icon" style="background: var(--orange-light);">
+        <span style="font-size: 1.4rem;">🐳</span>
+      </div>
+      <h4>Docker + Fly.io</h4>
+      <div class="tech-version">CI/CD via GitHub Actions</div>
+      <p>Containerized deployment on Fly.io. Auto-deploy on push to main via GitHub Actions workflow.</p>
+    </div>
+  </div>
+
+  <!-- Tech comparison -->
+  <div style="background: white; border-radius: 16px; padding: 24px; border: 1px solid var(--gray-200);">
+    <div style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--gray-400); margin-bottom: 14px;">Two-Model Strategy: Why Not Just Use GPT-4 Vision?</div>
+    <div class="grid-2 gap-30">
+      <div style="padding: 16px; background: var(--success-light); border-radius: 12px;">
+        <div style="font-size: 0.85rem; font-weight: 700; color: #047857; margin-bottom: 6px;">Current: BLIP + GPT-4o Pipeline</div>
+        <ul style="font-size: 0.78rem; color: #047857; line-height: 1.8; padding-left: 16px;">
+          <li>BLIP runs locally &mdash; no API cost for captioning</li>
+          <li>GPT-4o receives text only &mdash; cheaper API calls</li>
+          <li>Each model handles what it's best at</li>
+          <li>Caption can be cached and reused</li>
+        </ul>
+      </div>
+      <div style="padding: 16px; background: var(--gray-100); border-radius: 12px;">
+        <div style="font-size: 0.85rem; font-weight: 700; color: var(--gray-600); margin-bottom: 6px;">Alternative: GPT-4 Vision (Single Model)</div>
+        <ul style="font-size: 0.78rem; color: var(--gray-500); line-height: 1.8; padding-left: 16px;">
+          <li>Image tokens are expensive (~85 tokens per tile)</li>
+          <li>Every request requires image upload to API</li>
+          <li>No local processing &mdash; fully API dependent</li>
+          <li>Simpler code but higher operational cost</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 11: DATA FLOW / SEQUENCE                    -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s11" class="slide" style="background: white;">
+  <p class="section-label">Request Lifecycle</p>
+  <h2>End-to-End Data Flow</h2>
+
+  <div class="grid-2" style="align-items: start;">
+    <!-- Upload Sequence -->
+    <div style="background: var(--gray-50); border-radius: 20px; padding: 28px; border: 1px solid var(--gray-200);">
+      <h3 style="font-size: 1.1rem; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+        <span style="background: var(--primary); color: white; width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 800;">1</span>
+        Upload Request
+      </h3>
+      <div class="workflow-timeline" style="padding-left: 50px;">
+        <div class="wf-step">
+          <div class="wf-dot active"></div>
+          <div class="wf-content">
+            <div class="wf-badge" style="background: var(--blue-light); color: var(--blue);">Frontend</div>
+            <h4>User selects file</h4>
+            <p>FormData with file sent to <code>POST /upload/</code></p>
+          </div>
+        </div>
+        <div class="wf-step">
+          <div class="wf-dot active"></div>
+          <div class="wf-content">
+            <div class="wf-badge" style="background: var(--primary-light); color: var(--primary-dark);">Backend</div>
+            <h4>File saved with UUID</h4>
+            <p>Saved to <code>static/uploads/{uuid}_{filename}</code></p>
+          </div>
+        </div>
+        <div class="wf-step">
+          <div class="wf-dot active"></div>
+          <div class="wf-content">
+            <div class="wf-badge" style="background: var(--accent-light); color: #92400e;">AI</div>
+            <h4>BLIP generates caption</h4>
+            <p>Image &rarr; "a black leather handbag with gold hardware"</p>
+          </div>
+        </div>
+        <div class="wf-step">
+          <div class="wf-dot"></div>
+          <div class="wf-content">
+            <div class="wf-badge" style="background: var(--pink-light); color: #be185d;">AI</div>
+            <h4>GPT classifies category</h4>
+            <p>Returns <code>{"category": "fashion"}</code></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Generate Sequence -->
+    <div style="background: var(--gray-50); border-radius: 20px; padding: 28px; border: 1px solid var(--gray-200);">
+      <h3 style="font-size: 1.1rem; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+        <span style="background: var(--success); color: white; width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 800;">2</span>
+        Generate Request
+      </h3>
+      <div class="workflow-timeline" style="padding-left: 50px;">
+        <div class="wf-step">
+          <div class="wf-dot active" style="border-color: var(--success);"></div>
+          <div class="wf-content">
+            <div class="wf-badge" style="background: var(--blue-light); color: var(--blue);">Frontend</div>
+            <h4>Sends image_path + category</h4>
+            <p><code>POST /generate/</code> with JSON body</p>
+          </div>
+        </div>
+        <div class="wf-step">
+          <div class="wf-dot active" style="border-color: var(--success);"></div>
+          <div class="wf-content">
+            <div class="wf-badge" style="background: var(--primary-light); color: var(--primary-dark);">Router</div>
+            <h4>Routes to specialist model</h4>
+            <p>"fashion" &rarr; <code>fashion_model</code>, "electronics" &rarr; <code>electronics_model</code></p>
+          </div>
+        </div>
+        <div class="wf-step">
+          <div class="wf-dot active" style="border-color: var(--success);"></div>
+          <div class="wf-content">
+            <div class="wf-badge" style="background: var(--accent-light); color: #92400e;">AI</div>
+            <h4>BLIP re-captions with domain prompt</h4>
+            <p>"Describe this fashion product" &rarr; refined caption</p>
+          </div>
+        </div>
+        <div class="wf-step">
+          <div class="wf-dot" style="border-color: var(--success);"></div>
+          <div class="wf-content">
+            <div class="wf-badge" style="background: var(--success-light); color: #047857;">Output</div>
+            <h4>GPT-4o generates metadata</h4>
+            <p>Returns <code>{"title": "...", "description": "...", "features": [...]}</code></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Response format -->
+  <div style="margin-top: 30px; background: var(--gray-900); border-radius: 16px; padding: 24px; color: white;">
+    <div style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent); margin-bottom: 12px;">Sample JSON Response</div>
+    <pre style="font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.78rem; line-height: 1.6; color: rgba(255,255,255,0.8); overflow-x: auto;">{
+  "title": "Classic Leather Crossbody Bag with Gold-Tone Hardware",
+  "description": "Elevate your everyday look with this sleek leather crossbody bag. Featuring a compact yet spacious design, adjustable strap, and polished gold-tone hardware, it's the perfect blend of functionality and sophistication for the modern fashionista.",
+  "features": [
+    "Premium genuine leather construction",
+    "Adjustable crossbody strap for versatile wear",
+    "Gold-tone metal buckle and zipper accents",
+    "Interior zip pocket for secure storage",
+    "Compact design fits phone, wallet, and essentials",
+    "Available in multiple colorways"
+  ]
+}</pre>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 12: MARKET IMPACT                           -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s12" class="slide slide-dark">
+  <p class="section-label">Impact</p>
+  <h2>Why This Matters</h2>
+
+  <div class="grid-3 gap-30" style="margin-bottom: 40px;">
+    <div class="stat-card dark-stat">
+      <div class="stat-number">10x</div>
+      <div class="stat-label">Faster than manual<br>product listing creation</div>
+    </div>
+    <div class="stat-card dark-stat">
+      <div class="stat-number">$0.01</div>
+      <div class="stat-label">Approximate cost per<br>product description generated</div>
+    </div>
+    <div class="stat-card dark-stat">
+      <div class="stat-number">100%</div>
+      <div class="stat-label">Consistent brand voice<br>across entire catalog</div>
+    </div>
+  </div>
+
+  <div class="grid-2 gap-30">
+    <div class="dark-card">
+      <h4>The E-Commerce Content Crisis</h4>
+      <p>Global e-commerce is projected to hit $8 trillion by 2027. Every product needs compelling metadata. The gap between product listings and quality content grows exponentially &mdash; AI is the only viable solution at scale.</p>
+    </div>
+    <div class="dark-card">
+      <h4>Democratizing Quality Listings</h4>
+      <p>Small sellers on marketplaces compete against brands with dedicated copywriting teams. This tool levels the playing field &mdash; anyone with a product image can generate professional-grade listings instantly.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 13: FUTURE ENHANCEMENTS                     -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s13" class="slide" style="background: white;">
+  <p class="section-label">Innovation</p>
+  <h2>Future Enhancements</h2>
+
+  <div class="grid-3 gap-30">
+    <div class="innovation-card">
+      <div class="card-icon-big" style="background: var(--primary-light);">🌍</div>
+      <h4>Multi-Language Support</h4>
+      <p>Generate product descriptions in Hindi, Spanish, French, Arabic, and more. One image, one click &mdash; listings for every marketplace globally.</p>
+      <div class="innovation-mini-diagram">
+        <div class="imd-node" style="background: var(--primary-light); color: var(--primary-dark);">Image</div>
+        <div class="imd-arrow">&rarr;</div>
+        <div class="imd-node" style="background: var(--accent-light); color: #b45309;">AI</div>
+        <div class="imd-arrow">&rarr;</div>
+        <div class="imd-node" style="background: var(--success-light); color: #047857;">EN/HI/ES/FR</div>
+      </div>
+    </div>
+
+    <div class="innovation-card">
+      <div class="card-icon-big" style="background: var(--pink-light);">📁</div>
+      <h4>More Product Categories</h4>
+      <p>Expand beyond fashion and electronics to home decor, groceries, automotive parts, beauty, sports equipment, and more with specialized agents.</p>
+      <div class="innovation-mini-diagram">
+        <div class="imd-node" style="background: var(--pink-light); color: #be185d;">Fashion</div>
+        <div class="imd-node" style="background: var(--blue-light); color: var(--blue);">Electronics</div>
+        <div class="imd-node" style="background: var(--success-light); color: #047857;">Home</div>
+        <div class="imd-node" style="background: var(--accent-light); color: #b45309;">+ More</div>
+      </div>
+    </div>
+
+    <div class="innovation-card">
+      <div class="card-icon-big" style="background: var(--blue-light);">📊</div>
+      <h4>Bulk Processing</h4>
+      <p>Upload an entire product catalog at once. Background processing with progress tracking, CSV/Excel export, and batch API integration.</p>
+      <div class="innovation-mini-diagram">
+        <div class="imd-node" style="background: var(--blue-light); color: var(--blue);">100 Images</div>
+        <div class="imd-arrow">&rarr;</div>
+        <div class="imd-node" style="background: var(--accent-light); color: #b45309;">Queue</div>
+        <div class="imd-arrow">&rarr;</div>
+        <div class="imd-node" style="background: var(--success-light); color: #047857;">CSV Export</div>
+      </div>
+    </div>
+
+    <div class="innovation-card">
+      <div class="card-icon-big" style="background: var(--success-light);">🎯</div>
+      <h4>SEO Optimization Engine</h4>
+      <p>Integrate keyword research APIs to auto-inject high-traffic search terms into generated descriptions, maximizing product discoverability.</p>
+    </div>
+
+    <div class="innovation-card">
+      <div class="card-icon-big" style="background: var(--accent-light);">🔗</div>
+      <h4>Marketplace Integrations</h4>
+      <p>Direct publish to Amazon, Shopify, WooCommerce, Flipkart. Generate &rarr; Review &rarr; Publish workflow without leaving the app.</p>
+    </div>
+
+    <div class="innovation-card">
+      <div class="card-icon-big" style="background: var(--teal-light);">🤖</div>
+      <h4>GPT-4 Vision Migration</h4>
+      <p>Optionally use GPT-4 Vision for a single-model pipeline when accuracy is prioritized over cost. User-selectable quality tiers.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 14: ROADMAP                                 -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s14" class="slide slide-dark">
+  <p class="section-label">Roadmap</p>
+  <h2>What's Next</h2>
+
+  <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+    <div class="roadmap-phase phase-now" style="flex: 1; min-width: 200px;">
+      <div class="phase-badge">Completed</div>
+      <h4>V1 &mdash; Core MVP</h4>
+      <ul class="roadmap-list">
+        <li>Image upload &amp; processing</li>
+        <li>Video frame extraction</li>
+        <li>BLIP image captioning</li>
+        <li>GPT-4o category classification</li>
+        <li>Fashion &amp; electronics agents</li>
+        <li>Structured JSON output</li>
+        <li>React frontend with Tailwind</li>
+        <li>Fly.io deployment with CI/CD</li>
+      </ul>
+    </div>
+
+    <div class="roadmap-phase phase-next" style="flex: 1; min-width: 200px;">
+      <div class="phase-badge">Phase 2</div>
+      <h4>Scale &amp; Polish</h4>
+      <ul class="roadmap-list">
+        <li>Bulk image upload</li>
+        <li>Progress tracking UI</li>
+        <li>CSV/JSON batch export</li>
+        <li>User authentication</li>
+        <li>Generation history</li>
+        <li>Edit &amp; regenerate flow</li>
+        <li>Mobile-responsive redesign</li>
+      </ul>
+    </div>
+
+    <div class="roadmap-phase phase-later" style="flex: 1; min-width: 200px;">
+      <div class="phase-badge">Phase 3</div>
+      <h4>Expand &amp; Integrate</h4>
+      <ul class="roadmap-list">
+        <li>5+ new product categories</li>
+        <li>Multi-language generation</li>
+        <li>SEO keyword injection</li>
+        <li>Shopify / Amazon APIs</li>
+        <li>Custom brand voice training</li>
+        <li>A/B test descriptions</li>
+      </ul>
+    </div>
+
+    <div class="roadmap-phase phase-future" style="flex: 1; min-width: 200px;">
+      <div class="phase-badge">Vision</div>
+      <h4>AI-First Commerce</h4>
+      <ul class="roadmap-list">
+        <li>GPT-4 Vision option</li>
+        <li>Auto-pricing suggestions</li>
+        <li>Competitor analysis agent</li>
+        <li>Real-time marketplace sync</li>
+        <li>Enterprise white-label</li>
+        <li>API-as-a-service for developers</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 15: CLOSING                                 -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s15" class="slide slide-closing">
+  <h2>From Image to Listing<br>in Seconds.</h2>
+  <p style="font-size: 1.1rem; opacity: 0.8; max-width: 600px; margin: 0 auto; position: relative; z-index: 1;">
+    Product Descriptor AI combines vision models, large language models, and domain-specific agents to transform how e-commerce products get listed.
+  </p>
+
+  <div class="closing-points">
+    <div class="closing-point">
+      <div class="closing-icon">👁️</div>
+      <h4>See</h4>
+      <p>BLIP perceives what's in every product image</p>
+    </div>
+    <div class="closing-point">
+      <div class="closing-icon">🧠</div>
+      <h4>Think</h4>
+      <p>GPT-4o reasons about category and context</p>
+    </div>
+    <div class="closing-point">
+      <div class="closing-icon">✍️</div>
+      <h4>Write</h4>
+      <p>Specialist agents craft compelling copy</p>
+    </div>
+    <div class="closing-point">
+      <div class="closing-icon">🚀</div>
+      <h4>Ship</h4>
+      <p>Structured JSON ready for any marketplace</p>
+    </div>
+  </div>
+
+  <div style="margin-top: 48px; position: relative; z-index: 1;">
+    <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+      <span class="tech-pill">React 19</span>
+      <span class="tech-pill">FastAPI</span>
+      <span class="tech-pill">BLIP</span>
+      <span class="tech-pill">GPT-4o</span>
+      <span class="tech-pill">PyTorch</span>
+      <span class="tech-pill">OpenCV</span>
+      <span class="tech-pill">Fly.io</span>
+      <span class="tech-pill">Docker</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- DOWNLOAD BUTTON -->
+<button class="download-btn" onclick="window.print()">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+    <polyline points="7 10 12 15 17 10"/>
+    <line x1="12" y1="15" x2="12" y2="3"/>
+  </svg>
+  Export PDF
+</button>
+
+</body>
+</html>

@@ -1,0 +1,2012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LT Ride - Executive Overview</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  :root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --primary-light: #dbeafe;
+    --accent: #f59e0b;
+    --accent-light: #fef3c7;
+    --success: #10b981;
+    --success-light: #d1fae5;
+    --danger: #ef4444;
+    --danger-light: #fee2e2;
+    --purple: #8b5cf6;
+    --purple-light: #ede9fe;
+    --teal: #14b8a6;
+    --teal-light: #ccfbf1;
+    --gray-50: #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-300: #cbd5e1;
+    --gray-400: #94a3b8;
+    --gray-500: #64748b;
+    --gray-600: #475569;
+    --gray-700: #334155;
+    --gray-800: #1e293b;
+    --gray-900: #0f172a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--gray-50);
+    color: var(--gray-800);
+    line-height: 1.6;
+  }
+
+  .slide {
+    min-height: 100vh;
+    padding: 60px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .slide + .slide { border-top: 1px solid var(--gray-200); }
+
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: var(--primary);
+    margin-bottom: 12px;
+  }
+
+  .slide h2 {
+    font-size: 2.6rem;
+    font-weight: 800;
+    color: var(--gray-900);
+    margin-bottom: 36px;
+    letter-spacing: -1px;
+    line-height: 1.15;
+  }
+
+  .slide h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 16px;
+  }
+
+  /* ── NAV ── */
+  .slide-nav {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 100;
+  }
+
+  .nav-dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--gray-300);
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+  }
+  .nav-dot:hover { background: var(--primary); transform: scale(1.4); }
+
+  /* ═══════════ SLIDE 1: TITLE ═══════════ */
+  .slide-title {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 40%, #2563eb 100%);
+    color: white;
+    text-align: center;
+    align-items: center;
+  }
+  .slide-title::before {
+    content: '';
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(245,158,11,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .logo-icon { width: 100px; height: 100px; margin-bottom: 30px; position: relative; z-index: 1; }
+
+  .slide-title h1 {
+    font-size: 4.5rem;
+    font-weight: 900;
+    letter-spacing: -2px;
+    margin-bottom: 16px;
+    position: relative; z-index: 1;
+  }
+  .slide-title .tagline {
+    font-size: 1.5rem;
+    font-weight: 300;
+    opacity: 0.9;
+    margin-bottom: 40px;
+    position: relative; z-index: 1;
+  }
+  .slide-title .subtitle {
+    font-size: 1rem;
+    opacity: 0.6;
+    position: relative; z-index: 1;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  /* ═══════════ COMMON COMPONENTS ═══════════ */
+
+  /* Pain / Feature cards */
+  .pain-card, .feature-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 22px 24px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .pain-card { border-left: 4px solid var(--danger); }
+  .card-icon-box {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+  }
+  .pain-card h4, .feature-card h4 { font-size: 1rem; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+  .pain-card p, .feature-card p { font-size: 0.85rem; color: var(--gray-500); line-height: 1.5; }
+
+  /* Grid helpers */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 20px; }
+  .gap-20 { gap: 20px; }
+  .gap-30 { gap: 30px; }
+
+  .flex-col { display: flex; flex-direction: column; }
+
+  /* Stat cards */
+  .stat-card {
+    text-align: center;
+    padding: 32px 24px;
+    border-radius: 20px;
+  }
+  .stat-number {
+    font-size: 3.2rem;
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .stat-label { font-size: 0.9rem; font-weight: 400; }
+
+  /* ═══════════ SLIDE 2: PROBLEM ═══════════ */
+  .slide-problem { background: white; }
+
+  .problem-scene {
+    background: var(--gray-100);
+    border-radius: 24px;
+    padding: 40px;
+    position: relative;
+  }
+
+  .junction-scene {
+    position: relative;
+    height: 280px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: linear-gradient(180deg, #87CEEB 0%, #b4d7e8 45%, #e8d5a0 45%, #c4a86a 100%);
+  }
+
+  .road-h {
+    position: absolute;
+    bottom: 20%;
+    left: 0; right: 0;
+    height: 28%;
+    background: #666;
+  }
+  .road-h::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 5%; right: 5%;
+    height: 3px;
+    background: repeating-linear-gradient(90deg, #f59e0b 0px, #f59e0b 20px, transparent 20px, transparent 40px);
+    transform: translateY(-50%);
+  }
+
+  .bus-icon {
+    position: absolute;
+    font-size: 2.5rem;
+    bottom: 26%;
+  }
+  .bus-1 { left: 15%; }
+  .bus-2 { right: 20%; opacity: 0.5; }
+
+  .person-waiting {
+    position: absolute;
+    bottom: 50%;
+    font-size: 1.6rem;
+  }
+  .p1 { left: 40%; }
+  .p2 { left: 48%; }
+  .p3 { left: 56%; }
+
+  .thought-bubble {
+    position: absolute;
+    background: white;
+    border-radius: 10px;
+    padding: 5px 10px;
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--gray-700);
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .thought-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid white;
+  }
+  .t1 { bottom: 60%; left: 33%; }
+  .t2 { bottom: 64%; left: 45%; }
+  .t3 { bottom: 60%; left: 55%; }
+
+  .scene-caption {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 5px 14px;
+    border-radius: 16px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  /* ═══════════ SLIDE 3: MARKET ═══════════ */
+  .slide-dark { background: var(--gray-900); color: white; }
+  .slide-dark h2 { color: white; }
+  .slide-dark .section-label { color: var(--accent); }
+
+  .dark-stat .stat-number {
+    background: linear-gradient(135deg, var(--accent) 0%, #fbbf24 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .dark-stat .stat-label { color: rgba(255,255,255,0.55); }
+  .dark-stat { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); }
+
+  .dark-card {
+    padding: 24px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .dark-card h4 { font-size: 1rem; font-weight: 700; color: var(--accent); margin-bottom: 8px; }
+  .dark-card p { font-size: 0.85rem; color: rgba(255,255,255,0.5); line-height: 1.5; }
+
+  /* ═══════════ SLIDE 4: SOLUTION ═══════════ */
+  .slide-solution { background: white; }
+
+  .phone-mockup {
+    width: 180px;
+    background: var(--gray-900);
+    border-radius: 28px;
+    padding: 12px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.18);
+  }
+  .phone-screen {
+    background: white;
+    border-radius: 18px;
+    overflow: hidden;
+    min-height: 320px;
+  }
+  .phone-header {
+    padding: 12px 14px 8px;
+    font-weight: 700;
+    font-size: 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+  }
+  .driver-phone .phone-header { background: var(--primary); }
+  .passenger-phone .phone-header { background: var(--success); }
+  .phone-content { padding: 10px; }
+
+  .mini-card {
+    background: var(--gray-50);
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin-bottom: 7px;
+    font-size: 0.6rem;
+    border: 1px solid var(--gray-200);
+  }
+  .mini-card .label { color: var(--gray-400); font-size: 0.5rem; text-transform: uppercase; letter-spacing: 1px; }
+  .mini-card .value { font-weight: 700; color: var(--gray-800); margin-top: 1px; }
+
+  .mini-counter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin: 10px 0;
+  }
+  .counter-btn {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; font-weight: 700;
+  }
+  .counter-num { font-size: 1.6rem; font-weight: 900; color: var(--gray-900); }
+
+  .stop-bar {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    margin: 8px 0;
+    padding: 6px;
+    background: var(--primary-light);
+    border-radius: 6px;
+  }
+  .stop-dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .stop-dot.done { background: var(--primary); }
+  .stop-dot.active { background: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
+  .stop-dot.inactive { background: var(--gray-300); }
+  .stop-line { flex: 1; height: 2px; border-radius: 1px; }
+  .stop-line.done { background: var(--primary); }
+  .stop-line.pending { background: var(--gray-300); }
+
+  .sol-point {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .sol-icon {
+    width: 46px; height: 46px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+  .sol-point h4 { font-size: 1rem; font-weight: 700; color: var(--gray-900); margin-bottom: 3px; }
+  .sol-point p { font-size: 0.85rem; color: var(--gray-500); line-height: 1.5; }
+
+  /* ═══════════ SLIDE 5: HOW IT WORKS ═══════════ */
+  .slide-flow { background: var(--gray-50); }
+
+  .flow-diagram {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 0;
+    flex-wrap: wrap;
+  }
+  .flow-step {
+    text-align: center;
+    width: 160px;
+  }
+  .flow-circle {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    margin: 0 auto 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    position: relative;
+  }
+  .flow-number {
+    position: absolute;
+    top: -5px; right: -5px;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--gray-900);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .flow-step h4 { font-size: 0.85rem; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+  .flow-step p { font-size: 0.7rem; color: var(--gray-500); line-height: 1.35; padding: 0 6px; }
+  .flow-arrow { display: flex; align-items: center; padding-top: 24px; color: var(--gray-300); font-size: 1.6rem; }
+
+  .flow-section-label {
+    width: 100%;
+    text-align: center;
+    padding: 16px 0 8px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+  }
+
+  .data-flow-visual {
+    margin-top: 24px;
+    padding: 18px;
+    background: white;
+    border-radius: 14px;
+    text-align: center;
+    border: 1px solid var(--gray-200);
+  }
+  .data-flow-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 6px 0;
+  }
+  .df-node {
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .df-arrow { color: var(--gray-400); font-size: 1rem; }
+
+  /* ═══════════ SLIDE 6: DRIVER WORKFLOW ═══════════ */
+  .slide-workflow { background: white; }
+
+  .workflow-timeline {
+    position: relative;
+    padding-left: 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .workflow-timeline::before {
+    content: '';
+    position: absolute;
+    left: 27px;
+    top: 20px;
+    bottom: 20px;
+    width: 3px;
+    background: var(--gray-200);
+    border-radius: 2px;
+  }
+  .wf-step {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    position: relative;
+    padding: 16px 0;
+  }
+  .wf-dot {
+    position: absolute;
+    left: -39px;
+    top: 20px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 3px solid var(--primary);
+    background: white;
+    z-index: 1;
+  }
+  .wf-dot.active { background: var(--primary); }
+  .wf-content {
+    flex: 1;
+    background: var(--gray-50);
+    border-radius: 14px;
+    padding: 20px 24px;
+    border: 1px solid var(--gray-200);
+  }
+  .wf-content h4 { font-size: 0.95rem; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+  .wf-content p { font-size: 0.8rem; color: var(--gray-500); line-height: 1.5; }
+  .wf-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .wf-detail {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: white;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    color: var(--gray-600);
+    border: 1px solid var(--gray-200);
+  }
+  .wf-detail code {
+    background: var(--gray-100);
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+
+  /* ═══════════ SLIDE 7: PASSENGER WORKFLOW ═══════════ */
+  /* Reuses .workflow-timeline styles */
+
+  /* ═══════════ SLIDE 8+9: CONNECTIVITY ═══════════ */
+  .slide-connectivity { background: var(--gray-50); }
+
+  .conn-diagram {
+    background: white;
+    border-radius: 20px;
+    padding: 32px;
+    border: 1px solid var(--gray-200);
+    margin-bottom: 24px;
+  }
+
+  .conn-layer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px dashed var(--gray-200);
+  }
+  .conn-layer:last-child { border-bottom: none; }
+
+  .conn-label {
+    width: 130px;
+    flex-shrink: 0;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--gray-400);
+  }
+
+  .conn-nodes {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .conn-node {
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 2px solid;
+    white-space: nowrap;
+  }
+  .conn-arrow { color: var(--gray-300); font-size: 1rem; }
+
+  .scenario-card {
+    border-radius: 16px;
+    padding: 24px;
+    border: 2px solid;
+    background: white;
+  }
+  .scenario-card h4 { font-size: 1rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+  .scenario-steps {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .scenario-steps li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.8rem;
+    color: var(--gray-600);
+    line-height: 1.4;
+  }
+  .step-num {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 800;
+    flex-shrink: 0;
+    color: white;
+  }
+
+  .conn-comparison {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 24px;
+    align-items: start;
+    margin-top: 20px;
+  }
+  .conn-vs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 80px;
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: var(--gray-300);
+  }
+
+  /* ═══════════ SLIDE 10: ARCHITECTURE ═══════════ */
+  .slide-arch { background: white; }
+
+  .arch-diagram {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 920px;
+    margin: 0 auto;
+  }
+  .arch-layer {
+    display: flex;
+    align-items: stretch;
+    gap: 14px;
+  }
+  .arch-label {
+    width: 110px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-radius: 12px;
+    text-align: center;
+    padding: 10px 6px;
+  }
+  .arch-boxes {
+    flex: 1;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .arch-box {
+    flex: 1;
+    min-width: 120px;
+    padding: 14px 12px;
+    border-radius: 10px;
+    border: 2px solid;
+    text-align: center;
+  }
+  .arch-box h5 { font-size: 0.8rem; font-weight: 700; margin-bottom: 2px; }
+  .arch-box .tech { font-size: 0.65rem; opacity: 0.6; font-weight: 500; }
+
+  .layer-client .arch-label { background: var(--primary-light); color: var(--primary-dark); }
+  .layer-client .arch-box { border-color: var(--primary); background: rgba(37,99,235,0.03); }
+  .layer-client .arch-box h5 { color: var(--primary-dark); }
+
+  .layer-shared .arch-label { background: var(--purple-light); color: var(--purple); }
+  .layer-shared .arch-box { border-color: var(--purple); background: rgba(139,92,246,0.03); }
+  .layer-shared .arch-box h5 { color: var(--purple); }
+
+  .layer-api .arch-label { background: var(--accent-light); color: #b45309; }
+  .layer-api .arch-box { border-color: var(--accent); background: rgba(245,158,11,0.03); }
+  .layer-api .arch-box h5 { color: #b45309; }
+
+  .layer-data .arch-label { background: var(--success-light); color: #047857; }
+  .layer-data .arch-box { border-color: var(--success); background: rgba(16,185,129,0.03); }
+  .layer-data .arch-box h5 { color: #047857; }
+
+  .arch-connector {
+    display: flex;
+    justify-content: center;
+    padding: 2px 0;
+    margin-left: 124px;
+  }
+  .connector-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--gray-300);
+    font-size: 0.65rem;
+    gap: 0;
+    line-height: 1;
+  }
+  .connector-label {
+    font-size: 0.55rem;
+    color: var(--gray-400);
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* ═══════════ SLIDE 11: LOW-LEVEL ARCH ═══════════ */
+  .slide-lowlevel { background: var(--gray-50); }
+
+  .ll-section {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid var(--gray-200);
+  }
+  .ll-section h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .db-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.75rem;
+  }
+  .db-table th {
+    text-align: left;
+    padding: 6px 10px;
+    background: var(--gray-50);
+    font-weight: 700;
+    color: var(--gray-600);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 2px solid var(--gray-200);
+  }
+  .db-table td {
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--gray-100);
+    color: var(--gray-600);
+  }
+  .db-table .tbl-name {
+    font-weight: 700;
+    color: var(--gray-800);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.7rem;
+  }
+
+  .lifecycle-flow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 8px 0;
+  }
+  .lf-node {
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .lf-arrow { color: var(--gray-300); font-size: 0.9rem; }
+  .lf-branch { color: var(--gray-400); font-size: 0.7rem; margin: 0 4px; }
+
+  .api-endpoint {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 0;
+    font-size: 0.75rem;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .api-endpoint:last-child { border-bottom: none; }
+  .api-method {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.6rem;
+    font-weight: 800;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    min-width: 40px;
+    text-align: center;
+  }
+  .method-get { background: var(--success-light); color: #047857; }
+  .method-post { background: var(--primary-light); color: var(--primary-dark); }
+  .method-patch { background: var(--accent-light); color: #92400e; }
+  .method-ws { background: var(--purple-light); color: var(--purple); }
+  .api-path {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.7rem;
+    color: var(--gray-700);
+  }
+  .api-desc { color: var(--gray-400); font-size: 0.7rem; margin-left: auto; }
+
+  /* ═══════════ INNOVATION ═══════════ */
+  .innovation-card {
+    background: white;
+    border-radius: 18px;
+    padding: 28px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+    border: 1px solid var(--gray-200);
+  }
+  .innovation-card .card-icon-big {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 14px;
+  }
+  .innovation-card h4 { font-size: 1.05rem; font-weight: 700; color: var(--gray-900); margin-bottom: 6px; }
+  .innovation-card p { font-size: 0.85rem; color: var(--gray-500); line-height: 1.6; }
+
+  .innovation-mini-diagram {
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: var(--gray-50);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+  }
+  .imd-node {
+    text-align: center;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .imd-arrow { color: var(--gray-300); font-size: 1rem; flex-shrink: 0; }
+
+  /* ═══════════ STATUS ═══════════ */
+  .status-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .status-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+  .status-list li.done { background: var(--success-light); color: #047857; }
+  .status-list li.pending { background: var(--accent-light); color: #92400e; }
+  .status-list li.planned { background: var(--gray-100); color: var(--gray-500); }
+
+  /* ═══════════ ROADMAP ═══════════ */
+  .roadmap-phase {
+    flex: 1;
+    padding: 24px 20px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .phase-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 16px;
+    font-size: 0.6rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+  .phase-now .phase-badge { background: var(--success); color: white; }
+  .phase-next .phase-badge { background: var(--accent); color: var(--gray-900); }
+  .phase-later .phase-badge { background: var(--purple); color: white; }
+  .phase-future .phase-badge { background: var(--gray-600); color: white; }
+
+  .roadmap-phase h4 { font-size: 1rem; font-weight: 700; margin-bottom: 12px; color: white; }
+  .roadmap-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .roadmap-list li {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.5);
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.4;
+  }
+  .roadmap-list li::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: rgba(255,255,255,0.25);
+    font-weight: 700;
+  }
+
+  /* ═══════════ CLOSING ═══════════ */
+  .slide-closing {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 40%, #2563eb 100%);
+    color: white;
+    text-align: center;
+    align-items: center;
+  }
+  .slide-closing h2 { color: white; font-size: 2.8rem; margin-bottom: 20px; }
+  .closing-points {
+    display: flex;
+    gap: 36px;
+    justify-content: center;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  .closing-point { text-align: center; max-width: 200px; }
+  .closing-icon {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem;
+    margin: 0 auto 12px;
+  }
+  .closing-point h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; }
+  .closing-point p { font-size: 0.75rem; opacity: 0.6; line-height: 1.4; }
+
+  /* ═══════════ DOWNLOAD BUTTON ═══════════ */
+  .download-btn {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 100;
+    background: var(--gray-900);
+    color: white;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    transition: background 0.2s, transform 0.2s;
+  }
+  .download-btn:hover { background: var(--primary); transform: translateY(-2px); }
+  .download-btn svg { width: 16px; height: 16px; }
+
+  /* ═══════════ PRINT ═══════════ */
+  @media print {
+    .slide { page-break-after: always; min-height: auto; padding: 40px 50px; }
+    .slide-nav, .download-btn { display: none; }
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+
+  /* ═══════════ RESPONSIVE ═══════════ */
+  @media (max-width: 900px) {
+    .slide { padding: 36px 24px; }
+    .slide h2 { font-size: 1.8rem; }
+    .slide-title h1 { font-size: 2.8rem; }
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .conn-comparison { grid-template-columns: 1fr; }
+    .conn-vs { padding-top: 0; }
+    .flow-diagram { flex-direction: column; align-items: center; }
+    .flow-arrow { transform: rotate(90deg); }
+    .arch-layer { flex-direction: column; }
+    .arch-label { width: 100%; }
+    .arch-connector { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV DOTS -->
+<nav class="slide-nav">
+  <button class="nav-dot" onclick="document.getElementById('s1').scrollIntoView({behavior:'smooth'})" title="Title"></button>
+  <button class="nav-dot" onclick="document.getElementById('s2').scrollIntoView({behavior:'smooth'})" title="The Problem"></button>
+  <button class="nav-dot" onclick="document.getElementById('s3').scrollIntoView({behavior:'smooth'})" title="Market"></button>
+  <button class="nav-dot" onclick="document.getElementById('s4').scrollIntoView({behavior:'smooth'})" title="Solution"></button>
+  <button class="nav-dot" onclick="document.getElementById('s5').scrollIntoView({behavior:'smooth'})" title="How It Works"></button>
+  <button class="nav-dot" onclick="document.getElementById('s6').scrollIntoView({behavior:'smooth'})" title="Driver Workflow"></button>
+  <button class="nav-dot" onclick="document.getElementById('s7').scrollIntoView({behavior:'smooth'})" title="Passenger Workflow"></button>
+  <button class="nav-dot" onclick="document.getElementById('s8').scrollIntoView({behavior:'smooth'})" title="Connectivity Strategy"></button>
+  <button class="nav-dot" onclick="document.getElementById('s9').scrollIntoView({behavior:'smooth'})" title="Connectivity Deep Dive"></button>
+  <button class="nav-dot" onclick="document.getElementById('s10').scrollIntoView({behavior:'smooth'})" title="Architecture"></button>
+  <button class="nav-dot" onclick="document.getElementById('s11').scrollIntoView({behavior:'smooth'})" title="Low-Level Architecture"></button>
+  <button class="nav-dot" onclick="document.getElementById('s12').scrollIntoView({behavior:'smooth'})" title="Innovation"></button>
+  <button class="nav-dot" onclick="document.getElementById('s13').scrollIntoView({behavior:'smooth'})" title="Status"></button>
+  <button class="nav-dot" onclick="document.getElementById('s14').scrollIntoView({behavior:'smooth'})" title="Roadmap"></button>
+  <button class="nav-dot" onclick="document.getElementById('s15').scrollIntoView({behavior:'smooth'})" title="Close"></button>
+</nav>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 1: TITLE                                    -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s1" class="slide slide-title">
+  <svg class="logo-icon" viewBox="0 0 100 100" fill="none">
+    <circle cx="50" cy="50" r="46" fill="rgba(255,255,255,0.1)" stroke="white" stroke-width="3"/>
+    <path d="M20 60 L35 42 L50 50 L65 35 L80 55" stroke="#f59e0b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <circle cx="35" cy="42" r="5" fill="#f59e0b"/>
+    <circle cx="50" cy="50" r="5" fill="#f59e0b"/>
+    <circle cx="65" cy="35" r="5" fill="#f59e0b"/>
+    <circle cx="80" cy="55" r="4" fill="white"/>
+    <circle cx="20" cy="60" r="4" fill="white"/>
+    <text x="50" y="80" text-anchor="middle" fill="white" font-size="10" font-weight="700" letter-spacing="4">ROUTE</text>
+  </svg>
+  <h1>LT Ride</h1>
+  <p class="tagline">The Digital Layer for Shared Public Transport</p>
+  <p class="subtitle">Architecture &amp; Executive Overview</p>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 2: THE PROBLEM                              -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s2" class="slide slide-problem">
+  <p class="section-label">The Problem</p>
+  <h2>Passengers Wait Blind.<br>Drivers Drive Empty.</h2>
+
+  <div class="grid-2">
+    <!-- Visual: Junction Scene -->
+    <div class="problem-scene">
+      <div class="junction-scene">
+        <div class="road-h"></div>
+        <div class="bus-icon bus-1">🚌</div>
+        <div class="bus-icon bus-2">🚐</div>
+        <div class="person-waiting p1">🧑</div>
+        <div class="person-waiting p2">👩</div>
+        <div class="person-waiting p3">🧓</div>
+        <div class="thought-bubble t1">When is the next bus?</div>
+        <div class="thought-bubble t2">Any seats left?</div>
+        <div class="thought-bubble t3">Should I wait or walk?</div>
+        <div class="scene-caption">Typical scene at a rural transit junction</div>
+      </div>
+    </div>
+
+    <!-- Pain Points -->
+    <div class="flex-col gap-20">
+      <div class="pain-card">
+        <div class="card-icon-box" style="background: #fee2e2;">😰</div>
+        <div>
+          <h4>Zero Visibility for Passengers</h4>
+          <p>People wait at junctions with no idea when the next vehicle arrives, if it has seats, or if it's even running today.</p>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="card-icon-box" style="background: #fef3c7;">🚐</div>
+        <div>
+          <h4>Drivers Can't See Demand</h4>
+          <p>Drivers run fixed routes blindly. No way to know how many passengers are waiting at upcoming stops or whether a trip is worth making.</p>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="card-icon-box" style="background: #ede9fe;">📵</div>
+        <div>
+          <h4>No Digital Infrastructure</h4>
+          <p>Entirely word-of-mouth. No tracking, no schedules, no booking. A system running on hope and habit.</p>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="card-icon-box" style="background: #dbeafe;">🌍</div>
+        <div>
+          <h4>Affects Every Rural &amp; Semi-Urban Area</h4>
+          <p>This isn't a single-region problem. Shared transport in towns and villages across the country operates identically &mdash; with zero digital coordination.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 3: MARKET OPPORTUNITY                       -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s3" class="slide slide-dark">
+  <p class="section-label">Why This Matters</p>
+  <h2>A Massive Underserved Market</h2>
+
+  <div class="grid-3 gap-30" style="margin-bottom: 40px;">
+    <div class="stat-card dark-stat">
+      <div class="stat-number">68%</div>
+      <div class="stat-label">Of India's population lives in<br>rural &amp; semi-urban areas</div>
+    </div>
+    <div class="stat-card dark-stat">
+      <div class="stat-number">0</div>
+      <div class="stat-label">Digital platforms serving<br>shared mass transport in these areas</div>
+    </div>
+    <div class="stat-card dark-stat">
+      <div class="stat-number">10M+</div>
+      <div class="stat-label">Daily shared vehicle trips<br>operating with zero digital layer</div>
+    </div>
+  </div>
+
+  <div class="grid-2 gap-30">
+    <div class="dark-card">
+      <h4>Shared Vehicles, Not Ride-Hail</h4>
+      <p>This isn't Uber for villages. Buses, Sumos, autos, tempos, and jeeps already run fixed routes &mdash; operated by private owners or the government. LT Ride doesn't replace them. It makes the existing system visible, predictable, and efficient.</p>
+    </div>
+    <div class="dark-card">
+      <h4>Location-Agnostic &amp; Scalable</h4>
+      <p>The platform is route-based and vehicle-agnostic. It works in any region &mdash; from plains with good 4G to remote areas with 2G connectivity. Designed to deploy anywhere shared transport exists.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 4: THE SOLUTION                             -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s4" class="slide slide-solution">
+  <p class="section-label">The Solution</p>
+  <h2>Two Apps. One Connected System.</h2>
+
+  <div class="grid-2" style="align-items: center;">
+    <!-- Phone Mockups -->
+    <div style="display: flex; gap: 24px; justify-content: center;">
+      <!-- Driver Phone -->
+      <div class="phone-mockup driver-phone">
+        <div class="phone-screen">
+          <div class="phone-header">
+            <span>Driver App</span>
+            <span style="font-size:0.55rem; opacity:0.7">LIVE</span>
+          </div>
+          <div class="phone-content">
+            <div class="mini-card">
+              <div class="label">Active Trip</div>
+              <div class="value">Route A &rarr; Route B</div>
+            </div>
+            <div class="stop-bar">
+              <div class="stop-dot done"></div>
+              <div class="stop-line done"></div>
+              <div class="stop-dot done"></div>
+              <div class="stop-line done"></div>
+              <div class="stop-dot active"></div>
+              <div class="stop-line pending"></div>
+              <div class="stop-dot inactive"></div>
+              <div class="stop-line pending"></div>
+              <div class="stop-dot inactive"></div>
+            </div>
+            <div style="text-align:center; font-size:0.55rem; color:#64748b; margin-bottom:3px;">Passengers On Board</div>
+            <div class="mini-counter">
+              <div class="counter-btn">-</div>
+              <div class="counter-num">8</div>
+              <div class="counter-btn">+</div>
+            </div>
+            <div class="mini-card">
+              <div class="label">Demand Ahead</div>
+              <div class="value" style="color:#f59e0b">4 passengers waiting at Stop C</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Passenger Phone -->
+      <div class="phone-mockup passenger-phone">
+        <div class="phone-screen">
+          <div class="phone-header">
+            <span>Passenger App</span>
+            <span style="font-size:0.55rem; opacity:0.7">TRACK</span>
+          </div>
+          <div class="phone-content">
+            <div class="mini-card">
+              <div class="label">Your Booking</div>
+              <div class="value">Stop C &rarr; Stop E</div>
+            </div>
+            <div class="mini-card">
+              <div class="label">Vehicle Status</div>
+              <div class="value" style="color:#10b981;">Approaching Stop C</div>
+              <div style="font-size:0.5rem; color:#94a3b8; margin-top:1px;">~12 min away &bull; 5 seats available</div>
+            </div>
+            <div class="stop-bar">
+              <div class="stop-dot done"></div>
+              <div class="stop-line done"></div>
+              <div class="stop-dot done"></div>
+              <div class="stop-line done"></div>
+              <div class="stop-dot active"></div>
+              <div class="stop-line pending"></div>
+              <div class="stop-dot inactive"></div>
+              <div class="stop-line pending"></div>
+              <div class="stop-dot inactive"></div>
+            </div>
+            <div class="mini-card" style="margin-top:6px;">
+              <div class="label">No Trips?</div>
+              <div class="value" style="font-size:0.55rem;">Request a Ride &mdash; Drivers see your demand</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key Value Props -->
+    <div class="flex-col" style="gap: 20px;">
+      <div class="sol-point">
+        <div class="sol-icon" style="background: var(--primary-light);">📍</div>
+        <div>
+          <h4>Real-Time Vehicle Tracking</h4>
+          <p>GPS positions broadcast every 10 seconds. Passengers see exactly where their vehicle is and when it'll arrive.</p>
+        </div>
+      </div>
+      <div class="sol-point">
+        <div class="sol-icon" style="background: var(--accent-light);">📊</div>
+        <div>
+          <h4>Demand Visibility for Drivers</h4>
+          <p>Drivers see passenger demand at each stop before departing. Ride requests aggregate when no trips are scheduled.</p>
+        </div>
+      </div>
+      <div class="sol-point">
+        <div class="sol-icon" style="background: var(--success-light);">🪑</div>
+        <div>
+          <h4>Live Seat Availability</h4>
+          <p>Drivers tap +/- to update passenger count. Passengers see seats remaining before heading to the stop.</p>
+        </div>
+      </div>
+      <div class="sol-point">
+        <div class="sol-icon" style="background: var(--purple-light);">📶</div>
+        <div>
+          <h4>Works on Any Network</h4>
+          <p>Designed for variable connectivity &mdash; from fast 4G to slow 2G. GPS queues offline, syncs when connection returns. Zero data loss.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 5: HOW IT WORKS (OVERVIEW)                  -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s5" class="slide slide-flow">
+  <p class="section-label">User Journey</p>
+  <h2>How It Works</h2>
+
+  <div class="flow-diagram">
+    <div class="flow-section-label" style="color: var(--primary);">DRIVER FLOW</div>
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--primary-light);">🚐<span class="flow-number">1</span></div>
+      <h4>Create Trip</h4>
+      <p>Pick route, direction, time. See demand per slot.</p>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--primary-light);">📍<span class="flow-number">2</span></div>
+      <h4>Start &amp; Track</h4>
+      <p>GPS auto-tracks. Tap stops. +/- updates passengers.</p>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--primary-light);">✅<span class="flow-number">3</span></div>
+      <h4>Complete Trip</h4>
+      <p>End at destination. All analytics logged per stop.</p>
+    </div>
+
+    <div class="flow-arrow" style="font-size:2.2rem; color: var(--gray-200);">&#x27F7;</div>
+
+    <div class="flow-section-label" style="color: var(--success);">PASSENGER FLOW</div>
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--success-light);">🔍<span class="flow-number">1</span></div>
+      <h4>Find a Trip</h4>
+      <p>Browse routes. See trips with seat counts and times.</p>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--success-light);">🎫<span class="flow-number">2</span></div>
+      <h4>Book Seats</h4>
+      <p>Select boarding &amp; drop stops. Book 1+ seats.</p>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--success-light);">📡<span class="flow-number">3</span></div>
+      <h4>Track &amp; Ride</h4>
+      <p>Live tracking via WebSocket. See vehicle approach in real-time.</p>
+    </div>
+  </div>
+
+  <div class="data-flow-visual">
+    <div style="font-size:0.65rem; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:2px; margin-bottom:10px;">Real-Time Data Flow</div>
+    <div class="data-flow-row">
+      <div class="df-node" style="background:var(--primary-light); color:var(--primary-dark);">📱 Driver App<br><span style="font-size:0.55rem; opacity:0.7;">GPS + Count</span></div>
+      <div class="df-arrow">&rarr;</div>
+      <div class="df-node" style="background:var(--accent-light); color:#92400e;">Fastify API<br><span style="font-size:0.55rem; opacity:0.7;">Geofence + Events</span></div>
+      <div class="df-arrow">&rarr;</div>
+      <div class="df-node" style="background:var(--purple-light); color:var(--purple);">WebSocket<br><span style="font-size:0.55rem; opacity:0.7;">Broadcast</span></div>
+      <div class="df-arrow">&rarr;</div>
+      <div class="df-node" style="background:var(--success-light); color:#047857;">📱 Passenger App<br><span style="font-size:0.55rem; opacity:0.7;">Live Position</span></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 6: DRIVER WORKFLOW (DETAILED)               -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s6" class="slide slide-workflow">
+  <p class="section-label">Workflow Detail</p>
+  <h2>Driver Journey &mdash; Step by Step</h2>
+
+  <div class="grid-2" style="align-items: start;">
+    <div class="workflow-timeline">
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--primary-light); color:var(--primary-dark);">Login &amp; Dashboard</div>
+          <h4>Driver opens the app</h4>
+          <p>Sees active trips, completed trip history, and a <strong>demand summary</strong> showing how many passengers are requesting rides per route and time slot.</p>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--accent-light); color:#92400e;">Create Trip</div>
+          <h4>Selects route, direction, and departure time</h4>
+          <p>Sees aggregated ride requests per time slot to make informed decisions about when to depart. Sets initial seat capacity.</p>
+          <div class="wf-detail">
+            <strong>API:</strong> <code>POST /trips</code> &mdash; driverId pulled from JWT, not user input
+          </div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--success-light); color:#047857;">Active Trip</div>
+          <h4>Trip enters "boarding" then "in_progress"</h4>
+          <p>GPS tracking begins automatically &mdash; collecting position every <strong>10 seconds</strong>, batch uploading every <strong>30 seconds</strong>. Driver taps the next stop in the horizontal stop tracker to advance.</p>
+          <div class="wf-detail">
+            <strong>Geofencing:</strong> When within 500m of a stop (Haversine calc), the system auto-updates <code>currentStopId</code>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="workflow-timeline">
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--purple-light); color:var(--purple);">Passenger Count</div>
+          <h4>Uses +/- buttons to track passengers</h4>
+          <p>As passengers board and alight at each stop, the driver taps +/- to update the count. A <strong>1.5-second debounce</strong> batches rapid taps into a single API call.</p>
+          <div class="wf-detail">
+            <strong>Key insight:</strong> This count is the <strong>source of truth</strong> for seat availability, not bookings. Bookings serve as demand signals.
+          </div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--teal-light); color:var(--teal);">Stop Events Logged</div>
+          <h4>Every stop generates analytics events</h4>
+          <p>The system automatically logs <strong>arrival</strong>, <strong>departure</strong>, and <strong>count_update</strong> events at each stop with passenger snapshots. This builds the analytics dataset.</p>
+          <div class="wf-detail">
+            <strong>Metrics:</strong> Dwell time, boarding/alighting counts, inter-stop travel time, occupancy per segment
+          </div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--danger-light); color:var(--danger);">Trip Complete</div>
+          <h4>Driver ends the trip</h4>
+          <p>Final departure event logged with all remaining passengers alighting. Trip status &rarr; <strong>completed</strong>. All bookings auto-completed. Trip moves to history.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 7: PASSENGER WORKFLOW (DETAILED)            -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s7" class="slide slide-workflow" style="background: var(--gray-50);">
+  <p class="section-label">Workflow Detail</p>
+  <h2>Passenger Journey &mdash; Step by Step</h2>
+
+  <div class="grid-2" style="align-items: start;">
+    <div class="workflow-timeline">
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--success-light); color:#047857;">Discover Routes</div>
+          <h4>Browse available routes</h4>
+          <p>The home screen shows route cards with origin-destination pairs. If the passenger has an active booking, a prominent banner shows tracking status.</p>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--primary-light); color:var(--primary-dark);">Find Trips</div>
+          <h4>See available trips on a route</h4>
+          <p>Lists upcoming trips with departure times, driver info, vehicle type, and <strong>real-time seat availability</strong> (remaining seats calculated from driver's count).</p>
+          <div class="wf-detail">
+            <strong>API:</strong> <code>GET /routes/:routeId/trips</code> &mdash; returns trips with seat counts
+          </div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--accent-light); color:#92400e;">Book Seats</div>
+          <h4>Select boarding stop, drop stop, and seats</h4>
+          <p>Picks where to get on and off. Can book multiple seats (e.g. for family). Booking functions as a <strong>demand signal</strong> &mdash; the driver sees demand ahead.</p>
+          <div class="wf-detail">
+            <strong>Status flow:</strong> requested &rarr; confirmed &rarr; boarded &rarr; completed
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="workflow-timeline">
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--purple-light); color:var(--purple);">Live Tracking</div>
+          <h4>Track the vehicle in real-time</h4>
+          <p>Once booked, the passenger sees a live tracking screen with:</p>
+          <ul style="font-size:0.8rem; color:var(--gray-600); padding-left:16px; margin-top:6px; line-height:1.6;">
+            <li>Horizontal stop progress bar (auto-scrolls to current stop)</li>
+            <li>Passenger status: <em>waiting &rarr; boarded &rarr; arrived</em></li>
+            <li>Seat availability in real-time</li>
+          </ul>
+          <div class="wf-detail">
+            <strong>Tech:</strong> WebSocket (<code>WS /ws/trip/:tripId</code>) with automatic fallback to REST polling every 15s if WebSocket fails
+          </div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--danger-light); color:var(--danger);">No Trips? Request a Ride</div>
+          <h4>Signal demand when no trips are available</h4>
+          <p>Passengers can post ride requests with preferred time slots. These aggregate on the <strong>driver's dashboard</strong> as demand signals, incentivizing drivers to create trips where demand exists.</p>
+          <div class="wf-detail">
+            <strong>Expiry:</strong> Ride requests auto-expire after 4 hours. Drivers see demand grouped by route and time slot.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 8: CONNECTIVITY STRATEGY (1/2)              -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s8" class="slide slide-connectivity">
+  <p class="section-label">Connectivity Handling</p>
+  <h2>Designed for Any Network Condition</h2>
+
+  <p style="font-size:1rem; color:var(--gray-500); margin-bottom:30px; max-width:750px;">
+    LT Ride is built for the real world &mdash; where networks range from fast 4G/5G in urban areas to slow, intermittent 2G in remote regions. The architecture ensures <strong>zero data loss</strong> and <strong>graceful degradation</strong> regardless of connectivity.
+  </p>
+
+  <!-- Three-tier strategy -->
+  <div class="grid-3 gap-30">
+    <div class="scenario-card" style="border-color: var(--success);">
+      <h4><span style="font-size:1.4rem;">📶</span> Good Connectivity (3G/4G/5G)</h4>
+      <ul class="scenario-steps">
+        <li><div class="step-num" style="background:var(--success);">1</div> GPS uploads in real-time batches every 30 seconds</li>
+        <li><div class="step-num" style="background:var(--success);">2</div> WebSocket connection provides instant position updates to passengers</li>
+        <li><div class="step-num" style="background:var(--success);">3</div> Passenger counter changes sync with 1.5s debounce</li>
+        <li><div class="step-num" style="background:var(--success);">4</div> All features work at full fidelity</li>
+      </ul>
+    </div>
+
+    <div class="scenario-card" style="border-color: var(--accent);">
+      <h4><span style="font-size:1.4rem;">📱</span> Slow Network (2G / Patchy)</h4>
+      <ul class="scenario-steps">
+        <li><div class="step-num" style="background:var(--accent);">1</div> GPS still collects locally every 10 seconds regardless of network</li>
+        <li><div class="step-num" style="background:var(--accent);">2</div> Batch uploads attempt every 30s &mdash; if they fail, data queues in <strong>IndexedDB</strong></li>
+        <li><div class="step-num" style="background:var(--accent);">3</div> Passenger app falls back to <strong>REST polling</strong> (every 15s) when WebSocket drops</li>
+        <li><div class="step-num" style="background:var(--accent);">4</div> Routes cached locally for offline browsing and trip creation</li>
+      </ul>
+    </div>
+
+    <div class="scenario-card" style="border-color: var(--danger);">
+      <h4><span style="font-size:1.4rem;">🚫</span> No Connectivity</h4>
+      <ul class="scenario-steps">
+        <li><div class="step-num" style="background:var(--danger);">1</div> GPS collection continues uninterrupted in the background</li>
+        <li><div class="step-num" style="background:var(--danger);">2</div> All location batches queue in <strong>IndexedDB</strong> with auto-incrementing keys</li>
+        <li><div class="step-num" style="background:var(--danger);">3</div> Driver can still navigate stops using cached route data</li>
+        <li><div class="step-num" style="background:var(--danger);">4</div> On reconnect: queued batches <strong>auto-flush</strong> in order &mdash; server receives complete GPS trail</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="margin-top: 30px; padding: 20px 24px; background: var(--primary-light); border-radius: 14px; display: flex; align-items: center; gap: 16px;">
+    <span style="font-size: 2rem;">💡</span>
+    <div>
+      <div style="font-weight: 700; color: var(--primary-dark); font-size: 0.95rem;">Key Design Principle</div>
+      <div style="font-size: 0.85rem; color: var(--gray-600);">GPS data collection and network sync are completely decoupled. The device always collects. The network layer handles delivery when possible. This two-layer approach ensures no trip data is ever lost, regardless of network conditions.</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 9: CONNECTIVITY DEEP DIVE (2/2)             -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s9" class="slide" style="background: white;">
+  <p class="section-label">Connectivity Deep Dive</p>
+  <h2>How the Offline Pipeline Works</h2>
+
+  <!-- Architecture diagram for offline flow -->
+  <div class="conn-diagram">
+    <div style="font-size:0.7rem; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:2px; margin-bottom:16px;">Driver App &mdash; GPS Pipeline</div>
+
+    <div class="conn-layer">
+      <div class="conn-label">Collection</div>
+      <div class="conn-nodes">
+        <div class="conn-node" style="border-color:var(--primary); background:var(--primary-light); color:var(--primary-dark);">navigator.geolocation<br><span style="font-size:0.6rem;opacity:0.7;">watchPosition()</span></div>
+        <div class="conn-arrow">&rarr;</div>
+        <div class="conn-node" style="border-color:var(--gray-300); background:var(--gray-50); color:var(--gray-700);">In-Memory Buffer<br><span style="font-size:0.6rem;opacity:0.7;">pointsBuffer (ref)</span></div>
+        <div style="font-size:0.65rem; color:var(--gray-400); padding: 4px 8px; background:var(--accent-light); border-radius:6px; font-weight:600;">Every 10s</div>
+      </div>
+    </div>
+
+    <div class="conn-layer">
+      <div class="conn-label">Sync Attempt</div>
+      <div class="conn-nodes">
+        <div class="conn-node" style="border-color:var(--gray-300); background:var(--gray-50); color:var(--gray-700);">Buffer.splice(0)<br><span style="font-size:0.6rem;opacity:0.7;">Drain buffer</span></div>
+        <div class="conn-arrow">&rarr;</div>
+        <div class="conn-node" style="border-color:var(--accent); background:var(--accent-light); color:#92400e;">POST /location/batch<br><span style="font-size:0.6rem;opacity:0.7;">Try network send</span></div>
+        <div style="font-size:0.65rem; color:var(--gray-400); padding: 4px 8px; background:var(--accent-light); border-radius:6px; font-weight:600;">Every 30s</div>
+      </div>
+    </div>
+
+    <div class="conn-layer">
+      <div class="conn-label">On Failure</div>
+      <div class="conn-nodes">
+        <div class="conn-node" style="border-color:var(--danger); background:var(--danger-light); color:var(--danger);">Network Error<br><span style="font-size:0.6rem;opacity:0.7;">catch { }</span></div>
+        <div class="conn-arrow">&rarr;</div>
+        <div class="conn-node" style="border-color:var(--purple); background:var(--purple-light); color:var(--purple);">IndexedDB Queue<br><span style="font-size:0.6rem;opacity:0.7;">location-queue store</span></div>
+        <div style="font-size:0.65rem; color:var(--gray-400); padding: 4px 8px; background:var(--danger-light); border-radius:6px; font-weight:600;">Queued safely</div>
+      </div>
+    </div>
+
+    <div class="conn-layer">
+      <div class="conn-label">On Reconnect</div>
+      <div class="conn-nodes">
+        <div class="conn-node" style="border-color:var(--success); background:var(--success-light); color:#047857;">Next Sync Success<br><span style="font-size:0.6rem;opacity:0.7;">API responds OK</span></div>
+        <div class="conn-arrow">&rarr;</div>
+        <div class="conn-node" style="border-color:var(--success); background:var(--success-light); color:#047857;">Flush Queue<br><span style="font-size:0.6rem;opacity:0.7;">Send all queued batches</span></div>
+        <div class="conn-arrow">&rarr;</div>
+        <div class="conn-node" style="border-color:var(--success); background:var(--success-light); color:#047857;">Clear Queue<br><span style="font-size:0.6rem;opacity:0.7;">clearQueuedLocations()</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Passenger side -->
+  <div class="grid-2 gap-30" style="margin-top:10px;">
+    <div class="conn-diagram" style="margin-bottom:0;">
+      <div style="font-size:0.7rem; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:2px; margin-bottom:14px;">Passenger App &mdash; Live Tracking Fallback</div>
+
+      <div class="conn-layer">
+        <div class="conn-label" style="width:100px;">Primary</div>
+        <div class="conn-nodes">
+          <div class="conn-node" style="border-color:var(--purple); background:var(--purple-light); color:var(--purple);">WebSocket<br><span style="font-size:0.6rem;opacity:0.7;">WS /ws/trip/:id</span></div>
+          <div class="conn-arrow">&rarr;</div>
+          <div class="conn-node" style="border-color:var(--success); background:var(--success-light); color:#047857;">Instant updates<br><span style="font-size:0.6rem;opacity:0.7;">position_update msg</span></div>
+        </div>
+      </div>
+
+      <div class="conn-layer">
+        <div class="conn-label" style="width:100px;">WS Drops</div>
+        <div class="conn-nodes">
+          <div class="conn-node" style="border-color:var(--accent); background:var(--accent-light); color:#92400e;">Auto-reconnect<br><span style="font-size:0.6rem;opacity:0.7;">5s delay, then retry</span></div>
+        </div>
+      </div>
+
+      <div class="conn-layer">
+        <div class="conn-label" style="width:100px;">Fallback</div>
+        <div class="conn-nodes">
+          <div class="conn-node" style="border-color:var(--primary); background:var(--primary-light); color:var(--primary-dark);">REST Polling<br><span style="font-size:0.6rem;opacity:0.7;">GET /trips/:id/position</span></div>
+          <div style="font-size:0.65rem; color:var(--gray-400); padding: 4px 8px; background:var(--primary-light); border-radius:6px; font-weight:600;">Every 15s</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="conn-diagram" style="margin-bottom:0;">
+      <div style="font-size:0.7rem; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:2px; margin-bottom:14px;">IndexedDB Stores (Driver App)</div>
+
+      <div class="conn-layer">
+        <div class="conn-label" style="width:100px;">Store 1</div>
+        <div class="conn-nodes">
+          <div class="conn-node" style="border-color:var(--primary); background:var(--primary-light); color:var(--primary-dark); flex:1;">location-queue<br><span style="font-size:0.6rem;opacity:0.7;">GPS batches waiting to sync &mdash; auto-increment IDs preserve order</span></div>
+        </div>
+      </div>
+
+      <div class="conn-layer">
+        <div class="conn-label" style="width:100px;">Store 2</div>
+        <div class="conn-nodes">
+          <div class="conn-node" style="border-color:var(--success); background:var(--success-light); color:#047857; flex:1;">routes<br><span style="font-size:0.6rem;opacity:0.7;">Cached route &amp; stop data &mdash; enables offline trip creation and navigation</span></div>
+        </div>
+      </div>
+
+      <div class="conn-layer">
+        <div class="conn-label" style="width:100px;">Store 3</div>
+        <div class="conn-nodes">
+          <div class="conn-node" style="border-color:var(--accent); background:var(--accent-light); color:#92400e; flex:1;">action-queue<br><span style="font-size:0.6rem;opacity:0.7;">Pending actions (status changes, count updates) queued when offline</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 10: HIGH-LEVEL ARCHITECTURE                 -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s10" class="slide slide-arch">
+  <p class="section-label">System Architecture</p>
+  <h2>Monorepo with Shared Type Safety</h2>
+
+  <div class="arch-diagram">
+    <div class="arch-layer layer-client">
+      <div class="arch-label">CLIENT<br>APPS</div>
+      <div class="arch-boxes">
+        <div class="arch-box">
+          <h5>🚐 Driver App</h5>
+          <div class="tech">React 19 + Vite + Capacitor</div>
+        </div>
+        <div class="arch-box">
+          <h5>🎫 Passenger App</h5>
+          <div class="tech">React 19 + Vite + Capacitor</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arch-connector">
+      <div class="connector-arrow"><span>&darr;&uarr;</span><span class="connector-label">REST + WebSocket</span></div>
+    </div>
+
+    <div class="arch-layer layer-shared">
+      <div class="arch-label">SHARED<br>TYPES</div>
+      <div class="arch-boxes">
+        <div class="arch-box" style="flex:1;">
+          <h5>📦 @local-transport/shared</h5>
+          <div class="tech">TypeScript types (Trip, Booking, Route, User) &bull; Constants (GPS intervals, geofence radius, OTP expiry)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arch-connector">
+      <div class="connector-arrow"><span>&darr;&uarr;</span><span class="connector-label">Type-safe imports</span></div>
+    </div>
+
+    <div class="arch-layer layer-api">
+      <div class="arch-label">BACKEND<br>API</div>
+      <div class="arch-boxes">
+        <div class="arch-box"><h5>🔐 Auth</h5><div class="tech">JWT + scrypt</div></div>
+        <div class="arch-box"><h5>🗺️ Trips &amp; Routes</h5><div class="tech">CRUD + Events</div></div>
+        <div class="arch-box"><h5>📍 Location</h5><div class="tech">GPS + Geofence</div></div>
+        <div class="arch-box"><h5>🔌 WebSocket</h5><div class="tech">Live Tracking</div></div>
+      </div>
+    </div>
+
+    <div class="arch-connector">
+      <div class="connector-arrow"><span>&darr;&uarr;</span><span class="connector-label">Drizzle ORM (type-safe SQL)</span></div>
+    </div>
+
+    <div class="arch-layer layer-data">
+      <div class="arch-label">DATA<br>LAYER</div>
+      <div class="arch-boxes">
+        <div class="arch-box"><h5>🐘 PostgreSQL</h5><div class="tech">13 tables &bull; Relational</div></div>
+        <div class="arch-box"><h5>⚡ Redis</h5><div class="tech">Position cache (planned scaling)</div></div>
+        <div class="arch-box"><h5>📱 IndexedDB</h5><div class="tech">Offline GPS queue &bull; Route cache</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 11: LOW-LEVEL ARCHITECTURE                  -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s11" class="slide slide-lowlevel">
+  <p class="section-label">Low-Level Architecture</p>
+  <h2>Database, APIs &amp; Lifecycles</h2>
+
+  <div class="grid-2 gap-30" style="align-items: start;">
+    <!-- Left: DB Schema + Lifecycles -->
+    <div class="flex-col gap-20">
+      <div class="ll-section">
+        <h4>🗄️ Database Schema (13 Tables)</h4>
+        <table class="db-table">
+          <thead><tr><th>Group</th><th>Tables</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td class="tbl-name">Identity</td><td><code>users</code>, <code>drivers</code></td><td>Auth, vehicle info, capacity</td></tr>
+            <tr><td class="tbl-name">Geography</td><td><code>place_codes</code>, <code>routes</code>, <code>stops</code></td><td>3-char codes, route pairs, lat/lng</td></tr>
+            <tr><td class="tbl-name">Operations</td><td><code>trips</code>, <code>bookings</code>, <code>ride_requests</code>, <code>driver_routes</code></td><td>Lifecycle-managed entities</td></tr>
+            <tr><td class="tbl-name">Tracking</td><td><code>location_logs</code>, <code>trip_stop_events</code>, <code>notifications</code></td><td>GPS breadcrumbs, per-stop analytics</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="ll-section">
+        <h4>🔄 Trip Status Lifecycle</h4>
+        <div class="lifecycle-flow">
+          <div class="lf-node" style="background:var(--gray-100); color:var(--gray-600);">scheduled</div>
+          <div class="lf-arrow">&rarr;</div>
+          <div class="lf-node" style="background:var(--accent-light); color:#92400e;">boarding</div>
+          <div class="lf-arrow">&rarr;</div>
+          <div class="lf-node" style="background:var(--primary-light); color:var(--primary-dark);">in_progress</div>
+          <div class="lf-arrow">&rarr;</div>
+          <div class="lf-node" style="background:var(--success-light); color:#047857;">completed</div>
+        </div>
+        <div style="font-size:0.7rem; color:var(--gray-400); margin-top:4px; margin-left:4px;">
+          Can also &rarr; <span style="color:var(--danger);">cancelled</span> from any active state
+        </div>
+      </div>
+
+      <div class="ll-section">
+        <h4>🎫 Booking Status Lifecycle</h4>
+        <div class="lifecycle-flow">
+          <div class="lf-node" style="background:var(--gray-100); color:var(--gray-600);">requested</div>
+          <div class="lf-arrow">&rarr;</div>
+          <div class="lf-node" style="background:var(--primary-light); color:var(--primary-dark);">confirmed</div>
+          <div class="lf-arrow">&rarr;</div>
+          <div class="lf-node" style="background:var(--accent-light); color:#92400e;">boarded</div>
+          <div class="lf-arrow">&rarr;</div>
+          <div class="lf-node" style="background:var(--success-light); color:#047857;">completed</div>
+        </div>
+        <div style="font-size:0.7rem; color:var(--gray-400); margin-top:4px; margin-left:4px;">
+          Can also &rarr; <span style="color:var(--accent);">waitlisted</span> or <span style="color:var(--danger);">cancelled</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: API Endpoints + Stop Events -->
+    <div class="flex-col gap-20">
+      <div class="ll-section">
+        <h4>🌐 Key API Endpoints</h4>
+        <div style="display:flex; flex-direction:column; gap:2px;">
+          <div style="font-size:0.65rem; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:1px; padding:6px 0 2px;">Authentication</div>
+          <div class="api-endpoint"><span class="api-method method-post">POST</span><span class="api-path">/auth/login</span><span class="api-desc">JWT token</span></div>
+          <div class="api-endpoint"><span class="api-method method-post">POST</span><span class="api-path">/auth/register</span><span class="api-desc">Create user/driver</span></div>
+
+          <div style="font-size:0.65rem; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:1px; padding:8px 0 2px;">Trips &amp; Bookings</div>
+          <div class="api-endpoint"><span class="api-method method-post">POST</span><span class="api-path">/trips</span><span class="api-desc">Create trip</span></div>
+          <div class="api-endpoint"><span class="api-method method-patch">PATCH</span><span class="api-path">/trips/:id/status</span><span class="api-desc">Status lifecycle</span></div>
+          <div class="api-endpoint"><span class="api-method method-patch">PATCH</span><span class="api-path">/trips/:id/passengers</span><span class="api-desc">Count + stop events</span></div>
+          <div class="api-endpoint"><span class="api-method method-post">POST</span><span class="api-path">/bookings</span><span class="api-desc">Book seats</span></div>
+
+          <div style="font-size:0.65rem; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:1px; padding:8px 0 2px;">Location &amp; Real-Time</div>
+          <div class="api-endpoint"><span class="api-method method-post">POST</span><span class="api-path">/location/batch</span><span class="api-desc">GPS upload</span></div>
+          <div class="api-endpoint"><span class="api-method method-get">GET</span><span class="api-path">/trips/:id/position</span><span class="api-desc">Last position</span></div>
+          <div class="api-endpoint"><span class="api-method method-ws">WS</span><span class="api-path">/ws/trip/:tripId</span><span class="api-desc">Live stream</span></div>
+
+          <div style="font-size:0.65rem; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:1px; padding:8px 0 2px;">Demand</div>
+          <div class="api-endpoint"><span class="api-method method-post">POST</span><span class="api-path">/ride-requests</span><span class="api-desc">Signal demand</span></div>
+          <div class="api-endpoint"><span class="api-method method-get">GET</span><span class="api-path">/ride-requests/demand</span><span class="api-desc">Aggregated view</span></div>
+        </div>
+      </div>
+
+      <div class="ll-section">
+        <h4>📊 Per-Stop Event System</h4>
+        <p style="font-size:0.8rem; color:var(--gray-500); margin-bottom:10px;">Three event types captured automatically at every stop:</p>
+        <div style="display:flex; gap:10px;">
+          <div style="flex:1; padding:10px; background:var(--primary-light); border-radius:8px; text-align:center;">
+            <div style="font-size:1.2rem;">📍</div>
+            <div style="font-weight:700; font-size:0.75rem; color:var(--primary-dark);">arrival</div>
+            <div style="font-size:0.6rem; color:var(--gray-500);">Snapshot count</div>
+          </div>
+          <div style="flex:1; padding:10px; background:var(--accent-light); border-radius:8px; text-align:center;">
+            <div style="font-size:1.2rem;">🚪</div>
+            <div style="font-weight:700; font-size:0.75rem; color:#92400e;">departure</div>
+            <div style="font-size:0.6rem; color:var(--gray-500);">Board/alight deltas</div>
+          </div>
+          <div style="flex:1; padding:10px; background:var(--purple-light); border-radius:8px; text-align:center;">
+            <div style="font-size:1.2rem;">🔢</div>
+            <div style="font-weight:700; font-size:0.75rem; color:var(--purple);">count_update</div>
+            <div style="font-size:0.6rem; color:var(--gray-500);">+/- button tap</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 12: KEY INNOVATIONS                         -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s12" class="slide" style="background: linear-gradient(135deg, #fefce8 0%, #fff7ed 100%);">
+  <p class="section-label">What Makes It Different</p>
+  <h2>Key Design Decisions</h2>
+
+  <div class="grid-2 gap-30">
+    <div class="innovation-card">
+      <div class="card-icon-big" style="background: var(--accent-light);">📊</div>
+      <h4>Bookings = Demand Signals, Not Reservations</h4>
+      <p>Unlike ride-hail apps, bookings here are <strong>demand forecasts</strong>. The driver's +/- passenger counter is the sole source of truth. This matches how informal mass transport actually works &mdash; flexible, organic, and driver-controlled.</p>
+      <div class="innovation-mini-diagram">
+        <div class="imd-node" style="background:var(--success-light); color:#047857;">Passenger Books</div>
+        <div class="imd-arrow">&rarr;</div>
+        <div class="imd-node" style="background:var(--accent-light); color:#92400e;">Signal Created</div>
+        <div class="imd-arrow">&rarr;</div>
+        <div class="imd-node" style="background:var(--primary-light); color:var(--primary-dark);">Driver Sees Demand</div>
+        <div class="imd-arrow">&rarr;</div>
+        <div class="imd-node" style="background:var(--gray-900); color:white;">+/- = Truth</div>
+      </div>
+    </div>
+
+    <div class="innovation-card">
+      <div class="card-icon-big" style="background: var(--primary-light);">🎯</div>
+      <h4>Geofence-Triggered Stop Advancement</h4>
+      <p>The backend runs <strong>Haversine distance calculation</strong> on every GPS batch. When the vehicle enters a 500m radius of a stop, the system auto-updates the current stop. Reduces driver distraction while keeping tracking accurate.</p>
+      <div class="innovation-mini-diagram">
+        <div class="imd-node" style="background:var(--primary-light); color:var(--primary-dark);">GPS Batch In</div>
+        <div class="imd-arrow">&rarr;</div>
+        <div class="imd-node" style="background:var(--accent-light); color:#92400e;">Haversine Calc</div>
+        <div class="imd-arrow">&rarr;</div>
+        <div class="imd-node" style="background:var(--success-light); color:#047857;">&lt; 500m?</div>
+        <div class="imd-arrow">&rarr;</div>
+        <div class="imd-node" style="background:var(--purple-light); color:var(--purple);">Auto-Update Stop</div>
+      </div>
+    </div>
+
+    <div class="innovation-card">
+      <div class="card-icon-big" style="background: var(--success-light);">📐</div>
+      <h4>Debounced Passenger Counting</h4>
+      <p>The +/- button uses a <strong>1.5-second debounce</strong>. Rapid taps (e.g. 5 passengers boarding quickly) collapse into a single API call. This prevents flooding the server while keeping the count accurate &mdash; essential on slow networks.</p>
+    </div>
+
+    <div class="innovation-card">
+      <div class="card-icon-big" style="background: var(--purple-light);">🔗</div>
+      <h4>Monorepo with End-to-End Type Safety</h4>
+      <p>A shared TypeScript package (<code>@local-transport/shared</code>) defines all types and constants used by both apps and the backend. If a Trip type changes, all three packages see it at compile time. <strong>Zero type drift.</strong></p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 13: CURRENT STATUS                          -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s13" class="slide" style="background: var(--gray-50);">
+  <p class="section-label">Implementation Status</p>
+  <h2>Where We Are Today</h2>
+
+  <div class="grid-2 gap-30">
+    <div>
+      <h3 style="color: var(--success);">Built &amp; Working</h3>
+      <ul class="status-list">
+        <li class="done"><span>✅</span> Phone + password authentication (scrypt)</li>
+        <li class="done"><span>✅</span> Driver &amp; passenger role-based registration</li>
+        <li class="done"><span>✅</span> Route &amp; stop management (seeded data)</li>
+        <li class="done"><span>✅</span> Full trip lifecycle (create &rarr; complete)</li>
+        <li class="done"><span>✅</span> Seat booking with multi-seat support</li>
+        <li class="done"><span>✅</span> Real-time stop tracking + geofencing</li>
+        <li class="done"><span>✅</span> +/- passenger counter (debounced)</li>
+        <li class="done"><span>✅</span> Per-stop analytics event system</li>
+        <li class="done"><span>✅</span> GPS batch tracking + offline queue</li>
+        <li class="done"><span>✅</span> WebSocket live tracking + REST fallback</li>
+        <li class="done"><span>✅</span> Ride request demand signaling</li>
+        <li class="done"><span>✅</span> Interactive driver onboarding tour</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 style="color: var(--accent);">Coming Next</h3>
+      <ul class="status-list">
+        <li class="pending"><span>🔜</span> OTP-based phone verification</li>
+        <li class="pending"><span>🔜</span> Push notifications (FCM)</li>
+        <li class="pending"><span>🔜</span> Live map in tracking UI (Leaflet)</li>
+        <li class="pending"><span>🔜</span> SMS notifications</li>
+        <li class="pending"><span>🔜</span> Recurring trips with scheduler</li>
+        <li class="pending"><span>🔜</span> Cloud deployment</li>
+        <li class="planned"><span>📋</span> Analytics dashboard</li>
+        <li class="planned"><span>📋</span> Admin panel</li>
+        <li class="planned"><span>📋</span> PWA support</li>
+        <li class="planned"><span>📋</span> Multi-language support</li>
+        <li class="planned"><span>📋</span> UPI payment integration</li>
+        <li class="planned"><span>📋</span> Trip ratings &amp; reviews</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 14: ROADMAP                                 -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s14" class="slide slide-dark">
+  <p class="section-label">Looking Ahead</p>
+  <h2>Product Roadmap</h2>
+
+  <div style="display: flex; gap: 20px;">
+    <div class="roadmap-phase phase-now">
+      <div class="phase-badge">Current</div>
+      <h4>Core MVP</h4>
+      <ul class="roadmap-list">
+        <li>Trip creation &amp; full lifecycle</li>
+        <li>Real-time GPS tracking</li>
+        <li>Seat booking &amp; demand signals</li>
+        <li>Per-stop event analytics</li>
+        <li>Offline-first GPS pipeline</li>
+        <li>WebSocket + REST fallback</li>
+      </ul>
+    </div>
+    <div class="roadmap-phase phase-next">
+      <div class="phase-badge">Phase 1</div>
+      <h4>Launch Ready</h4>
+      <ul class="roadmap-list">
+        <li>Cloud deployment</li>
+        <li>Push notifications via FCM</li>
+        <li>OTP phone verification</li>
+        <li>Live map visualization</li>
+        <li>Full offline driver mode</li>
+        <li>Recurring trip scheduler</li>
+      </ul>
+    </div>
+    <div class="roadmap-phase phase-later">
+      <div class="phase-badge">Phase 2</div>
+      <h4>Growth &amp; Insights</h4>
+      <ul class="roadmap-list">
+        <li>Analytics dashboard</li>
+        <li>Admin panel for routes</li>
+        <li>PWA support</li>
+        <li>Trip ratings &amp; reviews</li>
+        <li>Multi-language (Hindi, local)</li>
+        <li>SMS gateway integration</li>
+      </ul>
+    </div>
+    <div class="roadmap-phase phase-future">
+      <div class="phase-badge">Phase 3+</div>
+      <h4>Scale &amp; Monetize</h4>
+      <ul class="roadmap-list">
+        <li>UPI payment integration</li>
+        <li>Multi-operator support</li>
+        <li>Route optimization engine</li>
+        <li>Horizontal scaling (Redis pub/sub)</li>
+        <li>Expansion to new regions</li>
+        <li>Government transport API ties</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 15: CLOSING                                 -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s15" class="slide slide-closing">
+  <p class="section-label" style="color: rgba(255,255,255,0.4);">The Vision</p>
+  <h2>Making Every Route<br>a Connected Route</h2>
+
+  <div class="closing-points">
+    <div class="closing-point">
+      <div class="closing-icon">🌍</div>
+      <h4>Deploy Anywhere</h4>
+      <p>Location-agnostic, works from 2G to 5G, any vehicle type</p>
+    </div>
+    <div class="closing-point">
+      <div class="closing-icon">🤝</div>
+      <h4>Works With the System</h4>
+      <p>Enhances existing shared transport, doesn't try to replace it</p>
+    </div>
+    <div class="closing-point">
+      <div class="closing-icon">📊</div>
+      <h4>Data-Driven Future</h4>
+      <p>Every trip builds a dataset for route optimization and planning</p>
+    </div>
+    <div class="closing-point">
+      <div class="closing-icon">🚀</div>
+      <h4>Ready to Scale</h4>
+      <p>Route-based, vehicle-agnostic architecture for any region</p>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOAD AS PDF BUTTON -->
+<button class="download-btn" onclick="downloadPDF()" title="Download as PDF">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+    <polyline points="7 10 12 15 17 10"/>
+    <line x1="12" y1="15" x2="12" y2="3"/>
+  </svg>
+  Download PDF
+</button>
+
+<script>
+function downloadPDF() {
+  window.print();
+}
+</script>
+
+</body>
+</html>

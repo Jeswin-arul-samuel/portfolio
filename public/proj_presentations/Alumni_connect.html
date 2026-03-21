@@ -1,0 +1,2041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alumni Connect - Executive Overview</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  :root {
+    --primary: #7c3aed;
+    --primary-dark: #6d28d9;
+    --primary-light: #ede9fe;
+    --accent: #f59e0b;
+    --accent-light: #fef3c7;
+    --success: #10b981;
+    --success-light: #d1fae5;
+    --danger: #ef4444;
+    --danger-light: #fee2e2;
+    --blue: #2563eb;
+    --blue-light: #dbeafe;
+    --teal: #14b8a6;
+    --teal-light: #ccfbf1;
+    --rose: #f43f5e;
+    --rose-light: #ffe4e6;
+    --gray-50: #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-300: #cbd5e1;
+    --gray-400: #94a3b8;
+    --gray-500: #64748b;
+    --gray-600: #475569;
+    --gray-700: #334155;
+    --gray-800: #1e293b;
+    --gray-900: #0f172a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--gray-50);
+    color: var(--gray-800);
+    line-height: 1.6;
+  }
+
+  .slide {
+    min-height: 100vh;
+    padding: 60px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .slide + .slide { border-top: 1px solid var(--gray-200); }
+
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: var(--primary);
+    margin-bottom: 12px;
+  }
+
+  .slide h2 {
+    font-size: 2.6rem;
+    font-weight: 800;
+    color: var(--gray-900);
+    margin-bottom: 36px;
+    letter-spacing: -1px;
+    line-height: 1.15;
+  }
+
+  .slide h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 16px;
+  }
+
+  /* NAV */
+  .slide-nav {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 100;
+  }
+
+  .nav-dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--gray-300);
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+  }
+  .nav-dot:hover { background: var(--primary); transform: scale(1.4); }
+
+  /* SLIDE 1: TITLE */
+  .slide-title {
+    background: linear-gradient(135deg, #0f172a 0%, #2e1065 40%, #7c3aed 100%);
+    color: white;
+    text-align: center;
+    align-items: center;
+  }
+  .slide-title::before {
+    content: '';
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(245,158,11,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .slide-title::after {
+    content: '';
+    position: absolute;
+    bottom: -150px; left: -150px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(124,58,237,0.3) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .logo-icon { width: 100px; height: 100px; margin-bottom: 30px; position: relative; z-index: 1; }
+
+  .slide-title h1 {
+    font-size: 4.5rem;
+    font-weight: 900;
+    letter-spacing: -2px;
+    margin-bottom: 16px;
+    position: relative; z-index: 1;
+  }
+  .slide-title .tagline {
+    font-size: 1.5rem;
+    font-weight: 300;
+    opacity: 0.9;
+    margin-bottom: 40px;
+    position: relative; z-index: 1;
+  }
+  .slide-title .subtitle {
+    font-size: 1rem;
+    opacity: 0.6;
+    position: relative; z-index: 1;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  /* COMMON COMPONENTS */
+  .pain-card, .feature-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 22px 24px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .pain-card { border-left: 4px solid var(--danger); }
+  .card-icon-box {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+  }
+  .pain-card h4, .feature-card h4 { font-size: 1rem; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+  .pain-card p, .feature-card p { font-size: 0.85rem; color: var(--gray-500); line-height: 1.5; }
+
+  /* Grid helpers */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 20px; }
+  .gap-20 { gap: 20px; }
+  .gap-30 { gap: 30px; }
+
+  .flex-col { display: flex; flex-direction: column; }
+
+  /* Stat cards */
+  .stat-card {
+    text-align: center;
+    padding: 32px 24px;
+    border-radius: 20px;
+  }
+  .stat-number {
+    font-size: 3.2rem;
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .stat-label { font-size: 0.9rem; font-weight: 400; }
+
+  /* SLIDE 2: PROBLEM */
+  .slide-problem { background: white; }
+
+  .problem-scene {
+    background: var(--gray-100);
+    border-radius: 24px;
+    padding: 40px;
+    position: relative;
+  }
+
+  .alumni-scene {
+    position: relative;
+    height: 280px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%);
+  }
+
+  .alumni-icon {
+    position: absolute;
+    font-size: 2rem;
+    opacity: 0.7;
+  }
+  .a1 { left: 10%; top: 20%; }
+  .a2 { left: 25%; top: 55%; }
+  .a3 { left: 45%; top: 15%; }
+  .a4 { right: 30%; top: 45%; }
+  .a5 { right: 10%; top: 25%; }
+  .a6 { left: 35%; top: 70%; }
+  .a7 { right: 20%; top: 65%; }
+
+  .disconnect-line {
+    position: absolute;
+    border-top: 2px dashed rgba(239,68,68,0.5);
+  }
+  .dl1 { top: 32%; left: 18%; width: 18%; transform: rotate(-15deg); }
+  .dl2 { top: 28%; left: 50%; width: 15%; transform: rotate(10deg); }
+  .dl3 { top: 55%; left: 32%; width: 20%; transform: rotate(-5deg); }
+
+  .thought-bubble {
+    position: absolute;
+    background: white;
+    border-radius: 10px;
+    padding: 5px 10px;
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--gray-700);
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .thought-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid white;
+  }
+  .t1 { top: 8%; left: 5%; }
+  .t2 { top: 5%; left: 38%; }
+  .t3 { top: 12%; right: 5%; }
+
+  .scene-caption {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 5px 14px;
+    border-radius: 16px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  /* SLIDE 3: MARKET */
+  .slide-dark { background: var(--gray-900); color: white; }
+  .slide-dark h2 { color: white; }
+  .slide-dark .section-label { color: var(--accent); }
+
+  .dark-stat .stat-number {
+    background: linear-gradient(135deg, var(--accent) 0%, #fbbf24 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .dark-stat .stat-label { color: rgba(255,255,255,0.55); }
+  .dark-stat { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); }
+
+  .dark-card {
+    padding: 24px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .dark-card h4 { font-size: 1rem; font-weight: 700; color: var(--accent); margin-bottom: 8px; }
+  .dark-card p { font-size: 0.85rem; color: rgba(255,255,255,0.5); line-height: 1.5; }
+
+  /* SLIDE 4: SOLUTION */
+  .slide-solution { background: white; }
+
+  .phone-mockup {
+    width: 220px;
+    background: var(--gray-900);
+    border-radius: 28px;
+    padding: 12px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.18);
+  }
+  .phone-screen {
+    background: white;
+    border-radius: 18px;
+    overflow: hidden;
+    min-height: 360px;
+  }
+  .phone-header {
+    padding: 12px 14px 8px;
+    font-weight: 700;
+    font-size: 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+  }
+  .chat-phone .phone-header { background: var(--primary); }
+  .phone-content { padding: 10px; }
+
+  .chat-bubble {
+    padding: 8px 12px;
+    border-radius: 12px;
+    font-size: 0.65rem;
+    margin-bottom: 6px;
+    max-width: 85%;
+    line-height: 1.4;
+  }
+  .chat-bubble.bot {
+    background: var(--gray-100);
+    color: var(--gray-700);
+    border-bottom-left-radius: 4px;
+  }
+  .chat-bubble.user {
+    background: var(--primary);
+    color: white;
+    margin-left: auto;
+    border-bottom-right-radius: 4px;
+  }
+
+  .mini-profile-card {
+    background: var(--gray-50);
+    border-radius: 10px;
+    padding: 8px 10px;
+    margin: 6px 0;
+    border: 1px solid var(--gray-200);
+    font-size: 0.6rem;
+  }
+  .mini-profile-card .name { font-weight: 700; color: var(--gray-800); font-size: 0.65rem; }
+  .mini-profile-card .details { color: var(--gray-500); margin-top: 2px; }
+  .mini-connect-btn {
+    display: inline-block;
+    margin-top: 4px;
+    padding: 2px 8px;
+    background: var(--primary);
+    color: white;
+    border-radius: 6px;
+    font-size: 0.5rem;
+    font-weight: 700;
+  }
+
+  .sol-point {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .sol-icon {
+    width: 46px; height: 46px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+  .sol-point h4 { font-size: 1rem; font-weight: 700; color: var(--gray-900); margin-bottom: 3px; }
+  .sol-point p { font-size: 0.85rem; color: var(--gray-500); line-height: 1.5; }
+
+  /* SLIDE 5: HOW IT WORKS */
+  .slide-flow { background: var(--gray-50); }
+
+  .flow-diagram {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 0;
+    flex-wrap: wrap;
+  }
+  .flow-step {
+    text-align: center;
+    width: 150px;
+  }
+  .flow-circle {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    margin: 0 auto 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    position: relative;
+  }
+  .flow-number {
+    position: absolute;
+    top: -5px; right: -5px;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--gray-900);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .flow-step h4 { font-size: 0.85rem; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+  .flow-step p { font-size: 0.7rem; color: var(--gray-500); line-height: 1.35; padding: 0 6px; }
+  .flow-arrow { display: flex; align-items: center; padding-top: 24px; color: var(--gray-300); font-size: 1.6rem; }
+
+  .flow-section-label {
+    width: 100%;
+    text-align: center;
+    padding: 16px 0 8px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+  }
+
+  .data-flow-visual {
+    margin-top: 24px;
+    padding: 18px;
+    background: white;
+    border-radius: 14px;
+    text-align: center;
+    border: 1px solid var(--gray-200);
+  }
+  .data-flow-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 6px 0;
+  }
+  .df-node {
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .df-arrow { color: var(--gray-400); font-size: 1rem; }
+
+  /* WORKFLOW SLIDES */
+  .slide-workflow { background: white; }
+
+  .workflow-timeline {
+    position: relative;
+    padding-left: 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .workflow-timeline::before {
+    content: '';
+    position: absolute;
+    left: 27px;
+    top: 20px;
+    bottom: 20px;
+    width: 3px;
+    background: var(--gray-200);
+    border-radius: 2px;
+  }
+  .wf-step {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    position: relative;
+    padding: 16px 0;
+  }
+  .wf-dot {
+    position: absolute;
+    left: -39px;
+    top: 20px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 3px solid var(--primary);
+    background: white;
+    z-index: 1;
+  }
+  .wf-dot.active { background: var(--primary); }
+  .wf-content {
+    flex: 1;
+    background: var(--gray-50);
+    border-radius: 14px;
+    padding: 20px 24px;
+    border: 1px solid var(--gray-200);
+  }
+  .wf-content h4 { font-size: 0.95rem; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+  .wf-content p { font-size: 0.8rem; color: var(--gray-500); line-height: 1.5; }
+  .wf-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .wf-detail {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: white;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    color: var(--gray-600);
+    border: 1px solid var(--gray-200);
+  }
+  .wf-detail code {
+    background: var(--gray-100);
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+
+  /* AGENT SLIDES */
+  .slide-agent { background: var(--gray-50); }
+
+  .agent-node {
+    padding: 16px 20px;
+    border-radius: 14px;
+    border: 2px solid;
+    background: white;
+  }
+  .agent-node h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  .agent-node p { font-size: 0.8rem; color: var(--gray-500); line-height: 1.5; }
+
+  .agent-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 12px 0;
+  }
+  .af-node {
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .af-arrow { color: var(--gray-300); font-size: 1rem; }
+
+  /* CONNECTIVITY / DEEP DIVE */
+  .conn-diagram {
+    background: white;
+    border-radius: 20px;
+    padding: 32px;
+    border: 1px solid var(--gray-200);
+    margin-bottom: 24px;
+  }
+  .conn-layer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px dashed var(--gray-200);
+  }
+  .conn-layer:last-child { border-bottom: none; }
+  .conn-label {
+    width: 130px;
+    flex-shrink: 0;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--gray-400);
+  }
+  .conn-nodes {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .conn-node {
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 2px solid;
+    white-space: nowrap;
+  }
+  .conn-arrow { color: var(--gray-300); font-size: 1rem; }
+
+  .scenario-card {
+    border-radius: 16px;
+    padding: 24px;
+    border: 2px solid;
+    background: white;
+  }
+  .scenario-card h4 { font-size: 1rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+  .scenario-steps {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .scenario-steps li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.8rem;
+    color: var(--gray-600);
+    line-height: 1.4;
+  }
+  .step-num {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 800;
+    flex-shrink: 0;
+    color: white;
+  }
+
+  /* ARCHITECTURE */
+  .slide-arch { background: white; }
+
+  .arch-diagram {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 920px;
+    margin: 0 auto;
+  }
+  .arch-layer {
+    display: flex;
+    align-items: stretch;
+    gap: 14px;
+  }
+  .arch-label {
+    width: 110px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-radius: 12px;
+    text-align: center;
+    padding: 10px 6px;
+  }
+  .arch-boxes {
+    flex: 1;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .arch-box {
+    flex: 1;
+    min-width: 120px;
+    padding: 14px 12px;
+    border-radius: 10px;
+    border: 2px solid;
+    text-align: center;
+  }
+  .arch-box h5 { font-size: 0.8rem; font-weight: 700; margin-bottom: 2px; }
+  .arch-box .tech { font-size: 0.65rem; opacity: 0.6; font-weight: 500; }
+
+  .layer-client .arch-label { background: var(--primary-light); color: var(--primary-dark); }
+  .layer-client .arch-box { border-color: var(--primary); background: rgba(124,58,237,0.03); }
+  .layer-client .arch-box h5 { color: var(--primary-dark); }
+
+  .layer-ai .arch-label { background: var(--accent-light); color: #b45309; }
+  .layer-ai .arch-box { border-color: var(--accent); background: rgba(245,158,11,0.03); }
+  .layer-ai .arch-box h5 { color: #b45309; }
+
+  .layer-api .arch-label { background: var(--blue-light); color: var(--blue); }
+  .layer-api .arch-box { border-color: var(--blue); background: rgba(37,99,235,0.03); }
+  .layer-api .arch-box h5 { color: var(--blue); }
+
+  .layer-data .arch-label { background: var(--success-light); color: #047857; }
+  .layer-data .arch-box { border-color: var(--success); background: rgba(16,185,129,0.03); }
+  .layer-data .arch-box h5 { color: #047857; }
+
+  .arch-connector {
+    display: flex;
+    justify-content: center;
+    padding: 2px 0;
+    margin-left: 124px;
+  }
+  .connector-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--gray-300);
+    font-size: 0.65rem;
+    gap: 0;
+    line-height: 1;
+  }
+  .connector-label {
+    font-size: 0.55rem;
+    color: var(--gray-400);
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* LOW-LEVEL ARCH */
+  .slide-lowlevel { background: var(--gray-50); }
+
+  .ll-section {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid var(--gray-200);
+  }
+  .ll-section h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .db-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.75rem;
+  }
+  .db-table th {
+    text-align: left;
+    padding: 6px 10px;
+    background: var(--gray-50);
+    font-weight: 700;
+    color: var(--gray-600);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 2px solid var(--gray-200);
+  }
+  .db-table td {
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--gray-100);
+    color: var(--gray-600);
+  }
+  .db-table .tbl-name {
+    font-weight: 700;
+    color: var(--gray-800);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.7rem;
+  }
+
+  .lifecycle-flow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 8px 0;
+  }
+  .lf-node {
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .lf-arrow { color: var(--gray-300); font-size: 0.9rem; }
+
+  .api-endpoint {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 0;
+    font-size: 0.75rem;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .api-endpoint:last-child { border-bottom: none; }
+  .api-method {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.6rem;
+    font-weight: 800;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    min-width: 40px;
+    text-align: center;
+  }
+  .method-get { background: var(--success-light); color: #047857; }
+  .method-post { background: var(--blue-light); color: var(--blue); }
+  .method-patch { background: var(--accent-light); color: #92400e; }
+  .method-ws { background: var(--primary-light); color: var(--primary); }
+  .api-path {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.7rem;
+    color: var(--gray-700);
+  }
+  .api-desc { color: var(--gray-400); font-size: 0.7rem; margin-left: auto; }
+
+  /* INNOVATION */
+  .innovation-card {
+    background: white;
+    border-radius: 18px;
+    padding: 28px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+    border: 1px solid var(--gray-200);
+  }
+  .innovation-card .card-icon-big {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 14px;
+  }
+  .innovation-card h4 { font-size: 1.05rem; font-weight: 700; color: var(--gray-900); margin-bottom: 6px; }
+  .innovation-card p { font-size: 0.85rem; color: var(--gray-500); line-height: 1.6; }
+
+  .innovation-mini-diagram {
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: var(--gray-50);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+  }
+  .imd-node {
+    text-align: center;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .imd-arrow { color: var(--gray-300); font-size: 1rem; flex-shrink: 0; }
+
+  /* STATUS */
+  .status-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .status-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+  .status-list li.done { background: var(--success-light); color: #047857; }
+  .status-list li.pending { background: var(--accent-light); color: #92400e; }
+  .status-list li.planned { background: var(--gray-100); color: var(--gray-500); }
+
+  /* ROADMAP */
+  .roadmap-phase {
+    flex: 1;
+    padding: 24px 20px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .phase-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 16px;
+    font-size: 0.6rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+  .phase-now .phase-badge { background: var(--success); color: white; }
+  .phase-next .phase-badge { background: var(--accent); color: var(--gray-900); }
+  .phase-later .phase-badge { background: var(--primary); color: white; }
+  .phase-future .phase-badge { background: var(--gray-600); color: white; }
+
+  .roadmap-phase h4 { font-size: 1rem; font-weight: 700; margin-bottom: 12px; color: white; }
+  .roadmap-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .roadmap-list li {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.5);
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.4;
+  }
+  .roadmap-list li::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: rgba(255,255,255,0.25);
+    font-weight: 700;
+  }
+
+  /* USE CASES */
+  .usecase-card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid var(--gray-200);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .usecase-card h4 { font-size: 1rem; font-weight: 700; color: var(--gray-900); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .usecase-card p { font-size: 0.82rem; color: var(--gray-500); line-height: 1.6; }
+  .usecase-query {
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: var(--primary-light);
+    border-radius: 8px;
+    font-size: 0.75rem;
+    color: var(--primary-dark);
+    font-style: italic;
+    font-weight: 500;
+  }
+
+  /* CLOSING */
+  .slide-closing {
+    background: linear-gradient(135deg, #0f172a 0%, #2e1065 40%, #7c3aed 100%);
+    color: white;
+    text-align: center;
+    align-items: center;
+  }
+  .slide-closing h2 { color: white; font-size: 2.8rem; margin-bottom: 20px; }
+  .closing-points {
+    display: flex;
+    gap: 36px;
+    justify-content: center;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  .closing-point { text-align: center; max-width: 200px; }
+  .closing-icon {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem;
+    margin: 0 auto 12px;
+  }
+  .closing-point h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; }
+  .closing-point p { font-size: 0.75rem; opacity: 0.6; line-height: 1.4; }
+
+  /* DOWNLOAD BUTTON */
+  .download-btn {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 100;
+    background: var(--gray-900);
+    color: white;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    transition: background 0.2s, transform 0.2s;
+  }
+  .download-btn:hover { background: var(--primary); transform: translateY(-2px); }
+  .download-btn svg { width: 16px; height: 16px; }
+
+  /* PRINT */
+  @media print {
+    .slide { page-break-after: always; min-height: auto; padding: 40px 50px; }
+    .slide-nav, .download-btn { display: none; }
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .slide { padding: 36px 24px; }
+    .slide h2 { font-size: 1.8rem; }
+    .slide-title h1 { font-size: 2.8rem; }
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .flow-diagram { flex-direction: column; align-items: center; }
+    .flow-arrow { transform: rotate(90deg); }
+    .arch-layer { flex-direction: column; }
+    .arch-label { width: 100%; }
+    .arch-connector { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV DOTS -->
+<nav class="slide-nav">
+  <button class="nav-dot" onclick="document.getElementById('s1').scrollIntoView({behavior:'smooth'})" title="Title"></button>
+  <button class="nav-dot" onclick="document.getElementById('s2').scrollIntoView({behavior:'smooth'})" title="The Problem"></button>
+  <button class="nav-dot" onclick="document.getElementById('s3').scrollIntoView({behavior:'smooth'})" title="Why This Matters"></button>
+  <button class="nav-dot" onclick="document.getElementById('s4').scrollIntoView({behavior:'smooth'})" title="Solution"></button>
+  <button class="nav-dot" onclick="document.getElementById('s5').scrollIntoView({behavior:'smooth'})" title="How It Works"></button>
+  <button class="nav-dot" onclick="document.getElementById('s6').scrollIntoView({behavior:'smooth'})" title="Onboarding Workflow"></button>
+  <button class="nav-dot" onclick="document.getElementById('s7').scrollIntoView({behavior:'smooth'})" title="Search & Connect"></button>
+  <button class="nav-dot" onclick="document.getElementById('s8').scrollIntoView({behavior:'smooth'})" title="AI Agent System"></button>
+  <button class="nav-dot" onclick="document.getElementById('s9').scrollIntoView({behavior:'smooth'})" title="Agent Deep Dive"></button>
+  <button class="nav-dot" onclick="document.getElementById('s10').scrollIntoView({behavior:'smooth'})" title="Architecture"></button>
+  <button class="nav-dot" onclick="document.getElementById('s11').scrollIntoView({behavior:'smooth'})" title="Low-Level Architecture"></button>
+  <button class="nav-dot" onclick="document.getElementById('s12').scrollIntoView({behavior:'smooth'})" title="Use Cases"></button>
+  <button class="nav-dot" onclick="document.getElementById('s13').scrollIntoView({behavior:'smooth'})" title="Key Innovations"></button>
+  <button class="nav-dot" onclick="document.getElementById('s14').scrollIntoView({behavior:'smooth'})" title="Status & Roadmap"></button>
+  <button class="nav-dot" onclick="document.getElementById('s15').scrollIntoView({behavior:'smooth'})" title="Close"></button>
+</nav>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 1: TITLE                                    -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s1" class="slide slide-title">
+  <svg class="logo-icon" viewBox="0 0 100 100" fill="none">
+    <circle cx="50" cy="50" r="46" fill="rgba(255,255,255,0.1)" stroke="white" stroke-width="3"/>
+    <circle cx="35" cy="38" r="8" fill="rgba(255,255,255,0.3)" stroke="white" stroke-width="2"/>
+    <circle cx="65" cy="38" r="8" fill="rgba(255,255,255,0.3)" stroke="white" stroke-width="2"/>
+    <circle cx="50" cy="58" r="8" fill="rgba(255,255,255,0.3)" stroke="white" stroke-width="2"/>
+    <line x1="40" y1="42" x2="60" y2="42" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="38" y1="44" x2="47" y2="54" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="62" y1="44" x2="53" y2="54" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round"/>
+    <text x="50" y="80" text-anchor="middle" fill="white" font-size="8" font-weight="700" letter-spacing="3">CONNECT</text>
+  </svg>
+  <h1>Alumni Connect</h1>
+  <p class="tagline">AI-Powered Alumni Networking Through Conversation</p>
+  <p class="subtitle">Architecture &amp; Technical Overview</p>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 2: THE PROBLEM                              -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s2" class="slide slide-problem">
+  <p class="section-label">The Problem</p>
+  <h2>Alumni Lose Touch.<br>Institutions Lose Value.</h2>
+
+  <div class="grid-2">
+    <!-- Visual: Alumni Scene -->
+    <div class="problem-scene">
+      <div class="alumni-scene">
+        <div class="alumni-icon a1">👨‍💼</div>
+        <div class="alumni-icon a2">👩‍⚕️</div>
+        <div class="alumni-icon a3">👨‍🎓</div>
+        <div class="alumni-icon a4">👩‍💻</div>
+        <div class="alumni-icon a5">👨‍🔬</div>
+        <div class="alumni-icon a6">👩‍🏫</div>
+        <div class="alumni-icon a7">👨‍🍳</div>
+        <div class="disconnect-line dl1"></div>
+        <div class="disconnect-line dl2"></div>
+        <div class="disconnect-line dl3"></div>
+        <div class="thought-bubble t1">Where are my batchmates?</div>
+        <div class="thought-bubble t2">Any alumni in Bangalore?</div>
+        <div class="thought-bubble t3">Who else plays football?</div>
+        <div class="scene-caption">Alumni scattered across cities with no way to find each other</div>
+      </div>
+    </div>
+
+    <!-- Pain Points -->
+    <div class="flex-col gap-20">
+      <div class="pain-card">
+        <div class="card-icon-box" style="background: #fee2e2;">😰</div>
+        <div>
+          <h4>No Way to Discover Alumni</h4>
+          <p>After graduation, students scatter across cities and professions. There's no searchable directory to find batchmates, seniors, or juniors working in your field or city.</p>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="card-icon-box" style="background: #fef3c7;">📋</div>
+        <div>
+          <h4>Traditional Directories Don't Work</h4>
+          <p>Form-based search systems require knowing exactly what you're looking for. Users abandon complex filter UIs. Natural questions like "who plays cricket in Mumbai?" go unanswered.</p>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="card-icon-box" style="background: #ede9fe;">🔒</div>
+        <div>
+          <h4>Privacy Concerns Block Sharing</h4>
+          <p>Alumni hesitate to share personal details on open platforms. Without admin-gated access and approval workflows, trust remains low and adoption suffers.</p>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="card-icon-box" style="background: #dbeafe;">💬</div>
+        <div>
+          <h4>No Built-In Communication</h4>
+          <p>Even when alumni find each other, there's no integrated way to message them. Connection requests lead nowhere without a real-time chat system built in.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 3: WHY THIS MATTERS                         -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s3" class="slide slide-dark">
+  <p class="section-label">Why This Matters</p>
+  <h2>The Untapped Power of Alumni Networks</h2>
+
+  <div class="grid-3 gap-30" style="margin-bottom: 40px;">
+    <div class="stat-card dark-stat">
+      <div class="stat-number">1000s</div>
+      <div class="stat-label">Of alumni per institution<br>with zero digital connection</div>
+    </div>
+    <div class="stat-card dark-stat">
+      <div class="stat-number">80%</div>
+      <div class="stat-label">Of alumni lose contact<br>within 2 years of graduating</div>
+    </div>
+    <div class="stat-card dark-stat">
+      <div class="stat-number">0</div>
+      <div class="stat-label">AI-native alumni platforms<br>using conversational search</div>
+    </div>
+  </div>
+
+  <div class="grid-2 gap-30">
+    <div class="dark-card">
+      <h4>Conversations, Not Forms</h4>
+      <p>Alumni Connect replaces traditional search interfaces with a natural language AI chatbot. Instead of filling out filter forms, users simply ask: "Find me alumni who are doctors in Chennai." The AI handles the rest &mdash; parsing intent, querying the graph database, and returning personalized results.</p>
+    </div>
+    <div class="dark-card">
+      <h4>Privacy-First, Admin-Gated</h4>
+      <p>Every profile goes through a conversational onboarding and requires admin approval before becoming visible. This ensures only verified alumni can search and connect &mdash; building institutional trust and keeping data quality high from day one.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 4: THE SOLUTION                             -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s4" class="slide slide-solution">
+  <p class="section-label">The Solution</p>
+  <h2>One Chat. Entire Alumni Network.</h2>
+
+  <div class="grid-2" style="align-items: center;">
+    <!-- Phone Mockup -->
+    <div style="display: flex; gap: 24px; justify-content: center;">
+      <div class="phone-mockup chat-phone">
+        <div class="phone-screen">
+          <div class="phone-header">
+            <span>Alumni Connect</span>
+            <span style="font-size:0.55rem; opacity:0.7">AI</span>
+          </div>
+          <div class="phone-content">
+            <div class="chat-bubble bot">Hi! Welcome to Alumni Connect. I'm here to help you find and connect with fellow alumni. What would you like to do?</div>
+            <div class="chat-bubble user">Find alumni who are software engineers in Bangalore</div>
+            <div class="chat-bubble bot">I found 3 alumni matching your query:</div>
+            <div class="mini-profile-card">
+              <div class="name">Rahul Sharma</div>
+              <div class="details">Software Engineer &bull; Bangalore &bull; Batch 2019</div>
+              <div class="details">Interests: AI/ML, Cricket</div>
+              <div class="mini-connect-btn">Connect</div>
+            </div>
+            <div class="mini-profile-card">
+              <div class="name">Priya Menon</div>
+              <div class="details">Senior Developer &bull; Bangalore &bull; Batch 2017</div>
+              <div class="details">Interests: Open Source, Music</div>
+              <div class="mini-connect-btn">Connect</div>
+            </div>
+            <div class="chat-bubble user">Connect me with Rahul</div>
+            <div class="chat-bubble bot">Connection request sent to Rahul Sharma! I'll notify you when they respond.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key Value Props -->
+    <div class="flex-col" style="gap: 20px;">
+      <div class="sol-point">
+        <div class="sol-icon" style="background: var(--primary-light);">🤖</div>
+        <div>
+          <h4>AI-Powered Conversational Search</h4>
+          <p>Natural language queries powered by LangGraph agents. Ask anything &mdash; "alumni who play football in Mumbai" or "female doctors from batch 2015" &mdash; and get instant results.</p>
+        </div>
+      </div>
+      <div class="sol-point">
+        <div class="sol-icon" style="background: var(--accent-light);">💬</div>
+        <div>
+          <h4>Chat-Based Onboarding</h4>
+          <p>No forms. The AI asks profile questions one at a time in natural conversation. Supports pause/resume &mdash; if you disconnect mid-onboarding, your progress is saved.</p>
+        </div>
+      </div>
+      <div class="sol-point">
+        <div class="sol-icon" style="background: var(--success-light);">🔗</div>
+        <div>
+          <h4>Instant Connections &amp; Private Chat</h4>
+          <p>Send connection requests directly from search results. Once accepted, a real-time private chat channel opens with read receipts and online/offline presence.</p>
+        </div>
+      </div>
+      <div class="sol-point">
+        <div class="sol-icon" style="background: var(--blue-light);">🛡️</div>
+        <div>
+          <h4>Admin-Gated Approval System</h4>
+          <p>Every new profile requires admin approval before becoming searchable. Rejected users get a clear reason. Admins see platform stats and manage the community.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 5: HOW IT WORKS (OVERVIEW)                  -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s5" class="slide slide-flow">
+  <p class="section-label">User Journey</p>
+  <h2>How It Works</h2>
+
+  <div class="flow-diagram">
+    <div class="flow-section-label" style="color: var(--primary);">NEW USER FLOW</div>
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--primary-light);">📱<span class="flow-number">1</span></div>
+      <h4>Login</h4>
+      <p>Sign in with mobile number or email. Device fingerprint for auto-login.</p>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--primary-light);">💬<span class="flow-number">2</span></div>
+      <h4>AI Onboarding</h4>
+      <p>Chatbot asks profile questions conversationally. No forms.</p>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--primary-light);">⏳<span class="flow-number">3</span></div>
+      <h4>Admin Review</h4>
+      <p>Profile sent for approval. Admin verifies identity.</p>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--success-light);">✅<span class="flow-number">4</span></div>
+      <h4>Approved</h4>
+      <p>Full access. Search alumni, send connections, chat.</p>
+    </div>
+  </div>
+
+  <div style="height: 20px;"></div>
+
+  <div class="flow-diagram">
+    <div class="flow-section-label" style="color: var(--success);">APPROVED USER FLOW</div>
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--success-light);">🔍<span class="flow-number">1</span></div>
+      <h4>Search Alumni</h4>
+      <p>Ask the AI chatbot to find alumni by city, profession, interests, batch.</p>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--success-light);">👤<span class="flow-number">2</span></div>
+      <h4>View Profiles</h4>
+      <p>See profile cards with name, profession, city, interests inline in chat.</p>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--success-light);">🤝<span class="flow-number">3</span></div>
+      <h4>Connect</h4>
+      <p>Send connection request with optional message. Wait for acceptance.</p>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--success-light);">💬<span class="flow-number">4</span></div>
+      <h4>Private Chat</h4>
+      <p>Real-time messaging with read receipts and presence status.</p>
+    </div>
+  </div>
+
+  <div class="data-flow-visual">
+    <div style="font-size:0.65rem; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:2px; margin-bottom:10px;">Real-Time Data Flow</div>
+    <div class="data-flow-row">
+      <div class="df-node" style="background:var(--primary-light); color:var(--primary-dark);">📱 Expo App<br><span style="font-size:0.55rem; opacity:0.7;">React Native + Web</span></div>
+      <div class="df-arrow">&rarr;</div>
+      <div class="df-node" style="background:var(--blue-light); color:var(--blue);">WebSocket<br><span style="font-size:0.55rem; opacity:0.7;">AI Chat + Private Chat</span></div>
+      <div class="df-arrow">&rarr;</div>
+      <div class="df-node" style="background:var(--accent-light); color:#92400e;">LangGraph Agent<br><span style="font-size:0.55rem; opacity:0.7;">Intent &rarr; Tools &rarr; Response</span></div>
+      <div class="df-arrow">&rarr;</div>
+      <div class="df-node" style="background:var(--success-light); color:#047857;">4 Databases<br><span style="font-size:0.55rem; opacity:0.7;">PG + Mongo + Neo4j + Redis</span></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 6: ONBOARDING WORKFLOW (DETAILED)           -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s6" class="slide slide-workflow">
+  <p class="section-label">Workflow Detail</p>
+  <h2>Conversational Onboarding &mdash; Step by Step</h2>
+
+  <div class="grid-2" style="align-items: start;">
+    <div class="workflow-timeline">
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--primary-light); color:var(--primary-dark);">Login</div>
+          <h4>User opens the app and signs in</h4>
+          <p>Enters mobile number (with country code picker) or email. Backend creates user record with <strong>pending_approval</strong> status if new. JWT tokens issued and stored in AsyncStorage.</p>
+          <div class="wf-detail">
+            <strong>API:</strong> <code>POST /api/auth/login</code> &mdash; returns access_token, refresh_token, is_new_user flag
+          </div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--accent-light); color:#92400e;">WebSocket Connect</div>
+          <h4>AI Chat WebSocket opens, auto-greet triggers</h4>
+          <p>WebSocket connects to <code>/ws/ai-chat</code>. First message sends JWT for authentication. Based on user status (new vs. returning, onboarding step), the agent sends an appropriate greeting and begins onboarding.</p>
+          <div class="wf-detail">
+            <strong>Cache check:</strong> Redis <code>onboarding:{user_id}</code> loaded first, fallback to Postgres <code>onboarding_data</code> JSONB column
+          </div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--success-light); color:#047857;">Structured Collection</div>
+          <h4>Agent asks profile questions one-by-one</h4>
+          <p>The onboarding sub-agent uses <strong>structured output</strong> (Pydantic <code>OnboardingResponse</code>) with actions: <em>ask</em>, <em>save</em>, <em>confirm</em>, <em>create_profile</em>. Each response is validated by the <strong>OnboardingRuler</strong> before saving.</p>
+          <div class="wf-detail">
+            <strong>Fields:</strong> name, completed_12th, highest_grade, academic_year, gender, age/DOB, city, country, profession, interests, activities
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="workflow-timeline">
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--blue-light); color:var(--blue);">Stateful Caching</div>
+          <h4>Each answer saved to Redis with 7-day TTL</h4>
+          <p>Every field answer is immediately cached in Redis at <code>onboarding:{user_id}</code>. On <strong>disconnect</strong>, partial data flushes to Postgres <code>onboarding_data</code> JSONB. On <strong>reconnect</strong>, data restores from Postgres back to Redis.</p>
+          <div class="wf-detail">
+            <strong>Key insight:</strong> Users can close the app mid-onboarding and resume exactly where they left off &mdash; no data lost
+          </div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--teal-light); color:var(--teal);">Profile Creation</div>
+          <h4>All fields collected &rarr; Profile created across databases</h4>
+          <p>User record updated in <strong>PostgreSQL</strong> with full profile. Graph nodes and relationships created in <strong>Neo4j</strong> (Alumni &rarr; City, Profession, Interests, Activities). A <strong>profile narrative</strong> is generated by the LLM and converted to a <strong>vector embedding</strong> (pgvector).</p>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--rose-light); color:var(--rose);">Approval Gate</div>
+          <h4>Status remains pending_approval until admin acts</h4>
+          <p>User sees an "Under Review" screen. Can check status via a refresh button. Admin sees the pending user in the admin dashboard with approve/reject options. Rejection includes an optional reason displayed to the user.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 7: SEARCH & CONNECT WORKFLOW                -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s7" class="slide slide-workflow" style="background: var(--gray-50);">
+  <p class="section-label">Workflow Detail</p>
+  <h2>Search &amp; Connect &mdash; Step by Step</h2>
+
+  <div class="grid-2" style="align-items: start;">
+    <div class="workflow-timeline">
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--success-light); color:#047857;">Natural Language Search</div>
+          <h4>User asks the chatbot to find alumni</h4>
+          <p>The <strong>Router node</strong> classifies intent as "search" and hands off to the <strong>Search Agent</strong> &mdash; a ReAct agent with access to graph query tools. Examples: "doctors in Mumbai", "alumni who play cricket", "female engineers from 2018 batch".</p>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--primary-light); color:var(--primary-dark);">Graph Query Execution</div>
+          <h4>Agent selects and executes appropriate tools</h4>
+          <p>Three search tools available:</p>
+          <ul style="font-size:0.8rem; color:var(--gray-600); padding-left:16px; margin-top:6px; line-height:1.6;">
+            <li><strong>search_alumni</strong> &mdash; structured Cypher query with filters (city, profession, interests)</li>
+            <li><strong>search_alumni_by_cypher</strong> &mdash; custom Cypher for complex queries</li>
+            <li><strong>find_alumni_with_shared_interests</strong> &mdash; similarity-based matching</li>
+          </ul>
+          <div class="wf-detail">
+            <strong>Database:</strong> Neo4j graph traversal &mdash; Alumni &rarr; City, Profession, Interest, Activity relationships
+          </div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--accent-light); color:#92400e;">Results Displayed</div>
+          <h4>Profile cards rendered inline in the chat</h4>
+          <p>Search results return as <strong>ProfileCard</strong> components inside the chat bubble, showing name, profession, city, graduation year, interests, and a <strong>Connect button</strong> for each match.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="workflow-timeline">
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--blue-light); color:var(--blue);">Connection Request</div>
+          <h4>User says "connect me with [name]"</h4>
+          <p>The <strong>Connect Handler</strong> uses structured output to parse which alumni the user wants to connect with. Creates a connection record in <strong>PostgreSQL</strong> and a <code>CONNECTED_TO</code> relationship in <strong>Neo4j</strong> with pending status.</p>
+          <div class="wf-detail">
+            <strong>Status flow:</strong> <code>pending</code> &rarr; <code>accepted</code> or <code>declined</code>
+          </div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--teal-light); color:var(--teal);">Connections List</div>
+          <h4>Accepted connections visible in Connections tab</h4>
+          <p>The Connections screen shows all accepted connections with <strong>real-time online/offline status</strong> via Redis presence tracking. Each connection is tappable to open a private chat.</p>
+          <div class="wf-detail">
+            <strong>Presence:</strong> Redis key <code>presence:{user_id}</code> with 60s TTL, refreshed by heartbeat
+          </div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <div class="wf-badge" style="background:var(--rose-light); color:var(--rose);">Private Chat</div>
+          <h4>Real-time 1-on-1 messaging</h4>
+          <p>Dedicated WebSocket at <code>/ws/private-chat</code> with active connection registry for instant delivery. Messages stored in <strong>MongoDB</strong> with read receipts. Supports chat history loading on connection open.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 8: AI AGENT SYSTEM                          -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s8" class="slide slide-agent">
+  <p class="section-label">AI Agent Architecture</p>
+  <h2>LangGraph Agent &mdash; The Brain of the System</h2>
+
+  <p style="font-size:1rem; color:var(--gray-500); margin-bottom:30px; max-width:750px;">
+    Every user message flows through a <strong>LangGraph state machine</strong> that classifies intent and routes to specialized sub-agents. Each sub-agent has its own tools, prompts, and structured output schemas.
+  </p>
+
+  <div class="grid-3 gap-30">
+    <div class="scenario-card" style="border-color: var(--primary);">
+      <h4><span style="font-size:1.4rem;">🧭</span> Router Node</h4>
+      <ul class="scenario-steps">
+        <li><div class="step-num" style="background:var(--primary);">1</div> Receives every user message with conversation history</li>
+        <li><div class="step-num" style="background:var(--primary);">2</div> LLM classifies intent into one of 5 flows</li>
+        <li><div class="step-num" style="background:var(--primary);">3</div> Routes to the appropriate sub-agent with full context</li>
+        <li><div class="step-num" style="background:var(--primary);">4</div> State machine tracks <code>current_flow</code> across turns</li>
+      </ul>
+    </div>
+
+    <div class="scenario-card" style="border-color: var(--accent);">
+      <h4><span style="font-size:1.4rem;">📝</span> Onboarding Sub-Agent</h4>
+      <ul class="scenario-steps">
+        <li><div class="step-num" style="background:var(--accent);">1</div> Structured output via Pydantic <code>OnboardingResponse</code></li>
+        <li><div class="step-num" style="background:var(--accent);">2</div> Actions: ask, save, confirm, create_profile</li>
+        <li><div class="step-num" style="background:var(--accent);">3</div> Field validation via <code>OnboardingRuler</code></li>
+        <li><div class="step-num" style="background:var(--accent);">4</div> Generates profile narrative + vector embedding on completion</li>
+      </ul>
+    </div>
+
+    <div class="scenario-card" style="border-color: var(--success);">
+      <h4><span style="font-size:1.4rem;">🔍</span> Search Sub-Agent (ReAct)</h4>
+      <ul class="scenario-steps">
+        <li><div class="step-num" style="background:var(--success);">1</div> ReAct pattern with tool calling via LangChain</li>
+        <li><div class="step-num" style="background:var(--success);">2</div> Tools: search_alumni, search_by_cypher, find_shared_interests</li>
+        <li><div class="step-num" style="background:var(--success);">3</div> Queries Neo4j graph for structured results</li>
+        <li><div class="step-num" style="background:var(--success);">4</div> Returns formatted profile cards for inline rendering</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="margin-top: 30px; padding: 20px 24px; background: var(--primary-light); border-radius: 14px; display: flex; align-items: center; gap: 16px;">
+    <span style="font-size: 2rem;">💡</span>
+    <div>
+      <div style="font-weight: 700; color: var(--primary-dark); font-size: 0.95rem;">LLM Provider Abstraction</div>
+      <div style="font-size: 0.85rem; color: var(--gray-600);">The agent system supports both <strong>OpenAI</strong> and <strong>Ollama</strong> as LLM providers via a single config switch. Embedding models similarly abstracted &mdash; OpenAI (1536-dim) or Ollama/nomic-embed-text (768-dim). Switch between cloud and local inference without code changes.</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 9: AGENT DEEP DIVE                          -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s9" class="slide" style="background: white;">
+  <p class="section-label">Agent Deep Dive</p>
+  <h2>Inside the LangGraph State Machine</h2>
+
+  <!-- Agent State -->
+  <div class="conn-diagram">
+    <div style="font-size:0.7rem; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:2px; margin-bottom:16px;">Agent State Schema (TypedDict)</div>
+    <div class="conn-layer">
+      <div class="conn-label">State Fields</div>
+      <div class="conn-nodes">
+        <div class="conn-node" style="border-color:var(--primary); background:var(--primary-light); color:var(--primary-dark);">messages[]<br><span style="font-size:0.6rem;opacity:0.7;">Conversation history</span></div>
+        <div class="conn-node" style="border-color:var(--blue); background:var(--blue-light); color:var(--blue);">user_id<br><span style="font-size:0.6rem;opacity:0.7;">UUID string</span></div>
+        <div class="conn-node" style="border-color:var(--accent); background:var(--accent-light); color:#92400e;">onboarding_step<br><span style="font-size:0.6rem;opacity:0.7;">Current field</span></div>
+        <div class="conn-node" style="border-color:var(--success); background:var(--success-light); color:#047857;">current_flow<br><span style="font-size:0.6rem;opacity:0.7;">Active sub-agent</span></div>
+        <div class="conn-node" style="border-color:var(--rose); background:var(--rose-light); color:var(--rose);">last_search_results<br><span style="font-size:0.6rem;opacity:0.7;">Cached results</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Five flows -->
+  <div style="font-size:0.7rem; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:2px; margin-bottom:16px;">Five Intent Flows</div>
+  <div class="grid-3 gap-20" style="margin-bottom: 20px;">
+    <div class="agent-node" style="border-color: var(--accent);">
+      <h4><span style="font-size:1rem;">📝</span> Onboarding</h4>
+      <p>Profile collection for new users. Structured output with validation. Redis-cached with Postgres fallback.</p>
+      <div class="agent-flow">
+        <div class="af-node" style="background:var(--accent-light); color:#92400e;">Ask</div>
+        <div class="af-arrow">&rarr;</div>
+        <div class="af-node" style="background:var(--accent-light); color:#92400e;">Validate</div>
+        <div class="af-arrow">&rarr;</div>
+        <div class="af-node" style="background:var(--accent-light); color:#92400e;">Save</div>
+        <div class="af-arrow">&rarr;</div>
+        <div class="af-node" style="background:var(--success-light); color:#047857;">Create</div>
+      </div>
+    </div>
+    <div class="agent-node" style="border-color: var(--success);">
+      <h4><span style="font-size:1rem;">🔍</span> Search</h4>
+      <p>ReAct agent with Neo4j tools. Cypher-powered graph queries for structured and semantic search.</p>
+      <div class="agent-flow">
+        <div class="af-node" style="background:var(--success-light); color:#047857;">Parse</div>
+        <div class="af-arrow">&rarr;</div>
+        <div class="af-node" style="background:var(--success-light); color:#047857;">Tool Call</div>
+        <div class="af-arrow">&rarr;</div>
+        <div class="af-node" style="background:var(--success-light); color:#047857;">Format</div>
+      </div>
+    </div>
+    <div class="agent-node" style="border-color: var(--blue);">
+      <h4><span style="font-size:1rem;">🤝</span> Connect</h4>
+      <p>Structured output extracts target alumni. Creates connection in PostgreSQL and Neo4j.</p>
+      <div class="agent-flow">
+        <div class="af-node" style="background:var(--blue-light); color:var(--blue);">Extract</div>
+        <div class="af-arrow">&rarr;</div>
+        <div class="af-node" style="background:var(--blue-light); color:var(--blue);">Create</div>
+        <div class="af-arrow">&rarr;</div>
+        <div class="af-node" style="background:var(--blue-light); color:var(--blue);">Notify</div>
+      </div>
+    </div>
+  </div>
+  <div class="grid-2 gap-20">
+    <div class="agent-node" style="border-color: var(--teal);">
+      <h4><span style="font-size:1rem;">✏️</span> Profile Update</h4>
+      <p>Identifies which field to update, validates the new value, regenerates the profile narrative and embedding vector. Updates Postgres + Neo4j.</p>
+    </div>
+    <div class="agent-node" style="border-color: var(--gray-400);">
+      <h4><span style="font-size:1rem;">💬</span> General Chat</h4>
+      <p>Fallback conversational handler for messages that don't match any specific flow. Friendly, contextual responses using conversation history.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 10: HIGH-LEVEL ARCHITECTURE                 -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s10" class="slide slide-arch">
+  <p class="section-label">System Architecture</p>
+  <h2>Multi-Database AI-Native Platform</h2>
+
+  <div class="arch-diagram">
+    <div class="arch-layer layer-client">
+      <div class="arch-label">CLIENT<br>APP</div>
+      <div class="arch-boxes">
+        <div class="arch-box">
+          <h5>📱 Mobile App</h5>
+          <div class="tech">Expo 55 + React Native 0.83</div>
+        </div>
+        <div class="arch-box">
+          <h5>🌐 Web App</h5>
+          <div class="tech">React Native Web + Expo Router</div>
+        </div>
+        <div class="arch-box">
+          <h5>🛡️ Admin Panel</h5>
+          <div class="tech">Approve/Reject + Stats</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arch-connector">
+      <div class="connector-arrow"><span>&darr;&uarr;</span><span class="connector-label">REST + WebSocket (JWT Auth)</span></div>
+    </div>
+
+    <div class="arch-layer layer-api">
+      <div class="arch-label">BACKEND<br>API</div>
+      <div class="arch-boxes">
+        <div class="arch-box"><h5>🔐 Auth</h5><div class="tech">JWT + Refresh Tokens</div></div>
+        <div class="arch-box"><h5>💬 AI Chat WS</h5><div class="tech">/ws/ai-chat</div></div>
+        <div class="arch-box"><h5>📨 Private Chat WS</h5><div class="tech">/ws/private-chat</div></div>
+        <div class="arch-box"><h5>👥 Connections</h5><div class="tech">CRUD + Status</div></div>
+        <div class="arch-box"><h5>⚙️ Admin</h5><div class="tech">Approval + Stats</div></div>
+      </div>
+    </div>
+
+    <div class="arch-connector">
+      <div class="connector-arrow"><span>&darr;&uarr;</span><span class="connector-label">LangChain / LangGraph</span></div>
+    </div>
+
+    <div class="arch-layer layer-ai">
+      <div class="arch-label">AI<br>LAYER</div>
+      <div class="arch-boxes">
+        <div class="arch-box"><h5>🧭 Router</h5><div class="tech">Intent Classification</div></div>
+        <div class="arch-box"><h5>📝 Onboarding</h5><div class="tech">Structured Output</div></div>
+        <div class="arch-box"><h5>🔍 Search</h5><div class="tech">ReAct + Tools</div></div>
+        <div class="arch-box"><h5>🤝 Connect</h5><div class="tech">Structured Output</div></div>
+        <div class="arch-box"><h5>✏️ Profile</h5><div class="tech">Update + Embed</div></div>
+      </div>
+    </div>
+
+    <div class="arch-connector">
+      <div class="connector-arrow"><span>&darr;&uarr;</span><span class="connector-label">SQLAlchemy + Motor + Neo4j Driver + aioredis</span></div>
+    </div>
+
+    <div class="arch-layer layer-data">
+      <div class="arch-label">DATA<br>LAYER</div>
+      <div class="arch-boxes">
+        <div class="arch-box"><h5>🐘 PostgreSQL 16</h5><div class="tech">Users, Connections, Embeddings (pgvector)</div></div>
+        <div class="arch-box"><h5>🍃 MongoDB</h5><div class="tech">AI Chat + Private Chat History</div></div>
+        <div class="arch-box"><h5>🕸️ Neo4j</h5><div class="tech">Alumni Graph + Relationships</div></div>
+        <div class="arch-box"><h5>⚡ Redis</h5><div class="tech">Presence, Sessions, Cache</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 11: LOW-LEVEL ARCHITECTURE                  -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s11" class="slide slide-lowlevel">
+  <p class="section-label">Low-Level Architecture</p>
+  <h2>Database, APIs &amp; Data Models</h2>
+
+  <div class="grid-2 gap-30" style="align-items: start;">
+    <!-- Left: DB Schema + Lifecycles -->
+    <div class="flex-col gap-20">
+      <div class="ll-section">
+        <h4>🗄️ Database Schema (4 Databases)</h4>
+        <table class="db-table">
+          <thead><tr><th>Database</th><th>Collections / Tables</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td class="tbl-name">PostgreSQL</td><td><code>users</code>, <code>connections</code>, <code>refresh_tokens</code></td><td>Profiles, auth, relationships, pgvector embeddings</td></tr>
+            <tr><td class="tbl-name">MongoDB</td><td><code>ai_chats</code>, <code>private_chats</code></td><td>Conversation histories with metadata</td></tr>
+            <tr><td class="tbl-name">Neo4j</td><td>Alumni, School, City, Profession, Interest, Activity</td><td>Graph nodes + STUDIED_AT, LIVES_IN, WORKS_AS, INTERESTED_IN, DOES_ACTIVITY, CONNECTED_TO</td></tr>
+            <tr><td class="tbl-name">Redis</td><td><code>presence:*</code>, <code>session:*</code>, <code>onboarding:*</code></td><td>Real-time presence (60s TTL), sessions, onboarding cache (7d TTL)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="ll-section">
+        <h4>👤 User Status Lifecycle</h4>
+        <div class="lifecycle-flow">
+          <div class="lf-node" style="background:var(--gray-100); color:var(--gray-600);">new_user</div>
+          <div class="lf-arrow">&rarr;</div>
+          <div class="lf-node" style="background:var(--accent-light); color:#92400e;">onboarding</div>
+          <div class="lf-arrow">&rarr;</div>
+          <div class="lf-node" style="background:var(--primary-light); color:var(--primary-dark);">pending_approval</div>
+          <div class="lf-arrow">&rarr;</div>
+          <div class="lf-node" style="background:var(--success-light); color:#047857;">approved</div>
+        </div>
+        <div style="font-size:0.7rem; color:var(--gray-400); margin-top:4px; margin-left:4px;">
+          Can also &rarr; <span style="color:var(--danger);">rejected</span> (with optional reason) from pending_approval
+        </div>
+      </div>
+
+      <div class="ll-section">
+        <h4>🤝 Connection Status Lifecycle</h4>
+        <div class="lifecycle-flow">
+          <div class="lf-node" style="background:var(--gray-100); color:var(--gray-600);">pending</div>
+          <div class="lf-arrow">&rarr;</div>
+          <div class="lf-node" style="background:var(--success-light); color:#047857;">accepted</div>
+        </div>
+        <div style="font-size:0.7rem; color:var(--gray-400); margin-top:4px; margin-left:4px;">
+          Can also &rarr; <span style="color:var(--danger);">declined</span> from pending
+        </div>
+      </div>
+
+      <div class="ll-section">
+        <h4>🕸️ Neo4j Graph Schema</h4>
+        <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 4px;">
+          <div style="display:flex; align-items:center; gap:8px; font-size:0.75rem;">
+            <div class="lf-node" style="background:var(--primary-light); color:var(--primary-dark);">Alumni</div>
+            <span style="color:var(--gray-400);">&mdash;[:STUDIED_AT]&rarr;</span>
+            <div class="lf-node" style="background:var(--blue-light); color:var(--blue);">School</div>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; font-size:0.75rem;">
+            <div class="lf-node" style="background:var(--primary-light); color:var(--primary-dark);">Alumni</div>
+            <span style="color:var(--gray-400);">&mdash;[:LIVES_IN]&rarr;</span>
+            <div class="lf-node" style="background:var(--success-light); color:#047857;">City</div>
+            <span style="color:var(--gray-400);">&mdash;[:IN_COUNTRY]&rarr;</span>
+            <div class="lf-node" style="background:var(--success-light); color:#047857;">Country</div>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; font-size:0.75rem;">
+            <div class="lf-node" style="background:var(--primary-light); color:var(--primary-dark);">Alumni</div>
+            <span style="color:var(--gray-400);">&mdash;[:WORKS_AS]&rarr;</span>
+            <div class="lf-node" style="background:var(--accent-light); color:#92400e;">Profession</div>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; font-size:0.75rem;">
+            <div class="lf-node" style="background:var(--primary-light); color:var(--primary-dark);">Alumni</div>
+            <span style="color:var(--gray-400);">&mdash;[:INTERESTED_IN / :DOES_ACTIVITY]&rarr;</span>
+            <div class="lf-node" style="background:var(--teal-light); color:var(--teal);">Interest / Activity</div>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; font-size:0.75rem;">
+            <div class="lf-node" style="background:var(--primary-light); color:var(--primary-dark);">Alumni</div>
+            <span style="color:var(--gray-400);">&mdash;[:CONNECTED_TO {status}]&rarr;</span>
+            <div class="lf-node" style="background:var(--primary-light); color:var(--primary-dark);">Alumni</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: API Endpoints -->
+    <div class="flex-col gap-20">
+      <div class="ll-section">
+        <h4>🌐 API Endpoints</h4>
+        <div style="display:flex; flex-direction:column; gap:2px;">
+          <div style="font-size:0.65rem; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:1px; padding:6px 0 2px;">Authentication</div>
+          <div class="api-endpoint"><span class="api-method method-post">POST</span><span class="api-path">/api/auth/login</span><span class="api-desc">Mobile/email login</span></div>
+          <div class="api-endpoint"><span class="api-method method-post">POST</span><span class="api-path">/api/auth/fingerprint</span><span class="api-desc">Device auto-login</span></div>
+          <div class="api-endpoint"><span class="api-method method-get">GET</span><span class="api-path">/api/auth/me</span><span class="api-desc">Current user profile</span></div>
+
+          <div style="font-size:0.65rem; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:1px; padding:8px 0 2px;">Real-Time Chat</div>
+          <div class="api-endpoint"><span class="api-method method-ws">WS</span><span class="api-path">/ws/ai-chat</span><span class="api-desc">AI chatbot interface</span></div>
+          <div class="api-endpoint"><span class="api-method method-ws">WS</span><span class="api-path">/ws/private-chat</span><span class="api-desc">1-on-1 messaging</span></div>
+
+          <div style="font-size:0.65rem; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:1px; padding:8px 0 2px;">Connections</div>
+          <div class="api-endpoint"><span class="api-method method-get">GET</span><span class="api-path">/api/connections/</span><span class="api-desc">List connections + online status</span></div>
+
+          <div style="font-size:0.65rem; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:1px; padding:8px 0 2px;">Admin Dashboard</div>
+          <div class="api-endpoint"><span class="api-method method-get">GET</span><span class="api-path">/api/admin/users/pending</span><span class="api-desc">Pending approvals</span></div>
+          <div class="api-endpoint"><span class="api-method method-get">GET</span><span class="api-path">/api/admin/users</span><span class="api-desc">All users list</span></div>
+          <div class="api-endpoint"><span class="api-method method-post">POST</span><span class="api-path">/api/admin/users/:id/approve</span><span class="api-desc">Approve user</span></div>
+          <div class="api-endpoint"><span class="api-method method-post">POST</span><span class="api-path">/api/admin/users/:id/reject</span><span class="api-desc">Reject with reason</span></div>
+          <div class="api-endpoint"><span class="api-method method-get">GET</span><span class="api-path">/api/admin/stats</span><span class="api-desc">Platform statistics</span></div>
+        </div>
+      </div>
+
+      <div class="ll-section">
+        <h4>📊 User Model (PostgreSQL)</h4>
+        <table class="db-table">
+          <thead><tr><th>Field</th><th>Type</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td class="tbl-name">id</td><td>UUID</td><td>Primary key</td></tr>
+            <tr><td class="tbl-name">full_name</td><td>VARCHAR</td><td>From onboarding</td></tr>
+            <tr><td class="tbl-name">mobile / email</td><td>VARCHAR</td><td>Unique, nullable</td></tr>
+            <tr><td class="tbl-name">city, country, profession</td><td>VARCHAR</td><td>Graph-synced</td></tr>
+            <tr><td class="tbl-name">interests[], activities[]</td><td>TEXT[]</td><td>Array fields</td></tr>
+            <tr><td class="tbl-name">status</td><td>ENUM</td><td>pending / approved / rejected</td></tr>
+            <tr><td class="tbl-name">profile_embedding</td><td>VECTOR(768)</td><td>pgvector for similarity</td></tr>
+            <tr><td class="tbl-name">onboarding_data</td><td>JSONB</td><td>Partial progress backup</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="ll-section">
+        <h4>💬 Chat Storage (MongoDB)</h4>
+        <div style="display:flex; gap:10px;">
+          <div style="flex:1; padding:10px; background:var(--primary-light); border-radius:8px; text-align:center;">
+            <div style="font-size:1.2rem;">🤖</div>
+            <div style="font-weight:700; font-size:0.75rem; color:var(--primary-dark);">ai_chats</div>
+            <div style="font-size:0.6rem; color:var(--gray-500);">user_id, messages[], metadata (flow, search_results)</div>
+          </div>
+          <div style="flex:1; padding:10px; background:var(--blue-light); border-radius:8px; text-align:center;">
+            <div style="font-size:1.2rem;">💬</div>
+            <div style="font-weight:700; font-size:0.75rem; color:var(--blue);">private_chats</div>
+            <div style="font-size:0.6rem; color:var(--gray-500);">participants[] (sorted), messages[], read receipts</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 12: USE CASES                               -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s12" class="slide" style="background: white;">
+  <p class="section-label">Real-World Use Cases</p>
+  <h2>What Users Can Do</h2>
+
+  <div class="grid-3 gap-20" style="margin-bottom: 24px;">
+    <div class="usecase-card">
+      <h4><span style="font-size:1.2rem;">🏥</span> Professional Networking</h4>
+      <p>An alumnus relocating to a new city wants to find professionals in their field for career advice, mentorship, or collaboration opportunities.</p>
+      <div class="usecase-query">"Find alumni who are doctors in Chennai"</div>
+    </div>
+    <div class="usecase-card">
+      <h4><span style="font-size:1.2rem;">🏏</span> Shared Interests</h4>
+      <p>A sports enthusiast wants to find fellow alumni who share their hobbies for weekend meetups or forming local alumni sports groups.</p>
+      <div class="usecase-query">"Are there alumni in Bangalore who play cricket?"</div>
+    </div>
+    <div class="usecase-card">
+      <h4><span style="font-size:1.2rem;">👩‍🎓</span> Batch Reunion</h4>
+      <p>Planning a reunion? Find all batchmates from a specific year regardless of where they are now, and reach out via private chat.</p>
+      <div class="usecase-query">"Find all alumni from the 2015 batch"</div>
+    </div>
+  </div>
+
+  <div class="grid-3 gap-20">
+    <div class="usecase-card">
+      <h4><span style="font-size:1.2rem;">🌍</span> City-Based Discovery</h4>
+      <p>Moving to a new city for work or studies? Find alumni already living there who can help with local insights, housing leads, or social connections.</p>
+      <div class="usecase-query">"Which alumni are currently in Mumbai?"</div>
+    </div>
+    <div class="usecase-card">
+      <h4><span style="font-size:1.2rem;">🎯</span> Multi-Filter Search</h4>
+      <p>The AI understands complex queries combining location, profession, gender, interests, and batch year &mdash; queries impossible with form-based search.</p>
+      <div class="usecase-query">"Female alumni in Hyderabad who are engineers and play badminton"</div>
+    </div>
+    <div class="usecase-card">
+      <h4><span style="font-size:1.2rem;">✏️</span> Profile Management</h4>
+      <p>Changed jobs or moved to a new city? Simply tell the chatbot and your profile, graph relationships, and embedding all update automatically.</p>
+      <div class="usecase-query">"Update my profession to Product Manager"</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 13: KEY INNOVATIONS                         -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s13" class="slide" style="background: linear-gradient(135deg, #fefce8 0%, #faf5ff 100%);">
+  <p class="section-label">What Makes It Different</p>
+  <h2>Key Design Decisions</h2>
+
+  <div class="grid-2 gap-30">
+    <div class="innovation-card">
+      <div class="card-icon-big" style="background: var(--primary-light);">🕸️</div>
+      <h4>Neo4j Graph for Relationship Queries</h4>
+      <p>Alumni relationships are inherently graph-shaped. A graph database enables queries like "find alumni who share 3+ interests with me" or "alumni connected to my connections" that would be extremely complex in SQL. Cypher queries traverse relationships naturally.</p>
+      <div class="innovation-mini-diagram">
+        <div class="imd-node" style="background:var(--primary-light); color:var(--primary-dark);">Alumni</div>
+        <div class="imd-arrow">&rarr;</div>
+        <div class="imd-node" style="background:var(--success-light); color:#047857;">City</div>
+        <div class="imd-arrow">&larr;</div>
+        <div class="imd-node" style="background:var(--primary-light); color:var(--primary-dark);">Alumni</div>
+        <div class="imd-arrow">&rarr;</div>
+        <div class="imd-node" style="background:var(--accent-light); color:#92400e;">Interest</div>
+      </div>
+    </div>
+
+    <div class="innovation-card">
+      <div class="card-icon-big" style="background: var(--accent-light);">🧠</div>
+      <h4>Dual Search: Graph + Vector Embeddings</h4>
+      <p>Structured queries go through Neo4j for precise filtering. Semantic/fuzzy queries use <strong>pgvector</strong> embeddings (768-dim) generated from LLM-written profile narratives. This hybrid approach handles both "doctors in Mumbai" and "people like me" queries.</p>
+      <div class="innovation-mini-diagram">
+        <div class="imd-node" style="background:var(--primary-light); color:var(--primary-dark);">User Query</div>
+        <div class="imd-arrow">&rarr;</div>
+        <div class="imd-node" style="background:var(--accent-light); color:#92400e;">Agent Decides</div>
+        <div class="imd-arrow">&rarr;</div>
+        <div class="imd-node" style="background:var(--success-light); color:#047857;">Neo4j or pgvector</div>
+      </div>
+    </div>
+
+    <div class="innovation-card">
+      <div class="card-icon-big" style="background: var(--success-light);">💾</div>
+      <h4>Redis &rarr; Postgres Onboarding Cache</h4>
+      <p>Onboarding data lives in <strong>Redis</strong> (7-day TTL) for fast read/write during conversation. On disconnect, it flushes to <strong>Postgres JSONB</strong>. On reconnect, it restores. This two-tier approach ensures zero data loss while keeping the chat responsive.</p>
+    </div>
+
+    <div class="innovation-card">
+      <div class="card-icon-big" style="background: var(--blue-light);">🔄</div>
+      <h4>LLM Provider Abstraction</h4>
+      <p>A single config switch (<code>LLM_PROVIDER</code>) toggles between <strong>OpenAI</strong> (cloud, GPT-4) and <strong>Ollama</strong> (local inference). Embedding models similarly abstracted. Develop locally with Ollama, deploy with OpenAI &mdash; zero code changes.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 14: STATUS & ROADMAP                        -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s14" class="slide slide-dark">
+  <p class="section-label">Implementation Status &amp; Roadmap</p>
+  <h2>Where We Are &amp; Where We're Going</h2>
+
+  <div class="grid-2 gap-30" style="margin-bottom: 40px;">
+    <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 24px;">
+      <h3 style="color: var(--success); margin-bottom: 12px;">Built &amp; Working</h3>
+      <ul class="status-list">
+        <li class="done"><span>✅</span> JWT auth with device fingerprinting</li>
+        <li class="done"><span>✅</span> Conversational AI onboarding (Redis-cached)</li>
+        <li class="done"><span>✅</span> LangGraph agent with 5 intent flows</li>
+        <li class="done"><span>✅</span> Neo4j graph search with Cypher tools</li>
+        <li class="done"><span>✅</span> Profile embeddings via pgvector</li>
+        <li class="done"><span>✅</span> Real-time private chat via WebSocket</li>
+        <li class="done"><span>✅</span> Connection requests + presence tracking</li>
+        <li class="done"><span>✅</span> Admin dashboard (approve/reject/stats)</li>
+        <li class="done"><span>✅</span> Expo cross-platform app (iOS/Android/Web)</li>
+        <li class="done"><span>✅</span> Docker Compose for local development</li>
+      </ul>
+    </div>
+    <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 24px;">
+      <h3 style="color: var(--accent); margin-bottom: 12px;">Coming Next</h3>
+      <ul class="status-list">
+        <li class="pending"><span>🔜</span> Push notifications for connections &amp; messages</li>
+        <li class="pending"><span>🔜</span> Connection accept/decline UI in chat</li>
+        <li class="pending"><span>🔜</span> Search result rendering improvements</li>
+        <li class="pending"><span>🔜</span> Read receipts UI in private chat</li>
+        <li class="pending"><span>🔜</span> Comprehensive test coverage</li>
+        <li class="pending"><span>🔜</span> Cloud deployment + CI/CD pipeline</li>
+        <li class="planned"><span>📋</span> Multi-institution support</li>
+        <li class="planned"><span>📋</span> Event and reunion planning features</li>
+        <li class="planned"><span>📋</span> Job board and mentorship matching</li>
+        <li class="planned"><span>📋</span> Multi-language support</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 20px;">
+    <div class="roadmap-phase phase-now">
+      <div class="phase-badge">Current</div>
+      <h4>Core MVP</h4>
+      <ul class="roadmap-list">
+        <li>AI-powered conversational search</li>
+        <li>Chat-based onboarding</li>
+        <li>Neo4j graph + vector search</li>
+        <li>Real-time private messaging</li>
+        <li>Admin approval workflow</li>
+        <li>Cross-platform Expo app</li>
+      </ul>
+    </div>
+    <div class="roadmap-phase phase-next">
+      <div class="phase-badge">Phase 1</div>
+      <h4>Launch Ready</h4>
+      <ul class="roadmap-list">
+        <li>Cloud deployment (Docker)</li>
+        <li>Push notifications (FCM)</li>
+        <li>Comprehensive testing</li>
+        <li>Connection management UI</li>
+        <li>Profile photo support</li>
+        <li>Search result polish</li>
+      </ul>
+    </div>
+    <div class="roadmap-phase phase-later">
+      <div class="phase-badge">Phase 2</div>
+      <h4>Growth Features</h4>
+      <ul class="roadmap-list">
+        <li>Event &amp; reunion planning</li>
+        <li>Job board integration</li>
+        <li>Mentorship matching</li>
+        <li>Group chats for batches</li>
+        <li>Multi-language (Hindi, local)</li>
+        <li>Analytics dashboard</li>
+      </ul>
+    </div>
+    <div class="roadmap-phase phase-future">
+      <div class="phase-badge">Phase 3+</div>
+      <h4>Scale &amp; Expand</h4>
+      <ul class="roadmap-list">
+        <li>Multi-institution support</li>
+        <li>Donation &amp; fundraising</li>
+        <li>Alumni directory API</li>
+        <li>Voice-based search</li>
+        <li>Horizontal scaling (Redis pub/sub)</li>
+        <li>White-label for institutions</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════════ -->
+<!-- SLIDE 15: CLOSING                                 -->
+<!-- ═════════════════════════════════════════════════ -->
+<section id="s15" class="slide slide-closing">
+  <p class="section-label" style="color: rgba(255,255,255,0.4);">The Vision</p>
+  <h2>Turning Every Alumni<br>Into a Connected Alumni</h2>
+
+  <div class="closing-points">
+    <div class="closing-point">
+      <div class="closing-icon">🤖</div>
+      <h4>AI-Native</h4>
+      <p>Chat-first experience powered by LangGraph agents and graph databases</p>
+    </div>
+    <div class="closing-point">
+      <div class="closing-icon">🛡️</div>
+      <h4>Privacy-First</h4>
+      <p>Admin-gated approval ensures only verified alumni access the network</p>
+    </div>
+    <div class="closing-point">
+      <div class="closing-icon">🕸️</div>
+      <h4>Graph-Powered</h4>
+      <p>Neo4j enables natural relationship queries no form-based search can match</p>
+    </div>
+    <div class="closing-point">
+      <div class="closing-icon">📱</div>
+      <h4>Cross-Platform</h4>
+      <p>One Expo codebase for iOS, Android, and Web &mdash; deploy everywhere</p>
+    </div>
+    <div class="closing-point">
+      <div class="closing-icon">🚀</div>
+      <h4>Ready to Scale</h4>
+      <p>Multi-database architecture designed for growth to multi-institution support</p>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOAD AS PDF BUTTON -->
+<button class="download-btn" onclick="downloadPDF()" title="Download as PDF">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+    <polyline points="7 10 12 15 17 10"/>
+    <line x1="12" y1="15" x2="12" y2="3"/>
+  </svg>
+  Download PDF
+</button>
+
+<script>
+function downloadPDF() {
+  window.print();
+}
+</script>
+
+</body>
+</html>

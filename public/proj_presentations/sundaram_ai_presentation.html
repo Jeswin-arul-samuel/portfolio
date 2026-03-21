@@ -1,0 +1,2190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sundaram AI - Architecture & Technical Deep Dive</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  :root {
+    --primary: #e65100;
+    --primary-dark: #bf360c;
+    --primary-light: #fff3e0;
+    --accent: #2e7d32;
+    --accent-light: #e8f5e9;
+    --success: #1b5e20;
+    --success-light: #c8e6c9;
+    --danger: #c62828;
+    --danger-light: #ffebee;
+    --purple: #6a1b9a;
+    --purple-light: #f3e5f5;
+    --teal: #00695c;
+    --teal-light: #e0f2f1;
+    --gold: #f9a825;
+    --gold-light: #fff8e1;
+    --gray-50: #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-300: #cbd5e1;
+    --gray-400: #94a3b8;
+    --gray-500: #64748b;
+    --gray-600: #475569;
+    --gray-700: #334155;
+    --gray-800: #1e293b;
+    --gray-900: #0f172a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--gray-50);
+    color: var(--gray-800);
+    line-height: 1.6;
+  }
+
+  .slide {
+    min-height: 100vh;
+    padding: 60px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .slide + .slide { border-top: 1px solid var(--gray-200); }
+
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: var(--primary);
+    margin-bottom: 12px;
+  }
+
+  .slide h2 {
+    font-size: 2.6rem;
+    font-weight: 800;
+    color: var(--gray-900);
+    margin-bottom: 36px;
+    letter-spacing: -1px;
+    line-height: 1.15;
+  }
+
+  .slide h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 16px;
+  }
+
+  /* -- NAV -- */
+  .slide-nav {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 100;
+  }
+
+  .nav-dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--gray-300);
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+  }
+  .nav-dot:hover { background: var(--primary); transform: scale(1.4); }
+
+  /* ======= SLIDE 1: TITLE ======= */
+  .slide-title {
+    background: linear-gradient(135deg, #1a0a00 0%, #4e2600 30%, #bf360c 70%, #e65100 100%);
+    color: white;
+    text-align: center;
+    align-items: center;
+  }
+  .slide-title::before {
+    content: '';
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(46,125,50,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .slide-title::after {
+    content: '';
+    position: absolute;
+    bottom: -150px; left: -150px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(249,168,37,0.12) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .logo-icon { width: 100px; height: 100px; margin-bottom: 30px; position: relative; z-index: 1; }
+
+  .slide-title h1 {
+    font-size: 4.5rem;
+    font-weight: 900;
+    letter-spacing: -2px;
+    margin-bottom: 16px;
+    position: relative; z-index: 1;
+  }
+  .slide-title .tagline {
+    font-size: 1.5rem;
+    font-weight: 300;
+    opacity: 0.9;
+    margin-bottom: 40px;
+    position: relative; z-index: 1;
+  }
+  .slide-title .subtitle {
+    font-size: 1rem;
+    opacity: 0.6;
+    position: relative; z-index: 1;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  /* ======= COMMON COMPONENTS ======= */
+
+  .pain-card, .feature-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 22px 24px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .pain-card { border-left: 4px solid var(--danger); }
+  .card-icon-box {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+  }
+  .pain-card h4, .feature-card h4 { font-size: 1rem; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+  .pain-card p, .feature-card p { font-size: 0.85rem; color: var(--gray-500); line-height: 1.5; }
+
+  /* Grid helpers */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 20px; }
+  .gap-16 { gap: 16px; }
+  .gap-20 { gap: 20px; }
+  .gap-30 { gap: 30px; }
+
+  .flex-col { display: flex; flex-direction: column; }
+
+  /* Stat cards */
+  .stat-card {
+    text-align: center;
+    padding: 32px 24px;
+    border-radius: 20px;
+  }
+  .stat-number {
+    font-size: 3.2rem;
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .stat-label { font-size: 0.9rem; font-weight: 400; }
+
+  /* ======= SLIDE 2: PROBLEM ======= */
+  .slide-problem { background: white; }
+
+  .problem-scene {
+    background: var(--gray-100);
+    border-radius: 24px;
+    padding: 40px;
+    position: relative;
+  }
+
+  .restaurant-scene {
+    position: relative;
+    height: 280px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: linear-gradient(180deg, #ffecd2 0%, #fcb69f 50%, #e8d5a0 50%, #d4a574 100%);
+  }
+
+  .restaurant-floor {
+    position: absolute;
+    bottom: 0;
+    left: 0; right: 0;
+    height: 55%;
+    background: #f5e6d3;
+    border-top: 3px solid #d4a574;
+  }
+
+  .scene-emoji {
+    position: absolute;
+    font-size: 2rem;
+  }
+  .chef { bottom: 60%; left: 10%; font-size: 2.5rem; }
+  .waiter1 { bottom: 60%; left: 35%; }
+  .waiter2 { bottom: 60%; right: 30%; }
+  .phone-ring { bottom: 70%; right: 15%; font-size: 1.8rem; }
+  .customer1 { bottom: 58%; left: 55%; }
+  .customer2 { bottom: 58%; left: 65%; }
+  .customer3 { bottom: 58%; right: 10%; }
+  .queue1 { bottom: 45%; left: 20%; font-size: 1.6rem; }
+  .queue2 { bottom: 45%; left: 30%; font-size: 1.6rem; }
+  .queue3 { bottom: 45%; left: 40%; font-size: 1.6rem; }
+
+  .thought-bubble {
+    position: absolute;
+    background: white;
+    border-radius: 10px;
+    padding: 5px 10px;
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--gray-700);
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .thought-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid white;
+  }
+
+  .scene-caption {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 5px 14px;
+    border-radius: 16px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  /* ======= SLIDE 3: MARKET ======= */
+  .slide-dark { background: var(--gray-900); color: white; }
+  .slide-dark h2 { color: white; }
+  .slide-dark .section-label { color: var(--gold); }
+
+  .dark-stat .stat-number {
+    background: linear-gradient(135deg, var(--gold) 0%, #ffca28 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .dark-stat .stat-label { color: rgba(255,255,255,0.55); }
+  .dark-stat { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); }
+
+  .dark-card {
+    padding: 24px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .dark-card h4 { font-size: 1rem; font-weight: 700; color: var(--gold); margin-bottom: 8px; }
+  .dark-card p { font-size: 0.85rem; color: rgba(255,255,255,0.5); line-height: 1.5; }
+
+  /* ======= SLIDE 4: SOLUTION ======= */
+  .slide-solution { background: white; }
+
+  .phone-mockup {
+    width: 260px;
+    background: var(--gray-900);
+    border-radius: 28px;
+    padding: 12px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.18);
+    margin: 0 auto;
+  }
+  .phone-screen {
+    background: white;
+    border-radius: 18px;
+    overflow: hidden;
+    min-height: 400px;
+  }
+  .phone-header {
+    padding: 12px 14px 8px;
+    font-weight: 700;
+    font-size: 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+  }
+  .chat-phone .phone-header { background: var(--accent); }
+  .phone-content { padding: 10px; }
+
+  .chat-bubble {
+    padding: 8px 12px;
+    border-radius: 12px;
+    font-size: 0.65rem;
+    line-height: 1.4;
+    margin-bottom: 6px;
+    max-width: 85%;
+  }
+  .chat-ai {
+    background: var(--gray-100);
+    color: var(--gray-700);
+    border-bottom-left-radius: 4px;
+  }
+  .chat-user {
+    background: var(--accent);
+    color: white;
+    margin-left: auto;
+    border-bottom-right-radius: 4px;
+  }
+
+  .sol-point {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .sol-icon {
+    width: 46px; height: 46px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+  .sol-point h4 { font-size: 1rem; font-weight: 700; color: var(--gray-900); margin-bottom: 3px; }
+  .sol-point p { font-size: 0.85rem; color: var(--gray-500); line-height: 1.5; }
+
+  /* ======= SLIDE 5: HOW IT WORKS ======= */
+  .slide-flow { background: var(--gray-50); }
+
+  .flow-diagram {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 0;
+    flex-wrap: wrap;
+  }
+  .flow-step {
+    text-align: center;
+    width: 130px;
+  }
+  .flow-circle {
+    width: 68px; height: 68px;
+    border-radius: 50%;
+    margin: 0 auto 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    position: relative;
+  }
+  .flow-number {
+    position: absolute;
+    top: -5px; right: -5px;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--gray-900);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .flow-step h4 { font-size: 0.8rem; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+  .flow-step p { font-size: 0.65rem; color: var(--gray-500); line-height: 1.35; padding: 0 4px; }
+  .flow-arrow { display: flex; align-items: center; padding-top: 24px; color: var(--gray-300); font-size: 1.4rem; }
+
+  .data-flow-visual {
+    margin-top: 24px;
+    padding: 18px;
+    background: white;
+    border-radius: 14px;
+    text-align: center;
+    border: 1px solid var(--gray-200);
+  }
+  .data-flow-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 6px 0;
+    flex-wrap: wrap;
+  }
+  .df-node {
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .df-arrow { color: var(--gray-400); font-size: 1rem; }
+
+  /* ======= SLIDE 6: WORKFLOW ======= */
+  .slide-workflow { background: white; }
+
+  .workflow-timeline {
+    position: relative;
+    padding-left: 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .workflow-timeline::before {
+    content: '';
+    position: absolute;
+    left: 27px;
+    top: 20px;
+    bottom: 20px;
+    width: 3px;
+    background: var(--gray-200);
+    border-radius: 2px;
+  }
+  .wf-step {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    position: relative;
+    padding: 12px 0;
+  }
+  .wf-dot {
+    position: absolute;
+    left: -39px;
+    top: 16px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 3px solid var(--primary);
+    background: white;
+    z-index: 1;
+  }
+  .wf-dot.active { background: var(--primary); }
+  .wf-content {
+    flex: 1;
+    background: var(--gray-50);
+    border-radius: 14px;
+    padding: 18px 22px;
+    border: 1px solid var(--gray-200);
+  }
+  .wf-content h4 { font-size: 0.9rem; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+  .wf-content p { font-size: 0.78rem; color: var(--gray-500); line-height: 1.5; }
+  .wf-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+
+  /* ======= SLIDE 7: ORCHESTRATION ======= */
+  .slide-orchestration { background: var(--gray-50); }
+
+  .pipeline-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    padding: 24px 16px;
+    background: white;
+    border-radius: 16px;
+    border: 1px solid var(--gray-200);
+    margin-bottom: 28px;
+  }
+  .pipeline-node {
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    white-space: nowrap;
+    border: 2px solid;
+  }
+  .pipeline-arrow { color: var(--gray-300); font-size: 1.2rem; }
+  .pipeline-branch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.6rem;
+    color: var(--gray-400);
+  }
+
+  .node-card {
+    background: white;
+    border-radius: 14px;
+    padding: 18px 20px;
+    border: 1px solid var(--gray-200);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .node-card h4 { font-size: 0.9rem; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+  .node-card p { font-size: 0.78rem; color: var(--gray-500); line-height: 1.5; }
+  .node-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.6rem;
+    font-weight: 700;
+  }
+
+  /* ======= SLIDE 8: MULTI-AGENT ======= */
+  .slide-agents { background: white; }
+
+  .domain-card {
+    background: var(--gray-50);
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid var(--gray-200);
+  }
+  .domain-card h4 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .domain-card .agent-count {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+    color: white;
+  }
+  .domain-card ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-top: 8px;
+  }
+  .domain-card li {
+    font-size: 0.72rem;
+    color: var(--gray-500);
+    padding: 3px 0;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .domain-card li:last-child { border-bottom: none; }
+
+  .highlight-box {
+    background: var(--primary-light);
+    border: 2px solid var(--primary);
+    border-radius: 14px;
+    padding: 18px 24px;
+    margin-top: 24px;
+  }
+  .highlight-box h4 { font-size: 0.95rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 6px; }
+  .highlight-box p { font-size: 0.82rem; color: var(--gray-600); line-height: 1.5; }
+
+  /* ======= SLIDE 9: PLUGIN ======= */
+  .slide-plugin {
+    background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 50%, #fff8e1 100%);
+  }
+
+  .hub-spoke {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    position: relative;
+    padding: 40px 0;
+  }
+  .hub-center {
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    box-shadow: 0 12px 40px rgba(230,81,0,0.3);
+    position: relative;
+    z-index: 2;
+    line-height: 1.3;
+  }
+  .hub-center .hub-title { font-size: 0.85rem; font-weight: 800; margin-bottom: 6px; }
+  .hub-center .hub-items { font-size: 0.55rem; font-weight: 500; opacity: 0.85; }
+
+  .spoke-ring {
+    position: absolute;
+    width: 450px; height: 450px;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .spoke-node {
+    position: absolute;
+    width: 110px;
+    padding: 10px 8px;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    background: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border: 2px solid var(--accent);
+    color: var(--accent);
+  }
+  .spoke-node.future {
+    border-style: dashed;
+    border-color: var(--gray-400);
+    color: var(--gray-400);
+    background: rgba(255,255,255,0.7);
+  }
+  .spoke-node:nth-child(1) { top: -5%; left: 50%; transform: translateX(-50%); }
+  .spoke-node:nth-child(2) { top: 15%; right: -5%; }
+  .spoke-node:nth-child(3) { top: 55%; right: -5%; }
+  .spoke-node:nth-child(4) { bottom: -5%; left: 50%; transform: translateX(-50%); }
+  .spoke-node:nth-child(5) { top: 55%; left: -5%; }
+  .spoke-node:nth-child(6) { top: 15%; left: -5%; }
+  .spoke-node:nth-child(7) { top: -5%; right: 5%; }
+  .spoke-node:nth-child(8) { bottom: 15%; right: -5%; }
+  .spoke-node:nth-child(9) { bottom: 15%; left: -5%; }
+
+  .plugin-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+  }
+  .plugin-info-card {
+    background: white;
+    border-radius: 14px;
+    padding: 18px 20px;
+    border: 1px solid var(--gray-200);
+  }
+  .plugin-info-card h4 { font-size: 0.85rem; font-weight: 700; color: var(--gray-900); margin-bottom: 10px; }
+  .plugin-info-card ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .plugin-info-card li {
+    font-size: 0.72rem;
+    color: var(--gray-500);
+    padding-left: 14px;
+    position: relative;
+    line-height: 1.4;
+  }
+  .plugin-info-card li::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: var(--primary);
+    font-weight: 700;
+  }
+  .plugin-info-card ol {
+    list-style: none;
+    counter-reset: step;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .plugin-info-card ol li {
+    counter-increment: step;
+    padding-left: 0;
+  }
+  .plugin-info-card ol li::before {
+    content: counter(step) '.';
+    color: var(--primary);
+    font-weight: 700;
+    position: static;
+    margin-right: 6px;
+  }
+
+  .module-template {
+    margin-top: 12px;
+    background: var(--gray-50);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.65rem;
+    color: var(--gray-600);
+    line-height: 1.6;
+  }
+
+  /* ======= SLIDE 10: ARCHITECTURE ======= */
+  .slide-arch { background: white; }
+
+  .arch-diagram {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  .arch-layer {
+    display: flex;
+    align-items: stretch;
+    gap: 14px;
+  }
+  .arch-label {
+    width: 120px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-radius: 12px;
+    text-align: center;
+    padding: 10px 6px;
+  }
+  .arch-boxes {
+    flex: 1;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .arch-box {
+    flex: 1;
+    min-width: 110px;
+    padding: 12px 10px;
+    border-radius: 10px;
+    border: 2px solid;
+    text-align: center;
+  }
+  .arch-box h5 { font-size: 0.75rem; font-weight: 700; margin-bottom: 2px; }
+  .arch-box .tech { font-size: 0.6rem; opacity: 0.6; font-weight: 500; }
+
+  .layer-client .arch-label { background: var(--primary-light); color: var(--primary-dark); }
+  .layer-client .arch-box { border-color: var(--primary); background: rgba(230,81,0,0.03); }
+  .layer-client .arch-box h5 { color: var(--primary-dark); }
+
+  .layer-orchestration .arch-label { background: var(--accent-light); color: var(--accent); }
+  .layer-orchestration .arch-box { border-color: var(--accent); background: rgba(46,125,50,0.03); }
+  .layer-orchestration .arch-box h5 { color: var(--accent); }
+
+  .layer-agents .arch-label { background: var(--purple-light); color: var(--purple); }
+  .layer-agents .arch-box { border-color: var(--purple); background: rgba(106,27,154,0.03); }
+  .layer-agents .arch-box h5 { color: var(--purple); }
+
+  .layer-services .arch-label { background: var(--gold-light); color: #f57f17; }
+  .layer-services .arch-box { border-color: var(--gold); background: rgba(249,168,37,0.03); }
+  .layer-services .arch-box h5 { color: #f57f17; }
+
+  .layer-ai .arch-label { background: var(--teal-light); color: var(--teal); }
+  .layer-ai .arch-box { border-color: var(--teal); background: rgba(0,105,92,0.03); }
+  .layer-ai .arch-box h5 { color: var(--teal); }
+
+  .layer-data .arch-label { background: var(--success-light); color: #047857; }
+  .layer-data .arch-box { border-color: var(--success); background: rgba(27,94,32,0.03); }
+  .layer-data .arch-box h5 { color: #047857; }
+
+  .arch-connector {
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    margin-left: 134px;
+  }
+  .connector-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--gray-300);
+    font-size: 0.65rem;
+    gap: 0;
+    line-height: 1;
+  }
+  .connector-label {
+    font-size: 0.55rem;
+    color: var(--gray-400);
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* ======= SLIDE 11: LOW LEVEL ======= */
+  .slide-lowlevel { background: var(--gray-50); }
+
+  .ll-section {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid var(--gray-200);
+  }
+  .ll-section h4 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .db-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.72rem;
+  }
+  .db-table th {
+    text-align: left;
+    padding: 5px 8px;
+    background: var(--gray-50);
+    font-weight: 700;
+    color: var(--gray-600);
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 2px solid var(--gray-200);
+  }
+  .db-table td {
+    padding: 4px 8px;
+    border-bottom: 1px solid var(--gray-100);
+    color: var(--gray-600);
+  }
+  .db-table .tbl-name {
+    font-weight: 700;
+    color: var(--gray-800);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.65rem;
+  }
+
+  .lifecycle-flow {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin: 6px 0;
+  }
+  .lf-node {
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .lf-arrow { color: var(--gray-300); font-size: 0.9rem; }
+
+  .api-endpoint {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    font-size: 0.72rem;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .api-endpoint:last-child { border-bottom: none; }
+  .api-method {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.55rem;
+    font-weight: 800;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    min-width: 36px;
+    text-align: center;
+  }
+  .method-get { background: var(--success-light); color: #047857; }
+  .method-post { background: var(--primary-light); color: var(--primary-dark); }
+  .method-ws { background: var(--purple-light); color: var(--purple); }
+  .api-path {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.65rem;
+    color: var(--gray-700);
+  }
+  .api-desc { color: var(--gray-400); font-size: 0.65rem; margin-left: auto; }
+
+  .cache-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    font-size: 0.72rem;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .cache-item:last-child { border-bottom: none; }
+  .cache-key { font-weight: 700; color: var(--gray-800); min-width: 100px; }
+  .cache-ttl {
+    padding: 2px 7px;
+    border-radius: 6px;
+    font-size: 0.55rem;
+    font-weight: 700;
+    background: var(--teal-light);
+    color: var(--teal);
+    margin-left: auto;
+  }
+
+  /* ======= INNOVATION ======= */
+  .slide-innovation {
+    background: linear-gradient(135deg, #fff3e0 0%, #fce4ec 50%, #f3e5f5 100%);
+  }
+
+  .innovation-card {
+    background: white;
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+    border: 1px solid var(--gray-200);
+  }
+  .innovation-card .card-icon-big {
+    width: 48px; height: 48px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 12px;
+  }
+  .innovation-card h4 { font-size: 0.95rem; font-weight: 700; color: var(--gray-900); margin-bottom: 6px; }
+  .innovation-card p { font-size: 0.8rem; color: var(--gray-500); line-height: 1.6; }
+
+  .innovation-mini-diagram {
+    margin-top: 12px;
+    padding: 10px 12px;
+    background: var(--gray-50);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+  .imd-node {
+    text-align: center;
+    padding: 5px 8px;
+    border-radius: 8px;
+    font-size: 0.6rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .imd-arrow { color: var(--gray-300); font-size: 0.9rem; flex-shrink: 0; }
+
+  /* ======= TECH STACK ======= */
+  .slide-tech { background: white; }
+
+  .tech-card {
+    background: var(--gray-50);
+    border-radius: 14px;
+    padding: 18px 16px;
+    border: 1px solid var(--gray-200);
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .tech-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+  .tech-card .tech-emoji { font-size: 1.8rem; margin-bottom: 8px; display: block; }
+  .tech-card h4 { font-size: 0.85rem; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+  .tech-card p { font-size: 0.7rem; color: var(--gray-500); }
+
+  /* ======= STATUS ======= */
+  .status-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .status-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 12px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 500;
+  }
+  .status-list li.done { background: var(--success-light); color: #047857; }
+  .status-list li.pending { background: var(--gold-light); color: #92400e; }
+
+  /* ======= ROADMAP ======= */
+  .roadmap-phase {
+    flex: 1;
+    padding: 24px 20px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .phase-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 16px;
+    font-size: 0.6rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+  .phase-now .phase-badge { background: var(--success); color: white; }
+  .phase-next .phase-badge { background: var(--gold); color: var(--gray-900); }
+  .phase-later .phase-badge { background: var(--purple); color: white; }
+  .phase-future .phase-badge { background: var(--gray-600); color: white; }
+
+  .roadmap-phase h4 { font-size: 1rem; font-weight: 700; margin-bottom: 12px; color: white; }
+  .roadmap-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .roadmap-list li {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.5);
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.4;
+  }
+  .roadmap-list li::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: rgba(255,255,255,0.25);
+    font-weight: 700;
+  }
+
+  /* ======= CLOSING ======= */
+  .slide-closing {
+    background: linear-gradient(135deg, #1a0a00 0%, #4e2600 30%, #bf360c 70%, #e65100 100%);
+    color: white;
+    text-align: center;
+    align-items: center;
+  }
+  .slide-closing::before {
+    content: '';
+    position: absolute;
+    top: -200px; left: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(46,125,50,0.12) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .slide-closing h2 { color: white; font-size: 2.4rem; margin-bottom: 20px; max-width: 800px; }
+  .slide-closing .section-label { color: rgba(255,255,255,0.6); }
+  .closing-points {
+    display: flex;
+    gap: 36px;
+    justify-content: center;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  .closing-point { text-align: center; max-width: 200px; }
+  .closing-icon {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem;
+    margin: 0 auto 12px;
+  }
+  .closing-point h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; }
+  .closing-point p { font-size: 0.75rem; opacity: 0.6; line-height: 1.4; }
+
+  /* ======= DOWNLOAD BUTTON ======= */
+  .download-btn {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 100;
+    background: var(--gray-900);
+    color: white;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    transition: background 0.2s, transform 0.2s;
+  }
+  .download-btn:hover { background: var(--primary); transform: translateY(-2px); }
+  .download-btn svg { width: 16px; height: 16px; }
+
+  /* ======= PRINT ======= */
+  @media print {
+    .slide { page-break-after: always; min-height: auto; padding: 40px 50px; }
+    .slide-nav, .download-btn { display: none; }
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+
+  /* ======= RESPONSIVE ======= */
+  @media (max-width: 900px) {
+    .slide { padding: 36px 24px; }
+    .slide h2 { font-size: 1.8rem; }
+    .slide-title h1 { font-size: 2.8rem; }
+    .grid-2, .grid-3, .grid-4, .plugin-info-grid { grid-template-columns: 1fr; }
+    .flow-diagram { flex-direction: column; align-items: center; }
+    .flow-arrow { transform: rotate(90deg); }
+    .arch-layer { flex-direction: column; }
+    .arch-label { width: 100%; }
+    .arch-connector { margin-left: 0; }
+    .pipeline-diagram { flex-direction: column; }
+    .hub-spoke { flex-direction: column; }
+    .spoke-ring { display: none; }
+    .closing-points { flex-direction: column; align-items: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV DOTS -->
+<nav class="slide-nav">
+  <button class="nav-dot" onclick="document.getElementById('s1').scrollIntoView({behavior:'smooth'})" title="Title"></button>
+  <button class="nav-dot" onclick="document.getElementById('s2').scrollIntoView({behavior:'smooth'})" title="The Problem"></button>
+  <button class="nav-dot" onclick="document.getElementById('s3').scrollIntoView({behavior:'smooth'})" title="Market"></button>
+  <button class="nav-dot" onclick="document.getElementById('s4').scrollIntoView({behavior:'smooth'})" title="Solution"></button>
+  <button class="nav-dot" onclick="document.getElementById('s5').scrollIntoView({behavior:'smooth'})" title="How It Works"></button>
+  <button class="nav-dot" onclick="document.getElementById('s6').scrollIntoView({behavior:'smooth'})" title="Customer Journey"></button>
+  <button class="nav-dot" onclick="document.getElementById('s7').scrollIntoView({behavior:'smooth'})" title="Orchestration"></button>
+  <button class="nav-dot" onclick="document.getElementById('s8').scrollIntoView({behavior:'smooth'})" title="Multi-Agent"></button>
+  <button class="nav-dot" onclick="document.getElementById('s9').scrollIntoView({behavior:'smooth'})" title="Plugin Architecture"></button>
+  <button class="nav-dot" onclick="document.getElementById('s10').scrollIntoView({behavior:'smooth'})" title="Architecture"></button>
+  <button class="nav-dot" onclick="document.getElementById('s11').scrollIntoView({behavior:'smooth'})" title="Low-Level"></button>
+  <button class="nav-dot" onclick="document.getElementById('s12').scrollIntoView({behavior:'smooth'})" title="Design Decisions"></button>
+  <button class="nav-dot" onclick="document.getElementById('s13').scrollIntoView({behavior:'smooth'})" title="Tech Stack"></button>
+  <button class="nav-dot" onclick="document.getElementById('s14').scrollIntoView({behavior:'smooth'})" title="Status"></button>
+  <button class="nav-dot" onclick="document.getElementById('s15').scrollIntoView({behavior:'smooth'})" title="Roadmap"></button>
+  <button class="nav-dot" onclick="document.getElementById('s16').scrollIntoView({behavior:'smooth'})" title="Close"></button>
+</nav>
+
+
+<!-- ================================================= -->
+<!-- SLIDE 1: TITLE                                      -->
+<!-- ================================================= -->
+<section id="s1" class="slide slide-title">
+  <svg class="logo-icon" viewBox="0 0 100 100" fill="none">
+    <!-- Plate / circle -->
+    <circle cx="50" cy="50" r="44" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+    <circle cx="50" cy="50" r="36" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+    <!-- Chat bubble -->
+    <rect x="28" y="25" width="44" height="32" rx="10" fill="rgba(255,255,255,0.15)" stroke="white" stroke-width="2.5"/>
+    <polygon points="38,57 44,57 36,66" fill="rgba(255,255,255,0.15)" stroke="white" stroke-width="2.5" stroke-linejoin="round"/>
+    <!-- Fork inside bubble -->
+    <line x1="42" y1="33" x2="42" y2="50" stroke="#f9a825" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="42" y1="33" x2="38" y2="37" stroke="#f9a825" stroke-width="2" stroke-linecap="round"/>
+    <line x1="42" y1="33" x2="46" y2="37" stroke="#f9a825" stroke-width="2" stroke-linecap="round"/>
+    <!-- AI dots -->
+    <circle cx="54" cy="38" r="2" fill="white" opacity="0.8"/>
+    <circle cx="60" cy="38" r="2" fill="white" opacity="0.8"/>
+    <circle cx="54" cy="44" r="2" fill="white" opacity="0.8"/>
+    <circle cx="60" cy="44" r="2" fill="white" opacity="0.8"/>
+  </svg>
+  <h1>Sundaram AI</h1>
+  <p class="tagline">The AI Waiter That Never Forgets</p>
+  <p class="subtitle">Architecture &amp; Technical Deep Dive</p>
+</section>
+
+
+<!-- ================================================= -->
+<!-- SLIDE 2: THE PROBLEM                                -->
+<!-- ================================================= -->
+<section id="s2" class="slide slide-problem">
+  <p class="section-label">The Problem</p>
+  <h2>Restaurants Are Losing Revenue to Chaos</h2>
+
+  <div class="grid-2">
+    <!-- Visual: Restaurant Scene -->
+    <div class="problem-scene">
+      <div class="restaurant-scene">
+        <div class="restaurant-floor"></div>
+        <span class="scene-emoji chef">👨‍🍳</span>
+        <span class="scene-emoji waiter1">🏃</span>
+        <span class="scene-emoji waiter2">💦</span>
+        <span class="scene-emoji phone-ring">📱</span>
+        <span class="scene-emoji customer1">😤</span>
+        <span class="scene-emoji customer2">🤷</span>
+        <span class="scene-emoji customer3">😡</span>
+        <span class="scene-emoji queue1">🧑</span>
+        <span class="scene-emoji queue2">👩</span>
+        <span class="scene-emoji queue3">🧓</span>
+        <div class="thought-bubble" style="bottom: 76%; left: 28%;">Where's my order?!</div>
+        <div class="thought-bubble" style="bottom: 80%; right: 10%;">Phone ringing again...</div>
+        <div class="thought-bubble" style="bottom: 52%; left: 15%;">Still waiting!</div>
+        <div class="scene-caption">Typical busy restaurant at peak hour</div>
+      </div>
+    </div>
+
+    <!-- Pain Points -->
+    <div class="flex-col gap-20">
+      <div class="pain-card">
+        <div class="card-icon-box" style="background: #ffebee;">😰</div>
+        <div>
+          <h4>Staff Shortages &amp; High Turnover</h4>
+          <p>Trained waiters leave. New hires take weeks to learn the menu. Peak hours = overwhelmed staff, missed orders.</p>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="card-icon-box" style="background: #fff3e0;">📱</div>
+        <div>
+          <h4>Phone &amp; WhatsApp Order Chaos</h4>
+          <p>Orders via calls and WhatsApp are manual, error-prone, and untrackable. No digital record, no analytics.</p>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="card-icon-box" style="background: #f3e5f5;">🤷</div>
+        <div>
+          <h4>Zero Personalization</h4>
+          <p>Repeat customers treated like strangers. No memory of preferences, allergies, or past orders.</p>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="card-icon-box" style="background: #e8f5e9;">📋</div>
+        <div>
+          <h4>No Digital Infrastructure for Dine-In</h4>
+          <p>Food delivery has Swiggy/Zomato. But dine-in ordering? Still pen-and-paper or shouting across the counter.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<!-- SLIDE 3: MARKET OPPORTUNITY                         -->
+<!-- ================================================= -->
+<section id="s3" class="slide slide-dark">
+  <p class="section-label">Why This Matters</p>
+  <h2>A Massive Untapped Opportunity</h2>
+
+  <div class="grid-3 gap-30" style="margin-bottom: 40px;">
+    <div class="stat-card dark-stat">
+      <div class="stat-number">$55B+</div>
+      <div class="stat-label">India's restaurant industry<br>size (2024)</div>
+    </div>
+    <div class="stat-card dark-stat">
+      <div class="stat-number">7.5M+</div>
+      <div class="stat-label">Restaurants in India &mdash; 95%<br>have zero digital dine-in ordering</div>
+    </div>
+    <div class="stat-card dark-stat">
+      <div class="stat-number">40%</div>
+      <div class="stat-label">Revenue lost to order errors,<br>wait times, and missed upsells</div>
+    </div>
+  </div>
+
+  <div class="grid-2 gap-30">
+    <div class="dark-card">
+      <h4>Not a Delivery App</h4>
+      <p>Swiggy and Zomato own delivery. Sundaram AI owns the in-restaurant experience &mdash; the 70% of revenue that happens on-premise.</p>
+    </div>
+    <div class="dark-card">
+      <h4>AI-First, Not App-First</h4>
+      <p>No app download needed. Customers chat naturally via WhatsApp, web, or QR code. The AI handles everything.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<!-- SLIDE 4: THE SOLUTION                               -->
+<!-- ================================================= -->
+<section id="s4" class="slide slide-solution">
+  <p class="section-label">The Solution</p>
+  <h2>A Conversational AI That Runs Your Restaurant</h2>
+
+  <div class="grid-2" style="align-items: center;">
+    <!-- Phone Mockup with Chat -->
+    <div>
+      <div class="phone-mockup chat-phone" style="margin: 0 auto;">
+        <div class="phone-screen">
+          <div class="phone-header">
+            <span>Sundaram AI</span>
+            <span style="font-size:0.55rem; opacity:0.7">CHAT</span>
+          </div>
+          <div class="phone-content">
+            <div class="chat-bubble chat-ai">Welcome to Spice Garden! I'm Sundaram, your AI waiter. What can I get you today? 🍽️</div>
+            <div class="chat-bubble chat-user">Show me something spicy under 300</div>
+            <div class="chat-bubble chat-ai">Here are 5 spicy dishes under &#8377;300:<br><br>1. Chicken Chettinad &mdash; &#8377;280<br>2. Andhra Chilli Chicken &mdash; &#8377;260<br>3. Lamb Pepper Fry &mdash; &#8377;290<br>4. Paneer Kolhapuri &mdash; &#8377;220<br>5. Guntur Egg Curry &mdash; &#8377;180</div>
+            <div class="chat-bubble chat-user">Add #1 and a butter naan</div>
+            <div class="chat-bubble chat-ai">Added to cart! &#10003;<br><br>- Chicken Chettinad: &#8377;280<br>- Butter Naan: &#8377;60<br><br>Total: &#8377;340. Ready to checkout?</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key Value Props -->
+    <div class="flex-col" style="gap: 20px;">
+      <div class="sol-point">
+        <div class="sol-icon" style="background: var(--primary-light);">🗣️</div>
+        <div>
+          <h4>Natural Language Ordering</h4>
+          <p>Browse, search, and order by just talking. Semantic search understands "something spicy" or "vegan starters".</p>
+        </div>
+      </div>
+      <div class="sol-point">
+        <div class="sol-icon" style="background: var(--accent-light);">🧠</div>
+        <div>
+          <h4>Remembers Every Customer</h4>
+          <p>3-tier identity system. Recognizes returning customers, remembers preferences, allergies, and past orders.</p>
+        </div>
+      </div>
+      <div class="sol-point">
+        <div class="sol-icon" style="background: var(--gold-light);">📦</div>
+        <div>
+          <h4>Real-Time Inventory</h4>
+          <p>Redis-backed stock tracking prevents overselling. Reserves items during checkout, auto-releases on timeout.</p>
+        </div>
+      </div>
+      <div class="sol-point">
+        <div class="sol-icon" style="background: var(--purple-light);">📡</div>
+        <div>
+          <h4>Multi-Channel Ready</h4>
+          <p>WebSocket chat, WhatsApp Business, SMS notifications. Customers order however they prefer.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<!-- SLIDE 5: HOW IT WORKS                               -->
+<!-- ================================================= -->
+<section id="s5" class="slide slide-flow">
+  <p class="section-label">User Journey</p>
+  <h2>How It Works</h2>
+
+  <div class="flow-diagram">
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--primary-light);">💬<span class="flow-number">1</span></div>
+      <h4>Connect</h4>
+      <p>Scan QR or open chat. AI sends personalized welcome.</p>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--accent-light);">📋<span class="flow-number">2</span></div>
+      <h4>Browse</h4>
+      <p>Navigate menu by category or search naturally.</p>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--gold-light);">🔍<span class="flow-number">3</span></div>
+      <h4>Discover</h4>
+      <p>Semantic search by taste, diet, price. pgvector embeddings.</p>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--purple-light);">🛒<span class="flow-number">4</span></div>
+      <h4>Cart</h4>
+      <p>Add by name, number, or description. Fuzzy matching.</p>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--teal-light);">✅<span class="flow-number">5</span></div>
+      <h4>Checkout</h4>
+      <p>Cart validated against live inventory. Order type selected.</p>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--success-light);">🔐<span class="flow-number">6</span></div>
+      <h4>Authenticate</h4>
+      <p>Phone &rarr; OTP &rarr; verified. Existing customers auto-detected.</p>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-step">
+      <div class="flow-circle" style="background: var(--danger-light);">💳<span class="flow-number">7</span></div>
+      <h4>Pay</h4>
+      <p>Razorpay link via SMS. Webhook confirms. Done.</p>
+    </div>
+  </div>
+
+  <div class="data-flow-visual">
+    <div style="font-size:0.7rem; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:2px; margin-bottom:8px;">Data Flow</div>
+    <div class="data-flow-row">
+      <span class="df-node" style="background:var(--primary-light); color:var(--primary-dark);">Customer App</span>
+      <span class="df-arrow">&rarr;</span>
+      <span class="df-node" style="background:var(--accent-light); color:var(--accent);">WebSocket</span>
+      <span class="df-arrow">&rarr;</span>
+      <span class="df-node" style="background:var(--gold-light); color:#f57f17;">FastAPI</span>
+      <span class="df-arrow">&rarr;</span>
+      <span class="df-node" style="background:var(--purple-light); color:var(--purple);">LangGraph Orchestrator</span>
+      <span class="df-arrow">&rarr;</span>
+      <span class="df-node" style="background:var(--teal-light); color:var(--teal);">Feature Agents</span>
+      <span class="df-arrow">&rarr;</span>
+      <span class="df-node" style="background:var(--success-light); color:var(--success);">PostgreSQL / Redis</span>
+      <span class="df-arrow">&rarr;</span>
+      <span class="df-node" style="background:var(--danger-light); color:var(--danger);">Response Agent</span>
+      <span class="df-arrow">&rarr;</span>
+      <span class="df-node" style="background:var(--primary-light); color:var(--primary-dark);">Customer</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<!-- SLIDE 6: CUSTOMER ORDERING WORKFLOW                 -->
+<!-- ================================================= -->
+<section id="s6" class="slide slide-workflow">
+  <p class="section-label">Workflow Detail</p>
+  <h2>Customer Journey &mdash; Step by Step</h2>
+
+  <div class="grid-2" style="gap: 30px;">
+    <!-- Left Column -->
+    <div class="workflow-timeline">
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <span class="wf-badge" style="background:var(--primary-light); color:var(--primary-dark);">Step 1</span>
+          <h4>Welcome &amp; Recognition</h4>
+          <p>AI recognizes returning customer (Tier 3) or greets anonymously (Tier 1). Personalization loaded from profile.</p>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <span class="wf-badge" style="background:var(--accent-light); color:var(--accent);">Step 2</span>
+          <h4>Menu Browsing</h4>
+          <p>Hierarchical drill-down: Section (Veg/Non-Veg) &rarr; Category (Main Course) &rarr; Subcategory (Biryanis) &rarr; Items with prices.</p>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <span class="wf-badge" style="background:var(--gold-light); color:#f57f17;">Step 3</span>
+          <h4>Smart Discovery</h4>
+          <p>"Something spicy under 300" triggers semantic search. pgvector finds items by meaning, not just keywords. Hybrid: semantic + hierarchy matching.</p>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <span class="wf-badge" style="background:var(--purple-light); color:var(--purple);">Step 4</span>
+          <h4>Cart Management</h4>
+          <p>Add by item name, index number, or description. Batch add supported. Price always verified against DB. Post-checkout modifications reset validation.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="workflow-timeline">
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <span class="wf-badge" style="background:var(--teal-light); color:var(--teal);">Step 5</span>
+          <h4>Cart Validation</h4>
+          <p>Live inventory check. Unavailable items flagged. Prices confirmed against current menu.</p>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <span class="wf-badge" style="background:var(--success-light); color:var(--success);">Step 6</span>
+          <h4>Authentication Flow</h4>
+          <p>Progressive: collect phone &rarr; send OTP &rarr; verify &rarr; lookup/register customer. Existing customers auto-continue without extra steps.</p>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <span class="wf-badge" style="background:var(--danger-light); color:var(--danger);">Step 7</span>
+          <h4>Order Creation</h4>
+          <p>Draft order created in DB. Order type (dine-in/takeaway) determines payment flow. Dine-in can pay later (cash).</p>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-dot active"></div>
+        <div class="wf-content">
+          <span class="wf-badge" style="background:var(--primary-light); color:var(--primary-dark);">Step 8</span>
+          <h4>Payment &amp; Confirmation</h4>
+          <p>Razorpay payment link generated. SMS sent. Webhook callback confirms payment. Inventory permanently reserved.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<!-- SLIDE 7: AGENT ORCHESTRATION PIPELINE               -->
+<!-- ================================================= -->
+<section id="s7" class="slide slide-orchestration">
+  <p class="section-label">The AI Brain</p>
+  <h2>How the Orchestrator Thinks</h2>
+
+  <!-- Pipeline Diagram -->
+  <div class="pipeline-diagram">
+    <div class="pipeline-node" style="border-color:var(--primary); background:var(--primary-light); color:var(--primary-dark);">auth_node</div>
+    <div class="pipeline-arrow">&rarr;</div>
+    <div class="pipeline-node" style="border-color:var(--accent); background:var(--accent-light); color:var(--accent);">perceive_node</div>
+    <div class="pipeline-arrow">&rarr;</div>
+    <div class="pipeline-branch">
+      <div class="pipeline-node" style="border-color:var(--gold); background:var(--gold-light); color:#f57f17; font-size:0.7rem;">clarify</div>
+      <span style="font-size:0.6rem; color:var(--gray-400);">OR</span>
+      <div class="pipeline-node" style="border-color:var(--gold); background:var(--gold-light); color:#f57f17; font-size:0.7rem;">task_manager</div>
+    </div>
+    <div class="pipeline-arrow">&rarr;</div>
+    <div class="pipeline-node" style="border-color:var(--purple); background:var(--purple-light); color:var(--purple);">validation_node</div>
+    <div class="pipeline-arrow">&rarr;</div>
+    <div class="pipeline-node" style="border-color:var(--teal); background:var(--teal-light); color:var(--teal);">router_node</div>
+    <div class="pipeline-arrow">&rarr;</div>
+    <div class="pipeline-node" style="border-color:var(--success); background:var(--success-light); color:var(--success);">Feature Agent</div>
+    <div class="pipeline-arrow">&rarr;</div>
+    <div class="pipeline-node" style="border-color:var(--danger); background:var(--danger-light); color:var(--danger);">response_agent</div>
+    <div class="pipeline-arrow">&rarr;</div>
+    <div class="pipeline-node" style="border-color:var(--gray-600); background:var(--gray-100); color:var(--gray-700);">END</div>
+  </div>
+
+  <!-- Node Explanation Cards -->
+  <div class="grid-3 gap-16">
+    <div class="node-card">
+      <h4><span class="node-badge" style="background:var(--primary-light); color:var(--primary-dark);">AUTH</span> Auth Node</h4>
+      <p>Frictionless 3-tier recognition. Never blocks the conversation. Identifies returning customers silently.</p>
+    </div>
+    <div class="node-card">
+      <h4><span class="node-badge" style="background:var(--accent-light); color:var(--accent);">NLU</span> Perceive</h4>
+      <p>LLM classifies intent + extracts entities. Overrides clarification for agent-handled intents.</p>
+    </div>
+    <div class="node-card">
+      <h4><span class="node-badge" style="background:var(--gold-light); color:#f57f17;">CTX</span> Task Manager</h4>
+      <p>Handles context switching. Accumulates entities across turns. LIFO task stack for suspended conversations.</p>
+    </div>
+    <div class="node-card">
+      <h4><span class="node-badge" style="background:var(--purple-light); color:var(--purple);">VAL</span> Validation</h4>
+      <p>Entity format checks (phone, quantity, rating). Catches bad data before agents see it.</p>
+    </div>
+    <div class="node-card">
+      <h4><span class="node-badge" style="background:var(--teal-light); color:var(--teal);">MAP</span> Router</h4>
+      <p>Maps intent to specialist agent. Auth check before routing. Ensures correct agent handles each request.</p>
+    </div>
+    <div class="node-card">
+      <h4><span class="node-badge" style="background:var(--danger-light); color:var(--danger);">OUT</span> Response Agent</h4>
+      <p>Virtual Waiter personality. Hybrid rendering (pre-rendered data + LLM intro/outro). 4-layer anti-hallucination.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<!-- SLIDE 8: MULTI-AGENT SYSTEM                         -->
+<!-- ================================================= -->
+<section id="s8" class="slide slide-agents">
+  <p class="section-label">Agent Architecture</p>
+  <h2>28+ Specialized Agents Across 6 Domains</h2>
+
+  <div class="grid-3 gap-16">
+    <div class="domain-card">
+      <h4>🍽️ Food Ordering <span class="agent-count" style="background:var(--primary);">7</span></h4>
+      <ul>
+        <li>menu_browsing</li>
+        <li>menu_discovery</li>
+        <li>cart_management</li>
+        <li>checkout_validator</li>
+        <li>checkout_executor</li>
+        <li>checkout_authenticator</li>
+        <li>payment_handler</li>
+      </ul>
+    </div>
+    <div class="domain-card">
+      <h4>📅 Table Booking <span class="agent-count" style="background:var(--accent);">5</span></h4>
+      <ul>
+        <li>availability_checker</li>
+        <li>booking_creator</li>
+        <li>booking_viewer</li>
+        <li>booking_modifier</li>
+        <li>booking_canceller</li>
+      </ul>
+    </div>
+    <div class="domain-card">
+      <h4>👤 User Management <span class="agent-count" style="background:var(--purple);">4</span></h4>
+      <ul>
+        <li>authenticator</li>
+        <li>session_manager</li>
+        <li>identity_migrator</li>
+        <li>identity_manager</li>
+      </ul>
+    </div>
+    <div class="domain-card">
+      <h4>⭐ User Profile <span class="agent-count" style="background:var(--teal);">3</span></h4>
+      <ul>
+        <li>preference_manager</li>
+        <li>favorites_manager</li>
+        <li>history_manager</li>
+      </ul>
+    </div>
+    <div class="domain-card">
+      <h4>📝 Feedback &amp; Complaints <span class="agent-count" style="background:var(--danger);">6</span></h4>
+      <ul>
+        <li>validation_agent</li>
+        <li>complaint_creator</li>
+        <li>complaint_tracker</li>
+        <li>feedback_collector</li>
+        <li>nps_surveyor</li>
+        <li>satisfaction_analyst</li>
+      </ul>
+    </div>
+    <div class="domain-card">
+      <h4>❓ General Queries <span class="agent-count" style="background:var(--gold); color:var(--gray-900);">3</span></h4>
+      <ul>
+        <li>knowledge_agent</li>
+        <li>restaurant_info_agent</li>
+        <li>general_assistant_agent</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="highlight-box">
+    <h4>Hybrid Execution Model</h4>
+    <p>Each agent supports both <strong>ReAct</strong> (LLM-powered multi-step reasoning) and <strong>Deterministic</strong> (direct tool calls) modes, toggled via feature flags with A/B testing support. ReAct for complex queries, deterministic for speed-critical operations.</p>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<!-- SLIDE 9: MODULAR PLUGIN ARCHITECTURE                -->
+<!-- ================================================= -->
+<section id="s9" class="slide slide-plugin">
+  <p class="section-label">Modularity</p>
+  <h2>A Pluggable Platform, Not a Monolith</h2>
+
+  <!-- Hub and Spoke -->
+  <div class="hub-spoke" style="min-height: 340px; margin-bottom: 20px;">
+    <div class="hub-center">
+      <div class="hub-title">Orchestrator Core</div>
+      <div class="hub-items">Auth &bull; Perceive<br>Task Manager &bull; Validation<br>Router &bull; Response</div>
+    </div>
+    <div class="spoke-ring">
+      <div class="spoke-node">🍽️ Food Ordering</div>
+      <div class="spoke-node">📅 Table Booking</div>
+      <div class="spoke-node">📝 Feedback</div>
+      <div class="spoke-node">❓ General Queries</div>
+      <div class="spoke-node">👤 User Mgmt</div>
+      <div class="spoke-node">⭐ User Profile</div>
+      <div class="spoke-node future">🏆 Loyalty Program</div>
+      <div class="spoke-node future">🖥️ Kitchen Display</div>
+      <div class="spoke-node future">👥 Staff Mgmt</div>
+    </div>
+  </div>
+
+  <!-- Info Grid -->
+  <div class="plugin-info-grid">
+    <div class="plugin-info-card">
+      <h4>What the Orchestrator Handles</h4>
+      <ul>
+        <li>Authentication &amp; identity</li>
+        <li>Intent classification</li>
+        <li>Entity extraction</li>
+        <li>Task switching (LIFO stack)</li>
+        <li>Entity validation</li>
+        <li>Response formatting</li>
+      </ul>
+    </div>
+    <div class="plugin-info-card">
+      <h4>What Each Module Owns</h4>
+      <ul>
+        <li>Its own state (extends AgentState)</li>
+        <li>Internal routing &amp; sub-agents</li>
+        <li>Feature-specific tools</li>
+        <li>Business logic services</li>
+        <li>LLM prompts &amp; templates</li>
+      </ul>
+      <div class="module-template">
+        Feature Module/<br>
+        &nbsp;&nbsp;state.py, graph.py,<br>
+        &nbsp;&nbsp;agents/, tools/,<br>
+        &nbsp;&nbsp;services/, prompts/
+      </div>
+    </div>
+    <div class="plugin-info-card">
+      <h4>Plugging In a New Module</h4>
+      <ol>
+        <li>Define feature state (extends AgentState)</li>
+        <li>Build sub-graph with agents</li>
+        <li>Register intent &rarr; agent in router</li>
+        <li>Add response prompts to registry</li>
+        <li>Zero changes to orchestrator core</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<!-- SLIDE 10: SYSTEM ARCHITECTURE                       -->
+<!-- ================================================= -->
+<section id="s10" class="slide slide-arch">
+  <p class="section-label">System Architecture</p>
+  <h2>6-Layer Async-First Architecture</h2>
+
+  <div class="arch-diagram">
+    <!-- CLIENT -->
+    <div class="arch-layer layer-client">
+      <div class="arch-label">CLIENT</div>
+      <div class="arch-boxes">
+        <div class="arch-box"><h5>WebSocket Chat</h5><div class="tech">Real-time bidirectional</div></div>
+        <div class="arch-box"><h5>WhatsApp Business</h5><div class="tech">Business API</div></div>
+        <div class="arch-box"><h5>SMS</h5><div class="tech">Twilio</div></div>
+      </div>
+    </div>
+
+    <div class="arch-connector"><div class="connector-arrow">&darr;<div class="connector-label">WebSocket / HTTP</div></div></div>
+
+    <!-- ORCHESTRATION -->
+    <div class="arch-layer layer-orchestration">
+      <div class="arch-label">ORCHESTRATION</div>
+      <div class="arch-boxes">
+        <div class="arch-box"><h5>LangGraph StateGraph</h5><div class="tech">186-field state</div></div>
+        <div class="arch-box"><h5>MemorySaver</h5><div class="tech">Checkpointing</div></div>
+      </div>
+    </div>
+
+    <div class="arch-connector"><div class="connector-arrow">&darr;<div class="connector-label">async/await</div></div></div>
+
+    <!-- AGENTS -->
+    <div class="arch-layer layer-agents">
+      <div class="arch-label">AGENTS</div>
+      <div class="arch-boxes">
+        <div class="arch-box"><h5>Food Ordering</h5><div class="tech">7 agents</div></div>
+        <div class="arch-box"><h5>Booking</h5><div class="tech">5 agents</div></div>
+        <div class="arch-box"><h5>Feedback</h5><div class="tech">6 agents</div></div>
+        <div class="arch-box"><h5>Queries</h5><div class="tech">3 agents</div></div>
+        <div class="arch-box"><h5>Auth</h5><div class="tech">4 agents</div></div>
+        <div class="arch-box"><h5>Profile</h5><div class="tech">3 agents</div></div>
+      </div>
+    </div>
+
+    <div class="arch-connector"><div class="connector-arrow">&darr;<div class="connector-label">service layer</div></div></div>
+
+    <!-- SERVICES -->
+    <div class="arch-layer layer-services">
+      <div class="arch-label">SERVICES</div>
+      <div class="arch-boxes">
+        <div class="arch-box"><h5>Identity Service</h5><div class="tech">3-tier auth</div></div>
+        <div class="arch-box"><h5>Payment Service</h5><div class="tech">Razorpay</div></div>
+        <div class="arch-box"><h5>Communication</h5><div class="tech">Twilio SMS</div></div>
+        <div class="arch-box"><h5>Inventory Cache</h5><div class="tech">Redis-backed</div></div>
+        <div class="arch-box"><h5>Circuit Breaker</h5><div class="tech">Fault tolerance</div></div>
+      </div>
+    </div>
+
+    <div class="arch-connector"><div class="connector-arrow">&darr;<div class="connector-label">API calls</div></div></div>
+
+    <!-- AI -->
+    <div class="arch-layer layer-ai">
+      <div class="arch-label">AI</div>
+      <div class="arch-boxes">
+        <div class="arch-box"><h5>LLM Manager</h5><div class="tech">20 accounts</div></div>
+        <div class="arch-box"><h5>Embedding Service</h5><div class="tech">pgvector</div></div>
+        <div class="arch-box"><h5>Entity Extraction</h5><div class="tech">GPT-4o</div></div>
+        <div class="arch-box"><h5>Response Validation</h5><div class="tech">Anti-hallucination</div></div>
+      </div>
+    </div>
+
+    <div class="arch-connector"><div class="connector-arrow">&darr;<div class="connector-label">SQL / Redis / API</div></div></div>
+
+    <!-- DATA -->
+    <div class="arch-layer layer-data">
+      <div class="arch-label">DATA</div>
+      <div class="arch-boxes">
+        <div class="arch-box"><h5>PostgreSQL</h5><div class="tech">147 tables</div></div>
+        <div class="arch-box"><h5>Redis</h5><div class="tech">Sessions, menu, inventory, OTP</div></div>
+        <div class="arch-box"><h5>MongoDB</h5><div class="tech">Analytics</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<!-- SLIDE 11: LOW-LEVEL ARCHITECTURE                    -->
+<!-- ================================================= -->
+<section id="s11" class="slide slide-lowlevel">
+  <p class="section-label">Low-Level Architecture</p>
+  <h2>Database, State &amp; API Design</h2>
+
+  <div class="grid-2" style="gap: 24px;">
+    <!-- Left Column -->
+    <div class="flex-col gap-16">
+      <div class="ll-section">
+        <h4>🗄️ Database Schema (147 Tables)</h4>
+        <table class="db-table">
+          <thead><tr><th>Domain</th><th>Tables</th><th>Key Tables</th></tr></thead>
+          <tbody>
+            <tr><td class="tbl-name">Organization</td><td>8</td><td>restaurant, branch, chain</td></tr>
+            <tr><td class="tbl-name">Menu</td><td>20</td><td>menu_item, categories, variations</td></tr>
+            <tr><td class="tbl-name">Orders</td><td>18</td><td>orders, order_items, order_payment</td></tr>
+            <tr><td class="tbl-name">Customers</td><td>16</td><td>customer_table, profile, auth</td></tr>
+            <tr><td class="tbl-name">Payments</td><td>12</td><td>payment_order, transaction, refund</td></tr>
+            <tr><td class="tbl-name">Feedback</td><td>12</td><td>feedback, complaints, nps</td></tr>
+            <tr><td class="tbl-name">Staff</td><td>13</td><td>user, role, session</td></tr>
+            <tr><td class="tbl-name">Master Data</td><td>15</td><td>cuisines, taxes, allergens</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="ll-section">
+        <h4>📦 Order Status Lifecycle</h4>
+        <div class="lifecycle-flow">
+          <span class="lf-node" style="background:var(--gray-100); color:var(--gray-600);">browsing</span>
+          <span class="lf-arrow">&rarr;</span>
+          <span class="lf-node" style="background:var(--gold-light); color:#f57f17;">cart_populated</span>
+          <span class="lf-arrow">&rarr;</span>
+          <span class="lf-node" style="background:var(--accent-light); color:var(--accent);">cart_validated</span>
+          <span class="lf-arrow">&rarr;</span>
+          <span class="lf-node" style="background:var(--purple-light); color:var(--purple);">order_created</span>
+          <span class="lf-arrow">&rarr;</span>
+          <span class="lf-node" style="background:var(--primary-light); color:var(--primary-dark);">payment_initiated</span>
+          <span class="lf-arrow">&rarr;</span>
+          <span class="lf-node" style="background:var(--success-light); color:var(--success);">payment_completed</span>
+        </div>
+      </div>
+
+      <div class="ll-section">
+        <h4>🔐 Auth Tier Lifecycle</h4>
+        <div class="lifecycle-flow">
+          <span class="lf-node" style="background:var(--gray-100); color:var(--gray-600);">Tier 1 (Anonymous)</span>
+          <span class="lf-arrow">&rarr;</span>
+          <span class="lf-node" style="background:var(--gold-light); color:#f57f17;">Tier 2 (Phone Verified)</span>
+          <span class="lf-arrow">&rarr;</span>
+          <span class="lf-node" style="background:var(--success-light); color:var(--success);">Tier 3 (Fully Auth)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="flex-col gap-16">
+      <div class="ll-section">
+        <h4>🌐 Key API Endpoints</h4>
+        <div class="api-endpoint"><span class="api-method method-ws">WS</span><span class="api-path">/api/v1/chat/{session_id}</span><span class="api-desc">Real-time conversation</span></div>
+        <div class="api-endpoint"><span class="api-method method-post">POST</span><span class="api-path">/api/v1/payment/callback</span><span class="api-desc">Razorpay webhook</span></div>
+        <div class="api-endpoint"><span class="api-method method-post">POST</span><span class="api-path">/menu/search</span><span class="api-desc">Semantic search</span></div>
+        <div class="api-endpoint"><span class="api-method method-get">GET</span><span class="api-path">/menu/hierarchy</span><span class="api-desc">Menu structure</span></div>
+        <div class="api-endpoint"><span class="api-method method-post">POST</span><span class="api-path">/cart/add</span><span class="api-desc">Add to cart</span></div>
+        <div class="api-endpoint"><span class="api-method method-post">POST</span><span class="api-path">/order/create</span><span class="api-desc">Create order</span></div>
+      </div>
+
+      <div class="ll-section">
+        <h4>🔧 Tool Architecture</h4>
+        <div style="display:flex; gap:12px; margin-top:4px;">
+          <div style="flex:1; padding:10px; background:var(--gray-50); border-radius:8px; border:1px solid var(--gray-200);">
+            <div style="font-size:0.7rem; font-weight:700; color:var(--gray-600); margin-bottom:4px;">Legacy (ToolBase)</div>
+            <div style="font-size:0.65rem; color:var(--gray-500); line-height:1.5;">Class-based &bull; ToolResult return &bull; Built-in retry/timeout</div>
+          </div>
+          <div style="flex:1; padding:10px; background:var(--accent-light); border-radius:8px; border:1px solid var(--accent);">
+            <div style="font-size:0.7rem; font-weight:700; color:var(--accent); margin-bottom:4px;">V1 (API Functions)</div>
+            <div style="font-size:0.65rem; color:var(--gray-500); line-height:1.5;">Pure async functions &bull; Dict returns &bull; Feature-specific</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ll-section">
+        <h4>⚡ Redis Caching Strategy</h4>
+        <div class="cache-item"><span class="cache-key">Session Cache</span><span style="font-size:0.7rem; color:var(--gray-500);">User state &amp; context</span><span class="cache-ttl">30 min TTL</span></div>
+        <div class="cache-item"><span class="cache-key">Menu Cache</span><span style="font-size:0.7rem; color:var(--gray-500);">Full menu hierarchy</span><span class="cache-ttl">1 hour TTL</span></div>
+        <div class="cache-item"><span class="cache-key">Inventory Cache</span><span style="font-size:0.7rem; color:var(--gray-500);">Stock levels</span><span class="cache-ttl">Real-time</span></div>
+        <div class="cache-item"><span class="cache-key">OTP Cache</span><span style="font-size:0.7rem; color:var(--gray-500);">Verification codes</span><span class="cache-ttl">5 min TTL</span></div>
+        <div class="cache-item"><span class="cache-key">Response Cache</span><span style="font-size:0.7rem; color:var(--gray-500);">FAQ answers</span><span class="cache-ttl">24 hour TTL</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<!-- SLIDE 12: KEY DESIGN DECISIONS                      -->
+<!-- ================================================= -->
+<section id="s12" class="slide slide-innovation">
+  <p class="section-label">What Makes It Different</p>
+  <h2>Key Design Decisions</h2>
+
+  <div class="grid-2 gap-20">
+    <div class="innovation-card">
+      <div class="card-icon-big" style="background: var(--primary-light);">⚡</div>
+      <h4>20-Account LLM Load Balancer</h4>
+      <p>Round-robin across 20 OpenAI accounts with per-model (gpt-4o vs gpt-4o-mini) rate tracking. Sliding window RPM/TPM. Auto-cooldown at 80% capacity. Zero downtime.</p>
+      <div class="innovation-mini-diagram">
+        <span class="imd-node" style="background:var(--primary-light); color:var(--primary-dark);">Request</span>
+        <span class="imd-arrow">&rarr;</span>
+        <span class="imd-node" style="background:var(--gold-light); color:#f57f17;">Estimate Tokens</span>
+        <span class="imd-arrow">&rarr;</span>
+        <span class="imd-node" style="background:var(--accent-light); color:var(--accent);">Find Account</span>
+        <span class="imd-arrow">&rarr;</span>
+        <span class="imd-node" style="background:var(--purple-light); color:var(--purple);">Invoke</span>
+        <span class="imd-arrow">&rarr;</span>
+        <span class="imd-node" style="background:var(--teal-light); color:var(--teal);">Record</span>
+        <span class="imd-arrow">&rarr;</span>
+        <span class="imd-node" style="background:var(--danger-light); color:var(--danger);">Cooldown</span>
+      </div>
+    </div>
+
+    <div class="innovation-card">
+      <div class="card-icon-big" style="background: var(--danger-light);">🛡️</div>
+      <h4>4-Layer Anti-Hallucination</h4>
+      <p>Layer 1: Strict system prompts with grounding rules. Layer 2: Response validation against actual data. Layer 3: Template fallback for failed validation. Layer 4: Dynamic temperature (0.1 for facts, 0.5 for conversation).</p>
+      <div class="innovation-mini-diagram">
+        <span class="imd-node" style="background:var(--primary-light); color:var(--primary-dark);">Grounding</span>
+        <span class="imd-arrow">&rarr;</span>
+        <span class="imd-node" style="background:var(--gold-light); color:#f57f17;">Validation</span>
+        <span class="imd-arrow">&rarr;</span>
+        <span class="imd-node" style="background:var(--accent-light); color:var(--accent);">Fallback</span>
+        <span class="imd-arrow">&rarr;</span>
+        <span class="imd-node" style="background:var(--purple-light); color:var(--purple);">Temp Control</span>
+      </div>
+    </div>
+
+    <div class="innovation-card">
+      <div class="card-icon-big" style="background: var(--accent-light);">🧩</div>
+      <h4>Progressive Entity Collection</h4>
+      <p>Agents collect information over multiple turns instead of demanding everything upfront. The perceive node deliberately skips clarification for agent-handled intents. Natural conversation flow.</p>
+      <div class="innovation-mini-diagram">
+        <span class="imd-node" style="background:var(--primary-light); color:var(--primary-dark);">Turn 1 (item)</span>
+        <span class="imd-arrow">&rarr;</span>
+        <span class="imd-node" style="background:var(--gold-light); color:#f57f17;">Turn 2 (+qty)</span>
+        <span class="imd-arrow">&rarr;</span>
+        <span class="imd-node" style="background:var(--accent-light); color:var(--accent);">Turn 3 (+type)</span>
+        <span class="imd-arrow">&rarr;</span>
+        <span class="imd-node" style="background:var(--success-light); color:var(--success);">Ready!</span>
+      </div>
+    </div>
+
+    <div class="innovation-card">
+      <div class="card-icon-big" style="background: var(--purple-light);">🔄</div>
+      <h4>Task Stack Context Switching</h4>
+      <p>Users can say "actually, book a table" mid-order. The food ordering task gets suspended (pushed to LIFO stack) and automatically resumed later. Multi-tasking without losing context.</p>
+      <div class="innovation-mini-diagram">
+        <span class="imd-node" style="background:var(--primary-light); color:var(--primary-dark);">Ordering</span>
+        <span class="imd-arrow">&rarr;</span>
+        <span class="imd-node" style="background:var(--gold-light); color:#f57f17;">Suspend</span>
+        <span class="imd-arrow">&rarr;</span>
+        <span class="imd-node" style="background:var(--purple-light); color:var(--purple);">Book Table</span>
+        <span class="imd-arrow">&rarr;</span>
+        <span class="imd-node" style="background:var(--accent-light); color:var(--accent);">Resume Order</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<!-- SLIDE 13: TECH STACK                                -->
+<!-- ================================================= -->
+<section id="s13" class="slide slide-tech">
+  <p class="section-label">Technology</p>
+  <h2>Built With</h2>
+
+  <div class="grid-4 gap-16">
+    <div class="tech-card">
+      <span class="tech-emoji">🐍</span>
+      <h4>FastAPI</h4>
+      <p>Python 3.12 &mdash; Async web framework</p>
+    </div>
+    <div class="tech-card">
+      <span class="tech-emoji">🔀</span>
+      <h4>LangGraph</h4>
+      <p>AI orchestration &amp; state machines</p>
+    </div>
+    <div class="tech-card">
+      <span class="tech-emoji">🧠</span>
+      <h4>OpenAI GPT-4o</h4>
+      <p>Intent classification &amp; reasoning</p>
+    </div>
+    <div class="tech-card">
+      <span class="tech-emoji">🐘</span>
+      <h4>PostgreSQL + pgvector</h4>
+      <p>Relational DB + semantic search</p>
+    </div>
+    <div class="tech-card">
+      <span class="tech-emoji">⚡</span>
+      <h4>Redis</h4>
+      <p>Session, menu, inventory caching</p>
+    </div>
+    <div class="tech-card">
+      <span class="tech-emoji">💳</span>
+      <h4>Razorpay</h4>
+      <p>Payments with circuit breaker</p>
+    </div>
+    <div class="tech-card">
+      <span class="tech-emoji">📱</span>
+      <h4>Twilio</h4>
+      <p>SMS &amp; OTP delivery</p>
+    </div>
+    <div class="tech-card">
+      <span class="tech-emoji">💬</span>
+      <h4>WhatsApp Business</h4>
+      <p>Multi-channel messaging</p>
+    </div>
+    <div class="tech-card">
+      <span class="tech-emoji">🔗</span>
+      <h4>SQLAlchemy 2.0</h4>
+      <p>Async ORM &amp; connection pooling</p>
+    </div>
+    <div class="tech-card">
+      <span class="tech-emoji">🍃</span>
+      <h4>MongoDB</h4>
+      <p>Analytics data storage</p>
+    </div>
+    <div class="tech-card">
+      <span class="tech-emoji">📊</span>
+      <h4>structlog</h4>
+      <p>Structured logging throughout</p>
+    </div>
+    <div class="tech-card">
+      <span class="tech-emoji">✅</span>
+      <h4>Pydantic</h4>
+      <p>Data validation &amp; schemas</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<!-- SLIDE 14: CURRENT STATUS                            -->
+<!-- ================================================= -->
+<section id="s14" class="slide" style="background: var(--gray-50);">
+  <p class="section-label">Implementation Status</p>
+  <h2>Where We Are Today</h2>
+
+  <div class="grid-2" style="gap: 30px;">
+    <!-- Built & Working -->
+    <div>
+      <h3 style="color: var(--success); margin-bottom: 12px;">Built &amp; Working</h3>
+      <ul class="status-list">
+        <li class="done">&#10003; Complete food ordering pipeline (browse &rarr; search &rarr; cart &rarr; checkout &rarr; pay)</li>
+        <li class="done">&#10003; 28+ specialized AI agents across 6 domains</li>
+        <li class="done">&#10003; 20-account OpenAI load balancer with rate limiting</li>
+        <li class="done">&#10003; Semantic menu search with pgvector embeddings</li>
+        <li class="done">&#10003; 3-tier progressive authentication (phone + OTP)</li>
+        <li class="done">&#10003; Razorpay payment integration with webhooks</li>
+        <li class="done">&#10003; Redis caching (sessions, menu, inventory, OTP)</li>
+        <li class="done">&#10003; Virtual Waiter response formatting with anti-hallucination</li>
+        <li class="done">&#10003; Real-time inventory tracking with reservation holds</li>
+        <li class="done">&#10003; Customer feedback &amp; complaint management</li>
+        <li class="done">&#10003; WebSocket real-time chat</li>
+      </ul>
+    </div>
+
+    <!-- Coming Next -->
+    <div>
+      <h3 style="color: #f57f17; margin-bottom: 12px;">Coming Next</h3>
+      <ul class="status-list">
+        <li class="pending">&#9679; State persistence (PostgreSQL checkpointer)</li>
+        <li class="pending">&#9679; Automated test suite</li>
+        <li class="pending">&#9679; Session token cookie implementation</li>
+        <li class="pending">&#9679; Input sanitization (prompt injection protection)</li>
+        <li class="pending">&#9679; Booking feature refactor (monolithic &rarr; hierarchical)</li>
+        <li class="pending">&#9679; Analytics dashboard</li>
+        <li class="pending">&#9679; Admin panel</li>
+        <li class="pending">&#9679; WhatsApp Business bot integration</li>
+        <li class="pending">&#9679; Multi-language support</li>
+        <li class="pending">&#9679; Mobile app (React Native)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<!-- SLIDE 15: ROADMAP                                   -->
+<!-- ================================================= -->
+<section id="s15" class="slide slide-dark">
+  <p class="section-label">Looking Ahead</p>
+  <h2>Product Roadmap</h2>
+
+  <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+    <div class="roadmap-phase phase-now">
+      <span class="phase-badge">Current</span>
+      <h4>Core MVP</h4>
+      <ul class="roadmap-list">
+        <li>Food ordering end-to-end</li>
+        <li>Multi-agent orchestration</li>
+        <li>Semantic search (pgvector)</li>
+        <li>Payment integration (Razorpay)</li>
+        <li>Real-time WebSocket chat</li>
+      </ul>
+    </div>
+    <div class="roadmap-phase phase-next">
+      <span class="phase-badge">Phase 1</span>
+      <h4>Production Hardening</h4>
+      <ul class="roadmap-list">
+        <li>State persistence (PostgreSQL)</li>
+        <li>Automated test suite</li>
+        <li>Security hardening</li>
+        <li>Session cookies</li>
+        <li>Booking refactor</li>
+      </ul>
+    </div>
+    <div class="roadmap-phase phase-later">
+      <span class="phase-badge">Phase 2</span>
+      <h4>Feature Expansion</h4>
+      <ul class="roadmap-list">
+        <li>Analytics dashboard</li>
+        <li>Admin panel</li>
+        <li>WhatsApp bot</li>
+        <li>Multi-language support</li>
+        <li>Kitchen display integration</li>
+      </ul>
+    </div>
+    <div class="roadmap-phase phase-future">
+      <span class="phase-badge">Phase 3</span>
+      <h4>Scale &amp; SaaS</h4>
+      <ul class="roadmap-list">
+        <li>Multi-restaurant platform</li>
+        <li>Mobile apps (React Native)</li>
+        <li>Route optimization</li>
+        <li>Horizontal scaling</li>
+        <li>White-label offering</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================= -->
+<!-- SLIDE 16: CLOSING                                   -->
+<!-- ================================================= -->
+<section id="s16" class="slide slide-closing">
+  <p class="section-label">The Vision</p>
+  <h2>AI That Understands Your Restaurant<br>As Well As Your Best Waiter</h2>
+
+  <div class="closing-points">
+    <div class="closing-point">
+      <div class="closing-icon">🧩</div>
+      <h4>Modular &amp; Extensible</h4>
+      <p>Plug new features without touching the core</p>
+    </div>
+    <div class="closing-point">
+      <div class="closing-icon">🛡️</div>
+      <h4>Production-Grade AI</h4>
+      <p>20-account LLM balancer, anti-hallucination, circuit breakers</p>
+    </div>
+    <div class="closing-point">
+      <div class="closing-icon">📡</div>
+      <h4>Multi-Channel</h4>
+      <p>WebSocket, WhatsApp, SMS &mdash; customers order however they prefer</p>
+    </div>
+    <div class="closing-point">
+      <div class="closing-icon">📊</div>
+      <h4>Data-Driven</h4>
+      <p>Every conversation builds intelligence for better recommendations</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- DOWNLOAD BUTTON -->
+<button class="download-btn" onclick="window.print()">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+  Download PDF
+</button>
+
+<script>
+  // Highlight active nav dot on scroll
+  const slides = document.querySelectorAll('.slide');
+  const dots = document.querySelectorAll('.nav-dot');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const idx = Array.from(slides).indexOf(entry.target);
+        dots.forEach((d, i) => {
+          d.style.background = i === idx ? 'var(--primary)' : '';
+          d.style.transform = i === idx ? 'scale(1.4)' : '';
+        });
+      }
+    });
+  }, { threshold: 0.4 });
+
+  slides.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>

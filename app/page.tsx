@@ -9,7 +9,7 @@ import AboutCompact from '@/components/AboutCompact'
 import CareerProgression from '@/components/CareerProgression'
 import SkillsCompact from '@/components/SkillsCompact'
 import ExperienceArc from '@/components/ExperienceArc'
-import Projects from '@/components/Projects'
+import ProjectsShowcase from '@/components/ProjectsShowcase'
 import CertificationsSection from '@/components/CertificationsSection'
 import ContactCompact from '@/components/ContactCompact'
 
@@ -63,10 +63,11 @@ export default function Home() {
       <main className="flex-1 lg:ml-80 min-h-screen">
         {activeSection === 'intro' ? (
           <IntroSection onNavigate={setActiveSection} />
-        ) : activeSection === 'skills' ? (
+        ) : activeSection === 'skills' || activeSection === 'projects' ? (
           <div className="w-full max-w-7xl mx-auto px-6 lg:px-12 py-8 lg:py-12 flex items-start lg:items-center justify-center min-h-screen">
             <div className="w-full">
-              <SkillsCompact />
+              {activeSection === 'skills' && <SkillsCompact />}
+              {activeSection === 'projects' && <ProjectsShowcase />}
             </div>
           </div>
         ) : (
@@ -75,7 +76,6 @@ export default function Home() {
               {activeSection === 'about' && <AboutCompact />}
               {activeSection === 'career' && <CareerProgression />}
               {activeSection === 'experience' && <ExperienceArc />}
-              {activeSection === 'projects' && <Projects />}
               {activeSection === 'certifications' && <CertificationsSection />}
               {activeSection === 'contact' && <ContactCompact />}
             </div>
