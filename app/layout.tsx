@@ -9,7 +9,7 @@ const inter = localFont({
 
 export const metadata: Metadata = {
   title: 'Jeswin Arul Samuel | AI Solutions Architect',
-  description: 'AI Solutions Architect with 9+ years of experience in Generative AI, LLMs, Machine Learning, and Enterprise Data Engineering. Expert in building Agentic AI systems and Human-in-the-Loop architectures.',
+  description: 'AI Solutions Architect with 10+ years of experience in Generative AI, LLMs, Machine Learning, and Enterprise Data Engineering. Expert in building Agentic AI systems and Human-in-the-Loop architectures.',
   keywords: ['AI Solutions Architect', 'Generative AI', 'LLM', 'Machine Learning', 'LangChain', 'LangGraph', 'Python', 'FastAPI'],
   authors: [{ name: 'Jeswin Arul Samuel' }],
   openGraph: {

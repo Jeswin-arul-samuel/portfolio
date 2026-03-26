@@ -564,53 +564,154 @@ function ProjectPresentation({ project, onClose }: { project: ProjectShowcase; o
 }
 
 // =============================================================================
-// CATEGORY SELECTOR — landing page with two sections
+// CATEGORY SELECTOR — lightning split screen
 // =============================================================================
 
-function CategorySelector({ onSelect }: { onSelect: (cat: 'agentic-ai' | 'fullstack') => void }) {
-  return (
-    <div className="flex flex-col md:flex-row gap-6 items-stretch justify-center">
-      {/* Agentic AI */}
-      <motion.button
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        onClick={() => onSelect('agentic-ai')}
-        className="flex-1 max-w-md card cursor-pointer group border-2 border-transparent hover:border-accent/50 transition-all duration-300"
-      >
-        <div className="text-center py-6">
-          <div className="w-14 h-14 rounded-full border-2 border-accent bg-accent/10 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-            <span className="text-2xl">🤖</span>
-          </div>
-          <h3 className="text-lg font-bold text-white mb-2">Agentic AI</h3>
-          <p className="text-xs text-muted mb-4">Multi-agent systems, LangGraph pipelines,<br />autonomous AI solutions</p>
-          <div className="flex items-center justify-center gap-1 text-accent text-xs font-medium">
-            <span>5 Projects</span>
-            <ChevronRight size={14} />
-          </div>
-        </div>
-      </motion.button>
+// The lightning bolt edge — a jagged line from top-right to bottom-left
+// Defined as percentage points. The top half's bottom edge and bottom half's top edge
+// both follow this path, creating the lightning shape between them.
+const BOLT_POINTS = [
+  { x: 100, y: 0 },    // start top-right corner
+  { x: 72, y: 22 },    // diagonal down-left
+  { x: 80, y: 30 },    // zag right (1st zap)
+  { x: 55, y: 42 },    // zag left
+  { x: 63, y: 50 },    // zag right (2nd zap)
+  { x: 38, y: 62 },    // zag left (3rd zap)
+  { x: 0, y: 100 },    // end bottom-left corner
+]
 
-      {/* Full-Stack Apps */}
-      <motion.button
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        onClick={() => onSelect('fullstack')}
-        className="flex-1 max-w-md card cursor-pointer group border-2 border-transparent hover:border-emerald-500/50 transition-all duration-300"
+function buildClipTop(): string {
+  // Top half: start top-left → top-right → follow bolt jagged edge down to bottom-left → back to start
+  const boltStr = BOLT_POINTS.map(p => `${p.x}% ${p.y}%`).join(', ')
+  return `polygon(0% 0%, 100% 0%, ${boltStr})`
+}
+
+function buildClipBottom(): string {
+  // Bottom half: follow bolt from top-right to bottom-left → bottom-left corner → bottom-right → top-right
+  // This traces the bolt edge then goes around the bottom
+  const boltStr = BOLT_POINTS.map(p => `${p.x}% ${p.y}%`).join(', ')
+  return `polygon(${boltStr}, 0% 100%, 100% 100%)`
+}
+
+function CategorySelector({ onSelect }: { onSelect: (cat: 'agentic-ai' | 'fullstack') => void }) {
+  const [exiting, setExiting] = useState<'agentic-ai' | 'fullstack' | null>(null)
+  const [entered, setEntered] = useState(false)
+
+  useEffect(() => {
+    const timer = setTimeout(() => setEntered(true), 100)
+    return () => clearTimeout(timer)
+  }, [])
+
+  const handleSelect = (cat: 'agentic-ai' | 'fullstack') => {
+    setExiting(cat)
+    setTimeout(() => onSelect(cat), 650)
+  }
+
+  const clipTop = buildClipTop()
+  const clipBottom = buildClipBottom()
+
+  // SVG bolt path for the glowing line between halves
+  const boltSvgPath = BOLT_POINTS.map((p, i) =>
+    `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`
+  ).join(' ')
+
+  return (
+    <div className="relative w-full overflow-hidden" style={{ height: '100vh' }}>
+
+      {/* Top half — Agentic AI */}
+      <motion.div
+        className="absolute inset-0 cursor-pointer group"
+        style={{ clipPath: clipTop, zIndex: 10 }}
+        initial={{ x: '-110%', y: '-60%' }}
+        animate={
+          exiting === 'fullstack' ? { x: '-110%', y: '-60%' }
+          : exiting === 'agentic-ai' ? { x: 0, y: 0 }
+          : entered ? { x: 0, y: 0 }
+          : { x: '-110%', y: '-60%' }
+        }
+        transition={
+          exiting ? { duration: 0.55, ease: [0.55, 0, 1, 0.45] }
+          : { duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0 }
+        }
+        onClick={() => handleSelect('agentic-ai')}
       >
-        <div className="text-center py-6">
-          <div className="w-14 h-14 rounded-full border-2 border-emerald-500 bg-emerald-500/10 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-            <span className="text-2xl">⚡</span>
-          </div>
-          <h3 className="text-lg font-bold text-white mb-2">Full-Stack Apps</h3>
-          <p className="text-xs text-muted mb-4">End-to-end applications, mobile apps,<br />production-ready platforms</p>
-          <div className="flex items-center justify-center gap-1 text-emerald-400 text-xs font-medium">
-            <span>3 Projects</span>
-            <ChevronRight size={14} />
-          </div>
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1a1030] via-[#150d25] to-[#100a1a] group-hover:from-[#241540] group-hover:via-[#1c1030] transition-all duration-500" />
+        <div className="relative h-full flex flex-col items-start justify-start pt-[18%] pl-[8%] md:pt-[16%] md:pl-[10%]">
+          <span className="text-5xl mb-4">🤖</span>
+          <h3 className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-3 tracking-tight leading-none">Agentic AI</h3>
+          <p className="text-sm text-[#9B7AB8]/80 mb-4 max-w-xs">Multi-agent systems &middot; LangGraph pipelines &middot; Autonomous AI solutions</p>
+          <span className="text-xs font-bold uppercase tracking-[3px] text-[#9B7AB8]/50 group-hover:text-[#9B7AB8] transition-colors">
+            5 Projects →
+          </span>
         </div>
-      </motion.button>
+      </motion.div>
+
+      {/* Bottom half — Full-Stack Apps */}
+      <motion.div
+        className="absolute inset-0 cursor-pointer group"
+        style={{ clipPath: clipBottom, zIndex: 10 }}
+        initial={{ x: '110%', y: '60%' }}
+        animate={
+          exiting === 'agentic-ai' ? { x: '110%', y: '60%' }
+          : exiting === 'fullstack' ? { x: 0, y: 0 }
+          : entered ? { x: 0, y: 0 }
+          : { x: '110%', y: '60%' }
+        }
+        transition={
+          exiting ? { duration: 0.55, ease: [0.55, 0, 1, 0.45] }
+          : { duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.08 }
+        }
+        onClick={() => handleSelect('fullstack')}
+      >
+        <div className="absolute inset-0 bg-gradient-to-tl from-[#0a1a16] via-[#0d201a] to-[#081510] group-hover:from-[#0e2820] group-hover:via-[#112a22] transition-all duration-500" />
+        <div className="relative h-full flex flex-col items-end justify-end pb-[20%] pr-[8%] md:pb-[18%] md:pr-[10%]">
+          <span className="text-5xl mb-4">⚡</span>
+          <h3 className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-3 tracking-tight leading-none text-right">Full-Stack Apps</h3>
+          <p className="text-sm text-emerald-400/60 mb-4 text-right max-w-xs">End-to-end applications &middot; Mobile apps &middot; Production platforms</p>
+          <span className="text-xs font-bold uppercase tracking-[3px] text-emerald-400/40 group-hover:text-emerald-400 transition-colors">
+            3 Projects →
+          </span>
+        </div>
+      </motion.div>
+
+      {/* Lightning bolt glow line — sits on the seam */}
+      <motion.div
+        className="absolute inset-0 pointer-events-none"
+        style={{ zIndex: 20 }}
+        initial={{ opacity: 0 }}
+        animate={exiting ? { opacity: 0 } : entered ? { opacity: 1 } : { opacity: 0 }}
+        transition={exiting ? { duration: 0.2 } : { duration: 0.5, delay: 0.7 }}
+      >
+        <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0">
+          <defs>
+            <linearGradient id="boltLineGrad" x1="1" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#9B7AB8" />
+              <stop offset="40%" stopColor="#fbbf24" />
+              <stop offset="100%" stopColor="#10b981" />
+            </linearGradient>
+            <filter id="boltGlow2">
+              <feGaussianBlur stdDeviation="0.8" result="blur1" />
+              <feGaussianBlur stdDeviation="2" result="blur2" />
+              <feMerge>
+                <feMergeNode in="blur2" />
+                <feMergeNode in="blur1" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+          <path
+            d={boltSvgPath}
+            fill="none"
+            stroke="url(#boltLineGrad)"
+            filter="url(#boltGlow2)"
+            vectorEffect="non-scaling-stroke"
+            strokeWidth="2"
+          />
+        </svg>
+      </motion.div>
+
+      {/* Background */}
+      <div className="absolute inset-0 bg-background -z-10" />
     </div>
   )
 }
@@ -798,24 +899,28 @@ export default function ProjectsShowcase() {
 
       {/* Category — binder ring list of projects */}
       {view.type === 'category' && view.category === 'agentic-ai' && (
-        <BinderRingList
-          projects={sortedByCategory('agentic-ai')}
-          accentColor="text-accent"
-          accentHex="#9F8ABF"
-          onSelectProject={(p) => setView({ type: 'project', project: p })}
-          onBack={() => setView({ type: 'landing' })}
-          title="Agentic AI Projects"
-        />
+        <div className="max-w-4xl mx-auto px-6 lg:px-12 py-8 lg:py-12">
+          <BinderRingList
+            projects={sortedByCategory('agentic-ai')}
+            accentColor="text-accent"
+            accentHex="#5EEAD4"
+            onSelectProject={(p) => setView({ type: 'project', project: p })}
+            onBack={() => setView({ type: 'landing' })}
+            title="Agentic AI Projects"
+          />
+        </div>
       )}
       {view.type === 'category' && view.category === 'fullstack' && (
-        <BinderRingList
-          projects={sortedByCategory('fullstack')}
-          accentColor="text-emerald-400"
-          accentHex="#10b981"
-          onSelectProject={(p) => setView({ type: 'project', project: p })}
-          onBack={() => setView({ type: 'landing' })}
-          title="Full-Stack Applications"
-        />
+        <div className="max-w-4xl mx-auto px-6 lg:px-12 py-8 lg:py-12">
+          <BinderRingList
+            projects={sortedByCategory('fullstack')}
+            accentColor="text-emerald-400"
+            accentHex="#10b981"
+            onSelectProject={(p) => setView({ type: 'project', project: p })}
+            onBack={() => setView({ type: 'landing' })}
+            title="Full-Stack Applications"
+          />
+        </div>
       )}
 
       {/* Project presentation — full-page overlay */}

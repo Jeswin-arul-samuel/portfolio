@@ -9,22 +9,22 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: '#1a1a2e',
-        'card-bg': '#262644',
-        'card-border': '#2a2a3e',
+        background: '#0f1117',
+        'card-bg': '#1a1d27',
+        'card-border': '#252a36',
         accent: {
-          DEFAULT: '#9F8ABF',
-          light: '#B8A5D3',
-          dark: '#7A6B94',
+          DEFAULT: '#5EEAD4',
+          light: '#7EEDDC',
+          dark: '#3ABDA8',
         },
-        muted: '#a1a1aa',
+        muted: '#8891A5',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'hero-gradient': 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 50%, #6D28D9 100%)',
+        'hero-gradient': 'linear-gradient(135deg, #5EEAD4 0%, #3ABDA8 50%, #2D9F8F 100%)',
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-out',

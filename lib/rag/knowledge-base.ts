@@ -1,367 +1,476 @@
 import { Document } from "@langchain/core/documents";
-import {
-  personalInfo,
-  skills,
-  projects,
-  experience,
-  certifications,
-  awards,
-  education,
-} from "@/data/portfolio-data";
+import { masterResumeDataset } from "@/data/resume-master-dataset";
+import { projectsShowcaseData } from "@/data/projects-showcase-data";
 import { portfolioKnowledgeBase } from "@/data/portfolio-knowledge-base";
 
+const m = masterResumeDataset;
+
 /**
- * Converts structured portfolio data into semantically rich, paragraph-form
- * Document chunks for vector embedding and retrieval.
+ * Builds semantically rich, natural-language Document chunks for vector embedding.
  *
- * Every chunk is written as natural language prose so that embedding models
- * can capture the full semantic meaning — not just keyword overlap.
+ * Sources:
+ * - resume-master-dataset.ts — comprehensive work history, skills, education, themes
+ * - projects-showcase-data.ts — rich project presentations (problem, solution, agents, architecture)
+ * - portfolio-knowledge-base.ts — career narrative, technical concepts, positioning
+ *
+ * Each chunk is written as prose so embedding models capture semantic meaning,
+ * not just keyword overlap. Chunks are 100-300 words each, focused on a single topic.
  */
 export function buildDocuments(): Document[] {
   const docs: Document[] = [];
 
-  // ── Personal profile ──────────────────────────────────────────────
+  // ════════════════════════════════════════════════════════════════════════
+  // PERSONAL PROFILE
+  // ════════════════════════════════════════════════════════════════════════
+
   docs.push(
     new Document({
-      pageContent: `Jeswin Arul Samuel is an AI Solutions Architect currently based in ${personalInfo.location}. His professional tagline is "${personalInfo.tagline}". He has over ${personalInfo.highlights[0].value} of professional experience, has trained ${personalInfo.highlights[1].value} professionals, previously worked at Amazon as a ${personalInfo.highlights[2].value}, and holds an ${personalInfo.highlights[3].value}. He speaks ${personalInfo.languages.map((l) => `${l.name} at a ${l.level.toLowerCase()} level`).join(", ")}. He can be reached at ${personalInfo.email}, by phone at ${personalInfo.phone} (India) or ${personalInfo.phoneAlt} (France), through LinkedIn at ${personalInfo.linkedin}, or on GitHub at ${personalInfo.github}.`,
-      metadata: { category: "profile", source: "personalInfo", title: "Contact & Overview" },
+      pageContent: `Jeswin Arul Samuel is an ${m.personal.currentTitle} based in ${m.personal.location}. His tagline: "${m.personal.tagline}". He has ${m.personal.yearsOfExperience} years of professional experience and has trained ${m.personal.totalPeopleTrained} professionals. He speaks ${m.personal.languages.map((l) => `${l.name} (${l.level})`).join(", ")}. Contact: ${m.personal.email}, phone ${m.personal.phone.india} (India) / ${m.personal.phone.france} (France), LinkedIn ${m.personal.linkedin}, GitHub ${m.personal.github}.`,
+      metadata: { category: "profile", title: "Contact & Overview" },
     })
   );
 
   docs.push(
     new Document({
-      pageContent: personalInfo.bio,
-      metadata: { category: "profile", source: "personalInfo", title: "Bio & Career Summary" },
+      pageContent: m.personal.bio,
+      metadata: { category: "profile", title: "Bio & Career Summary" },
     })
   );
 
-  // ── Skills — one rich paragraph per category ──────────────────────
-  const skillParagraphs: Record<string, string> = {
-    "Generative AI & LLMs": `Jeswin has deep expertise in Generative AI and Large Language Models. He works extensively with OpenAI's GPT models, Anthropic's Claude 3.5 Sonnet, and Google's Gemini 2.0. He builds production applications using the LangChain framework and its ecosystem including LangGraph for stateful agent workflows and LangSmith for observability and evaluation. He has hands-on experience building RAG (Retrieval-Augmented Generation) pipelines using vector embeddings for semantic search. He is skilled in prompt engineering for optimizing LLM outputs and has experience fine-tuning models using parameter-efficient methods like LoRA and QLoRA. He has also worked with multi-agent orchestration frameworks including CrewAI and AutoGen for building systems where multiple AI agents collaborate to complete complex tasks.`,
+  docs.push(
+    new Document({
+      pageContent: `Jeswin is seeking roles including: ${m.personal.seekingRoles.join(", ")}. He targets company types like: ${m.personal.targetCompanyTypes.join("; ")}. He brings a unique combination of hands-on production AI experience, team leadership, and business acumen.`,
+      metadata: { category: "profile", title: "Target Roles & Company Types" },
+    })
+  );
 
-    "Backend & APIs": `Jeswin is a strong backend engineer with Python as his primary language. He builds production-grade REST APIs using FastAPI, which is his go-to framework for high-performance asynchronous web services. He has also built applications with Django and Flask. For data modeling and validation he uses SQLAlchemy as his ORM and Pydantic V2 for schema validation and serialization. He writes asynchronous code for handling concurrent requests and I/O-bound operations efficiently. For rapid prototyping and internal tools he uses Streamlit and Gradio to build interactive web interfaces for AI models and data applications.`,
+  // ════════════════════════════════════════════════════════════════════════
+  // SKILLS — rich prose per category
+  // ════════════════════════════════════════════════════════════════════════
 
-    "Machine Learning": `Jeswin has substantial experience in machine learning and deep learning. He works with TensorFlow, PyTorch, and Keras for building and training neural networks. He uses Scikit-Learn for classical machine learning tasks like classification, regression, and clustering. He has built deep learning architectures including Convolutional Neural Networks (CNNs) for image recognition, Recurrent Neural Networks (RNNs) and LSTMs for sequence modeling. He has experience with transfer learning, adapting pretrained models to new tasks. In Natural Language Processing (NLP), he has worked with text classification, entity extraction, and language understanding. In computer vision, he uses OpenCV for image processing and has deployed vision models on edge devices including drones. He also uses models from Hugging Face for various NLP and vision tasks.`,
+  // Full skills overview
+  const allSkillAreas = Object.values(m.skills).map((cat) => `${cat.label}: ${cat.items.slice(0, 6).join(", ")}`).join(". ");
+  docs.push(
+    new Document({
+      pageContent: `Jeswin's technical expertise spans ${Object.keys(m.skills).length} major areas. ${allSkillAreas}. His strongest and most current skills are in Agentic AI architecture using LangGraph, production LLM systems, and full-stack Python backend engineering with FastAPI.`,
+      metadata: { category: "skills", title: "All Skills Summary" },
+    })
+  );
 
-    "Data & Cloud": `Jeswin has experience with a range of databases and cloud infrastructure. For relational databases he uses PostgreSQL and writes complex SQL queries. For NoSQL he works with MongoDB for document storage and Redis for caching and real-time data. For AI-specific storage, he uses vector databases including Pinecone and ChromaDB for storing and searching vector embeddings used in RAG pipelines. On AWS, he has used Lambda for serverless compute, S3 for object storage, and Textract for document extraction from PDFs. He uses Docker for containerization. For big data, he has worked with Hadoop and Hive. For business intelligence and reporting, he has built dashboards using AWS QuickSight and Power BI.`,
+  // Individual skill categories
+  const skillNarratives: Record<string, string> = {
+    generativeAI: `Jeswin has deep expertise in Generative AI and Large Language Models. He works with OpenAI GPT-4o, Claude 3.5 Sonnet, and Gemini 2.0. He builds production applications using LangChain, LangGraph for stateful agent workflows, and LangSmith for observability. He builds RAG pipelines using vector embeddings for semantic search. He designs multi-agent orchestration with CrewAI and AutoGen. He implements ReAct agents, persistent checkpointing, deep agent loops, tool binding, chain composition, agentic reasoning, memory and state management, human-in-the-loop pipelines, intent classification, and entity extraction. He has experience fine-tuning models using LoRA and QLoRA.`,
 
-    "Leadership & Business": `Jeswin has strong leadership and business skills alongside his technical expertise. He holds an Agile Project Management (AgilePM) certification from APMG International and applies agile methodologies in his work. He has direct team leadership experience, having led a team of 12 engineers at Constient Global Solutions. He manages stakeholder relationships across business and technical teams. He has extensive experience in technical training and curriculum development, having trained over 3000 professionals. He has product management experience, understanding how to translate business needs into technical products. He also has business development skills, having directly contributed to revenue growth at multiple organizations.`,
+    backendAndAPIs: `Jeswin is a strong backend engineer with Python as his primary language. He builds production APIs using FastAPI for high-performance async web services. He has also built with Django and Flask. He uses SQLAlchemy as ORM and Pydantic V2 for schema validation. He writes async code for concurrent workloads. For rapid prototyping he uses Streamlit and Gradio.`,
+
+    machineLearning: `Jeswin has substantial experience in machine learning and deep learning. He works with TensorFlow, PyTorch, and Keras for neural networks including CNNs, RNNs, and LSTMs. He uses Scikit-Learn for classical ML. He has built transfer learning applications, NLP systems with Hugging Face, computer vision with OpenCV, and reinforcement learning agents using DQN, DCQN, and A2C algorithms. He uses Pandas and NumPy for data processing.`,
+
+    dataAndCloud: `Jeswin works with PostgreSQL for relational data, MongoDB for documents, and Redis for caching. For AI he uses vector databases: Pinecone, ChromaDB, and FAISS. On AWS he has used Lambda, S3, and Textract for document extraction. He uses Docker for containerization, Hadoop/Hive for big data, QuickSight and Power BI for dashboards, and builds ETL/ELT pipelines with data validation quality gates and JSON schemas.`,
+
+    hardwareAndIoT: `Jeswin has a hardware engineering background including Embedded C programming, ATmega microcontrollers, register-level programming, ADC/PWM protocols, MQTT for IoT, sensor integration (IR, LDR, potentiometer), motor control (DC, stepper, brushless), PCB design basics, and building line follower and obstacle avoidance robots. This foundation supports his IoT and edge AI work.`,
+
+    leadershipAndBusiness: `Jeswin has strong leadership skills. He holds an Agile PM (APMG) certification. He has led a team of 12+ globally at Informatica. He manages stakeholders, develops curriculum, conducts technical training and mentorship, has product management and business development experience, cross-cultural communication skills, revenue growth strategy experience, and led digital transformation during COVID at Lema Labs.`,
+
+    tools: `Jeswin works with Git for version control, OpenEDX for LMS deployment, Articulate Rise 360 and Adobe tools for e-learning development, Amazon internal tools for ETL and data management, POS system integration (PetPooja, restaurant systems), and property management ERP integration via APIs.`,
   };
 
-  // Full skills overview paragraph
-  docs.push(
-    new Document({
-      pageContent: `Jeswin Arul Samuel's technical expertise spans five major areas. In Generative AI and LLMs, he works with OpenAI, Claude, Gemini, LangChain, LangGraph, RAG pipelines, prompt engineering, and model fine-tuning. In Backend and API engineering, he uses Python, FastAPI, Django, Flask, and async programming. In Machine Learning, he has experience with TensorFlow, PyTorch, CNNs, RNNs, NLP, computer vision, and Hugging Face. In Data and Cloud, he works with PostgreSQL, MongoDB, Redis, vector databases like Pinecone and ChromaDB, AWS services, and Docker. In Leadership, he is Agile-certified, has led teams, managed stakeholders, and trained over 3000 professionals. His strongest and most current skills are in Agentic AI architecture using LangGraph and production LLM systems.`,
-      metadata: { category: "skills", source: "skills", title: "All Skills Summary" },
-    })
-  );
-
-  for (const cat of skills.categories) {
-    const paragraph = skillParagraphs[cat.name];
-    if (paragraph) {
-      docs.push(
-        new Document({
-          pageContent: paragraph,
-          metadata: { category: "skills", source: "skills", title: cat.name },
-        })
-      );
-    } else {
-      // Fallback for any unmapped categories
-      docs.push(
-        new Document({
-          pageContent: `Jeswin has skills in ${cat.name}, including: ${cat.skills.join(", ")}. These capabilities have been applied across multiple professional roles and projects throughout his career.`,
-          metadata: { category: "skills", source: "skills", title: cat.name },
-        })
-      );
-    }
-  }
-
-  // ── Specializations (rich prose from knowledge base) ────────────
-  const specParagraphs: Record<string, string> = {
-    "Agentic AI & LLM Systems": `Jeswin specializes in architecting and deploying production Agentic AI systems. He builds autonomous AI agents using LangGraph for state machine orchestration, LangChain for tool integration, and ReAct (Reasoning + Acting) patterns for agents that can reason about problems and take actions. He designs multi-agent systems where specialized agents collaborate through an orchestrator. He has applied these skills in real production systems: the AI-Powered Accounts Receivable Ledger Reconciliation system which automates financial matching, the Virtual Waiter conversational AI which achieved over 80% autonomous customer recognition, the Personalized Learning Assistant for adaptive education, and the Research Idea Generator for academic synthesis.`,
-
-    "Generative AI & LLMs": `Jeswin has cutting-edge expertise with large language models and generative AI. He works with OpenAI's GPT-4o, Anthropic's Claude 3.5 Sonnet, and Google's Gemini 2.0. He builds RAG (Retrieval-Augmented Generation) pipelines that ground LLM responses in external knowledge through semantic search. He is skilled in prompt engineering to optimize model outputs for specific tasks. He has experience fine-tuning models using parameter-efficient methods like LoRA and QLoRA. His framework expertise includes LangChain, LangGraph, LangSmith for monitoring, CrewAI for role-based agent hierarchies, and AutoGen for multi-agent conversation patterns. He applies these technologies to conversational AI, question-answering, content generation, and research synthesis.`,
-
-    "Backend & API Engineering": `Jeswin builds scalable, production-ready backend systems primarily in Python. FastAPI is his go-to framework for high-performance asynchronous APIs, and he has also worked with Django and Flask. He uses SQLAlchemy for ORM and Pydantic V2 for data validation and serialization. He designs RESTful APIs and leverages async programming patterns for handling concurrent workloads. He uses Streamlit and Gradio for building rapid prototypes and interactive AI model demos.`,
-
-    "Machine Learning & Deep Learning": `Jeswin has hands-on experience developing and deploying machine learning models. In deep learning, he works with TensorFlow, PyTorch, and Keras to build CNNs for image tasks, RNNs and LSTMs for sequences, and applies transfer learning to adapt pretrained models. In computer vision, he built an emotion detection system achieving 76% accuracy on AffectNet, a disease prediction model at 87% accuracy, and deployed crop disease detection models on drones using OpenCV. In NLP, he works with Hugging Face models. In reinforcement learning, he has built agents using DQN, DCQN, and A2C algorithms for game environments. He uses Scikit-Learn, Pandas, and NumPy for classical ML tasks.`,
-
-    "Data Engineering & Databases": `Jeswin has experience building data pipelines, ETL processes, and data architecture. He works with PostgreSQL for relational data and complex SQL queries, MongoDB for document storage, and Redis for caching. For AI applications, he uses vector databases like Pinecone and ChromaDB for embedding storage and semantic search. On AWS, he has used Lambda, S3, and Textract for serverless processing and document extraction. He builds data validation pipelines using JSON schemas and Pydantic, with pre-commit and post-commit quality gates. For analytics and reporting, he has built dashboards with AWS QuickSight and Power BI. He has experience with Hadoop and Hive for big data processing.`,
-
-    "Leadership & Business Skills": `Jeswin combines technical depth with strong leadership and business skills. He holds an Agile PM (APMG) certification and manages projects using agile methodologies. At Constient, he led a team of 12 including junior developers, AI engineers, and data analysts through the full software development lifecycle, conducting code reviews and mentoring team members. At Informatica, he ran Train the Trainer sessions for 12 global trainers who served over 15 clients weekly. He has trained over 3000 professionals across robotics, IoT, machine learning, and data science. He has product management experience translating business needs into technical products, and business development skills that contributed to revenue growth at Lema Labs (60% increase from ML training product) and Informatica (22% sales pipeline increase from training-driven engagement).`,
-  };
-
-  for (const spec of portfolioKnowledgeBase.technicalExpertise.specializations) {
-    const paragraph = specParagraphs[spec.area];
-    if (paragraph) {
-      docs.push(
-        new Document({
-          pageContent: paragraph,
-          metadata: { category: "skills", source: "specializations", title: spec.area },
-        })
-      );
-    } else {
-      const lines = [
-        `Jeswin specializes in ${spec.area}. ${spec.description}.`,
-      ];
-      if ("keySkills" in spec) lines.push(`His key skills in this area include ${(spec as any).keySkills.join(", ")}.`);
-      if ("frameworks" in spec) {
-        const frameworks = (spec as any).frameworks;
-        if (Array.isArray(frameworks)) lines.push(`He uses frameworks such as ${frameworks.join(", ")}.`);
-      }
-      if ("experiences" in spec) lines.push(`He has applied these skills in projects including ${(spec as any).experiences.join(", ")}.`);
-      docs.push(
-        new Document({
-          pageContent: lines.join(" "),
-          metadata: { category: "skills", source: "specializations", title: spec.area },
-        })
-      );
-    }
-  }
-
-  // ── Experience summary ──────────────────────────────────────────
-  const workExperience = experience.filter((e) => e.category === "work");
-  docs.push(
-    new Document({
-      pageContent: `Jeswin Arul Samuel has held ${workExperience.length} professional roles across his career. ${workExperience.map((e) => `He worked as ${e.role} at ${e.company} from ${e.period} in ${e.location}${e.domains ? `, focusing on ${e.domains.join(", ")}` : ""}`).join(". ")}. His career progression shows growth from robotics engineering and technical training at an IIT Madras incubated startup, through enterprise data engineering at Amazon in Luxembourg, to his current focus on architecting production Agentic AI systems.`,
-      metadata: { category: "experience", source: "experience", title: "All Experience Summary" },
-    })
-  );
-
-  // ── Experience entries ────────────────────────────────────────────
-  for (const exp of experience) {
-    const parts: string[] = [];
-
-    if (exp.category === "education") {
-      parts.push(`Jeswin pursued ${exp.role} at ${exp.company} in ${exp.location} from ${exp.period}.`);
-      if (exp.achievements && exp.achievements.length > 0) {
-        parts.push(exp.achievements.join(". ") + ".");
-      }
-    } else {
-      parts.push(`Jeswin worked as ${exp.role} at ${exp.company}, based in ${exp.location}, from ${exp.period}.`);
-
-      if (exp.domains) {
-        parts.push(`This role focused on the ${exp.domains.join(", ")} domains.`);
-      }
-
-      if (exp.description) {
-        parts.push(exp.description);
-      }
-
-      if (exp.achievements && exp.achievements.length > 0) {
-        parts.push(`Key achievements include: ${exp.achievements.join(". ")}.`);
-      }
-
-      if (exp.projects && exp.projects.length > 0) {
-        for (const proj of exp.projects) {
-          parts.push(`One of his projects here was ${proj.name}: ${proj.description} The technology stack included ${proj.techStack.join(", ")}.`);
-          if (proj.highlights && proj.highlights.length > 0) {
-            parts.push(`Notable outcomes: ${proj.highlights.join(". ")}.`);
-          }
-        }
-      }
-    }
-
+  for (const [key, cat] of Object.entries(m.skills)) {
+    const narrative = skillNarratives[key];
     docs.push(
       new Document({
-        pageContent: parts.join(" "),
-        metadata: {
-          category: "experience",
-          source: "experience",
-          title: `${exp.role} at ${exp.company}`,
-          company: exp.company,
-          period: exp.period,
-        },
+        pageContent: narrative || `Jeswin has skills in ${cat.label} including: ${cat.items.join(", ")}.`,
+        metadata: { category: "skills", title: cat.label },
       })
     );
   }
 
-  // ── Project summary ───────────────────────────────────────────────
+  // ════════════════════════════════════════════════════════════════════════
+  // WORK EXPERIENCE — rich narratives from master dataset
+  // ════════════════════════════════════════════════════════════════════════
+
+  // Career overview
   docs.push(
     new Document({
-      pageContent: `Jeswin has worked on ${projects.length} notable projects across his career. These span Agentic AI, Generative AI, EdTech AI, Machine Learning, Data Engineering, Digital Transformation, and Enterprise Training. His featured production projects include the AI-Powered Accounts Receivable Ledger Reconciliation (Agentic AI for finance at Constient, 2025), the Virtual Waiter (conversational AI for hospitality at Constient, 2025), the Automated Research & Ideation Engine (2024), the AI-Driven Adaptive Study Planner (EdTech, 2024), and Amazon projects in customs audit automation and import/export data standardization (2023). He also built ML training products and led digital transformation at Lema Labs, and designed enterprise training programs at Informatica.`,
-      metadata: { category: "project", source: "projects", title: "All Projects Summary" },
+      pageContent: `Jeswin has held ${m.experience.length} professional roles. His career progression: ${m.experience.map((e) => `${e.role} at ${e.company} (${e.period}, ${e.location})`).join(" → ")}. He evolved from robotics engineering at an IIT Madras startup, through enterprise curriculum design at Informatica, data engineering at Amazon Luxembourg, independent AI consulting, to architecting production Agentic AI systems at Constient.`,
+      metadata: { category: "experience", title: "Career Overview" },
     })
   );
 
-  // ── Featured projects (split into contextual sub-chunks) ──────────
-  for (const proj of projects.filter((p) => p.featured)) {
-    // Context chunk — problem statement in prose
-    docs.push(
-      new Document({
-        pageContent: `Jeswin's project "${proj.title}" was built at ${proj.company} in ${proj.period} in the ${proj.category} domain. The business problem it addressed: ${proj.problem}`,
-        metadata: {
-          category: "project",
-          source: "projects",
-          title: `${proj.title} — Context`,
-          company: proj.company,
-          period: proj.period,
-        },
-      })
-    );
+  // ── CONSTIENT ──
+  const constient = m.experience[0];
+  docs.push(
+    new Document({
+      pageContent: `Jeswin worked as ${constient.role} at ${constient.company} from ${constient.period} (${constient.duration}, ${constient.type} role). ${constient.context} His leadership responsibilities included: ${constient.leadershipResponsibilities?.join(". ")}. He worked across ${constient.domains?.join(", ")} domains.`,
+      metadata: { category: "experience", title: "Constient — Overview", company: "Constient" },
+    })
+  );
+
+  // Constient projects — rich detail
+  for (const proj of constient.projects || []) {
+    const ps = (proj as any).problemStatement;
+    const arch = (proj as any).architecture;
+    const metrics = (proj as any).metrics;
+    const howJoined = (proj as any).howYouJoined;
+
+    // Problem & context chunk
+    if (ps) {
+      docs.push(
+        new Document({
+          pageContent: `Jeswin's project "${proj.name}" at Constient addressed: ${ps.summary}. ${(proj as any).clientContext ? `Client context: ${(proj as any).clientContext}.` : ""} Core challenges: ${ps.challenges?.join(". ") || ""}.${howJoined ? ` How Jeswin got involved: ${howJoined}` : ""}`,
+          metadata: { category: "project", title: `${proj.name} — Problem`, company: "Constient" },
+        })
+      );
+    }
 
     // Architecture chunk
-    docs.push(
-      new Document({
-        pageContent: `The technical approach and architecture for Jeswin's "${proj.title}" project: ${proj.approach}`,
-        metadata: {
-          category: "project",
-          source: "projects",
-          title: `${proj.title} — Architecture`,
-          company: proj.company,
-          period: proj.period,
-        },
-      })
-    );
+    if (arch) {
+      const agentDescriptions = (arch.agents || []).map((a: any) =>
+        `${a.name}: ${a.description}${a.achievement ? ` (${a.achievement})` : ""}`
+      ).join(". ");
+      docs.push(
+        new Document({
+          pageContent: `Architecture of "${proj.name}": ${arch.overview}. ${arch.designPrinciple ? `Design principle: ${arch.designPrinciple}.` : ""} Key agents/components: ${agentDescriptions}. Data flow: ${arch.dataFlow || "N/A"}.`,
+          metadata: { category: "project", title: `${proj.name} — Architecture`, company: "Constient" },
+        })
+      );
+    }
 
-    // Impact chunk
-    docs.push(
-      new Document({
-        pageContent: `The business impact and results of Jeswin's "${proj.title}" project: ${proj.impact}`,
-        metadata: {
-          category: "project",
-          source: "projects",
-          title: `${proj.title} — Impact & Metrics`,
-          company: proj.company,
-          period: proj.period,
-        },
-      })
-    );
+    // Metrics chunk
+    if (metrics) {
+      const metricLines = Object.entries(metrics).map(([k, v]) => `${k}: ${v}`).join(". ");
+      docs.push(
+        new Document({
+          pageContent: `Results and metrics for "${proj.name}" at Constient: ${metricLines}. ${(proj as any).scalability || ""}`,
+          metadata: { category: "project", title: `${proj.name} — Metrics`, company: "Constient" },
+        })
+      );
+    }
 
-    // Tech stack chunk — as a sentence, not a list
+    // Tech stack
+    const techStack = (proj as any).techStack;
+    if (techStack && Array.isArray(techStack)) {
+      docs.push(
+        new Document({
+          pageContent: `The "${proj.name}" project at Constient was built with: ${techStack.join(", ")}. Domain: ${(proj as any).domain || "N/A"}. Status: ${(proj as any).status || "N/A"}.`,
+          metadata: { category: "project", title: `${proj.name} — Tech Stack`, company: "Constient" },
+        })
+      );
+    }
+  }
+
+  // ── FREELANCER / INDEPENDENT CONSULTANT ──
+  const freelancer = m.experience[1];
+  docs.push(
+    new Document({
+      pageContent: `Jeswin worked as ${freelancer.role} from ${freelancer.period} (${freelancer.duration}). ${freelancer.context} His activities included: ${Object.entries((freelancer as any).activities || {}).map(([k, v]) => `${k}: ${v}`).join(". ")}.`,
+      metadata: { category: "experience", title: "Independent Consultant — Overview", company: "Freelance" },
+    })
+  );
+
+  // Freelancer projects
+  for (const proj of freelancer.projects || []) {
+    const features = (proj as any).features;
     docs.push(
       new Document({
-        pageContent: `The "${proj.title}" project at ${proj.company} was built using the following technologies: ${proj.techStack.join(", ")}. This project falls under the ${proj.category} category and was completed in ${proj.period}.`,
-        metadata: {
-          category: "project",
-          source: "projects",
-          title: `${proj.title} — Tech Stack`,
-          company: proj.company,
-          period: proj.period,
-        },
+        pageContent: `Jeswin's freelance project "${proj.name}" (${(proj as any).type || "project"}, ${(proj as any).domain || ""}): ${(proj as any).description || ""}. ${features ? `Key features: ${features.join(". ")}.` : ""} Tech stack: ${(proj as any).techStack?.join(", ") || "N/A"}.`,
+        metadata: { category: "project", title: proj.name, company: "Freelance" },
       })
     );
   }
 
-  // ── Other projects (one rich chunk each) ──────────────────────────
-  for (const proj of projects.filter((p) => !p.featured)) {
+  // Portfolio projects
+  for (const proj of (freelancer as any).portfolioProjects || []) {
+    const subs = proj.subProjects || [];
+    const subText = subs.map((sp: any) => typeof sp === "string" ? sp : `${sp.name}: ${sp.detail} (${sp.tech})`).join(". ");
     docs.push(
       new Document({
-        pageContent: `Jeswin's project "${proj.title}" was developed at ${proj.company} in ${proj.period} in the ${proj.category} domain. The problem it addressed: ${proj.problem}. His approach: ${proj.approach}. The technology stack included ${proj.techStack.join(", ")}. The impact: ${proj.impact}.`,
-        metadata: {
-          category: "project",
-          source: "projects",
-          title: proj.title,
-          company: proj.company,
-          period: proj.period,
-        },
+        pageContent: `Jeswin's portfolio project "${proj.name}": ${proj.description || ""}. Sub-projects: ${subText}. Tech: ${proj.techStack?.join(", ") || "N/A"}.`,
+        metadata: { category: "project", title: proj.name, company: "Portfolio" },
       })
     );
   }
 
-  // ── Education ─────────────────────────────────────────────────────
+  // ── AMAZON ──
+  const amazon = m.experience[2];
   docs.push(
     new Document({
-      pageContent: `Jeswin's educational background includes ${education.length} degrees. ${education.map((e) => `He earned a ${e.degree} from ${e.school} in ${e.location} (${e.period})${e.details ? `. ${e.details}` : ""}`).join(". ")}. His education combines deep AI and machine learning knowledge with business transformation strategy and international management, built on a foundation of electronics and communication engineering.`,
-      metadata: { category: "education", source: "education", title: "All Education Summary" },
+      pageContent: `Jeswin worked as ${amazon.role} at Amazon in ${amazon.location} from ${amazon.period} (${(amazon as any).duration}, ${amazon.type}). Department: ${(amazon as any).department}. ${amazon.context} Key skills demonstrated: ${(amazon as any).keySkillsDemonstrated?.join(", ") || ""}.`,
+      metadata: { category: "experience", title: "Amazon — Overview", company: "Amazon" },
     })
   );
 
-  for (const edu of education) {
+  for (const proj of amazon.projects || []) {
+    const ps = (proj as any).problemStatement;
+    const whatDid = (proj as any).whatYouDid;
+    const metrics = (proj as any).metrics;
+
     docs.push(
       new Document({
-        pageContent: `Jeswin earned a ${edu.degree} from ${edu.school} in ${edu.location}, studying from ${edu.period}.${edu.details ? ` ${edu.details}.` : ""} This degree contributes to his expertise by providing ${edu.degree.includes("AI") ? "formal AI and business transformation knowledge" : edu.degree.includes("Management") ? "international business and cross-cultural leadership skills" : "a strong foundation in hardware, electronics, and communication systems that supports his IoT and robotics work"}.`,
-        metadata: { category: "education", source: "education", title: edu.degree },
+        pageContent: `Jeswin's Amazon project "${proj.name}" (focus: ${(proj as any).focus || ""}). Problem: ${ps?.summary || ""}. Challenges: ${ps?.challenges?.join(". ") || ""}. What Jeswin did: ${Array.isArray(whatDid) ? whatDid.join(". ") : (whatDid?.process || []).join(". ")}. Metrics: ${metrics ? Object.entries(metrics).map(([k, v]) => `${k}: ${v}`).join(". ") : "N/A"}. Tech: ${(proj as any).techStack?.join(", ") || "N/A"}.`,
+        metadata: { category: "project", title: proj.name, company: "Amazon" },
       })
     );
   }
 
-  // ── Certifications ────────────────────────────────────────────────
-  const certDetails = portfolioKnowledgeBase.certifications;
+  // ── INFORMATICA ──
+  const informatica = m.experience[3];
   docs.push(
     new Document({
-      pageContent: `Jeswin holds ${certifications.length} professional certifications that complement his hands-on experience. ${certDetails.map((c) => `The "${c.name}" from ${c.provider} provides ${c.relevance.toLowerCase()}`).join(". ")}. These certifications span project management, generative AI, LLMs, machine learning foundations, data analytics, and leadership — reflecting his commitment to continuous learning across both technical and business domains.`,
-      metadata: { category: "certifications", source: "certifications", title: "Certifications" },
+      pageContent: `Jeswin worked as ${informatica.role} at ${informatica.company} in ${informatica.location} from ${informatica.period} (${(informatica as any).duration}). ${informatica.context} What he did: ${(informatica as any).whatYouDid?.overview || ""}. Process: ${(informatica as any).whatYouDid?.process?.join(". ") || ""}. Products worked on: ${(informatica as any).productsWorkedOn?.map((p: any) => `${p.name} (${p.type})`).join(", ") || ""}. Metrics: ${Object.entries((informatica as any).metrics || {}).map(([k, v]) => `${k}: ${v}`).join(". ")}. Key skills: ${(informatica as any).keySkillsDemonstrated?.join(", ") || ""}.`,
+      metadata: { category: "experience", title: "Informatica — Overview", company: "Informatica" },
     })
   );
 
-  // ── Awards ────────────────────────────────────────────────────────
-  const awardDetails = portfolioKnowledgeBase.awardsAndRecognition;
+  // ── LEMA LABS ──
+  const lema = m.experience[4];
   docs.push(
     new Document({
-      pageContent: `Jeswin has received several awards and recognitions throughout his career. ${awardDetails.map((a) => `He won ${a.title}${a.event ? ` at the ${a.event}` : ""}${"organization" in a ? ` from ${(a as any).organization}` : ""}, which demonstrates ${a.significance.toLowerCase()}`).join(". ")}. These achievements span international robotics competitions, corporate innovation, academic thought leadership, and community building.`,
-      metadata: { category: "awards", source: "awards", title: "Awards & Recognition" },
+      pageContent: `Jeswin worked at ${lema.company} in ${lema.location} from ${lema.period} (${(lema as any).duration}). ${(lema as any).companyContext} Career progression: ${(lema as any).careerProgression?.map((p: any) => `${p.phase}: ${p.title} — ${p.description}`).join(". ") || ""}. Overall metrics: trained ${(lema as any).overallMetrics?.totalPeopleTrained} people, designed ${(lema as any).overallMetrics?.programsDesigned} programs, won ${(lema as any).overallMetrics?.competitionsWon}. Revenue impact: school program ~30%, IoT ~40%, ML 60% increase, COVID retention 60%.`,
+      metadata: { category: "experience", title: "Lema Labs — Overview", company: "Lema Labs" },
     })
   );
 
-  // ── Career narrative & positioning ────────────────────────────────
+  // Lema Labs individual projects
+  for (const proj of lema.projects || []) {
+    const details = (proj as any).details || (proj as any).activities || (proj as any).actions || (proj as any).curriculum || [];
+    const detailText = Array.isArray(details) ? details.join(". ") : "";
+    docs.push(
+      new Document({
+        pageContent: `Lema Labs project "${proj.name}" (${(proj as any).period || ""}): ${(proj as any).description || ""}. ${detailText}. ${(proj as any).impact ? `Impact: ${(proj as any).impact}.` : ""} ${(proj as any).outcome ? `Outcome: ${(proj as any).outcome}.` : ""}`,
+        metadata: { category: "project", title: proj.name, company: "Lema Labs" },
+      })
+    );
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  // PROJECTS — rich showcase data (from HTML presentations)
+  // ════════════════════════════════════════════════════════════════════════
+
+  // Projects overview
+  docs.push(
+    new Document({
+      pageContent: `Jeswin has built ${projectsShowcaseData.length} major projects. Agentic AI projects: ${projectsShowcaseData.filter((p) => p.category === "agentic-ai").map((p) => p.title).join(", ")}. Full-stack applications: ${projectsShowcaseData.filter((p) => p.category === "fullstack").map((p) => p.title).join(", ")}. These span restaurant AI, patent intelligence, adaptive education, e-commerce vision AI, alumni networking, language exam prep, rural transport, and attendance automation.`,
+      metadata: { category: "project", title: "All Projects Overview" },
+    })
+  );
+
+  for (const proj of projectsShowcaseData) {
+    // Problem + market context chunk
+    docs.push(
+      new Document({
+        pageContent: `${proj.title} — The Problem: ${proj.problem.heading}. ${proj.problem.cards.map((c) => `${c.title}: ${c.description}`).join(". ")}. Market context: ${proj.stats.items.map((s) => `${s.value} — ${s.label}`).join(". ")}. ${proj.stats.supportCards?.map((c) => `${c.title}: ${c.description}`).join(". ") || ""}`,
+        metadata: { category: "project", title: `${proj.title} — Problem & Market`, company: proj.company },
+      })
+    );
+
+    // Solution chunk
+    docs.push(
+      new Document({
+        pageContent: `${proj.title} — The Solution: ${proj.solution.heading}. ${proj.solution.cards.map((c) => `${c.title}: ${c.description}`).join(". ")}. Tagline: ${proj.tagline}. Status: ${proj.status}. Period: ${proj.period}. Company: ${proj.company}.`,
+        metadata: { category: "project", title: `${proj.title} — Solution`, company: proj.company },
+      })
+    );
+
+    // User journey chunk
+    docs.push(
+      new Document({
+        pageContent: `${proj.title} — How it works: ${proj.flow.steps.map((s, i) => `Step ${i + 1} (${s.label}): ${s.description}`).join(". ")}. ${proj.flow.secondaryFlow ? `Secondary flow (${proj.flow.secondaryFlow.heading}): ${proj.flow.secondaryFlow.steps.map((s) => `${s.label}: ${s.description}`).join(". ")}` : ""}`,
+        metadata: { category: "project", title: `${proj.title} — User Journey`, company: proj.company },
+      })
+    );
+
+    // Agent architecture chunk (if applicable)
+    if (proj.agents) {
+      const agentText = proj.agents.domains
+        ? proj.agents.domains.map((d) => `${d.name} (${d.count} agents): ${d.agents.join(", ")}`).join(". ")
+        : proj.agents.entries
+        ? proj.agents.entries.map((e) => `${e.name}: ${e.description}${e.tech ? ` (${e.tech})` : ""}`).join(". ")
+        : "";
+      docs.push(
+        new Document({
+          pageContent: `${proj.title} — Agent Architecture: ${proj.agents.heading}. ${agentText}. ${proj.agents.notes?.join(". ") || ""}`,
+          metadata: { category: "project", title: `${proj.title} — Agents`, company: proj.company },
+        })
+      );
+    }
+
+    // System architecture chunk
+    docs.push(
+      new Document({
+        pageContent: `${proj.title} — System Architecture: ${proj.architecture.heading}. ${proj.architecture.layers.map((l) => `${l.name} layer: ${l.boxes.map((b) => `${b.name} (${b.tech})`).join(", ")}`).join(". ")}.`,
+        metadata: { category: "project", title: `${proj.title} — Architecture`, company: proj.company },
+      })
+    );
+
+    // Design decisions chunk
+    docs.push(
+      new Document({
+        pageContent: `${proj.title} — Key Design Decisions: ${proj.decisions.items.map((d) => `${d.title}: ${d.description}`).join(". ")}.`,
+        metadata: { category: "project", title: `${proj.title} — Design Decisions`, company: proj.company },
+      })
+    );
+
+    // Tech stack chunk
+    docs.push(
+      new Document({
+        pageContent: `${proj.title} tech stack: ${proj.tech.map((t) => `${t.name} — ${t.description}`).join(". ")}. Category: ${proj.category === "agentic-ai" ? "Agentic AI" : "Full-Stack Application"}.`,
+        metadata: { category: "project", title: `${proj.title} — Tech Stack`, company: proj.company },
+      })
+    );
+
+    // Implementation status chunk
+    docs.push(
+      new Document({
+        pageContent: `${proj.title} — Implementation Status. Built and working: ${proj.statusSection.built.join(". ")}. Coming next: ${proj.statusSection.next.join(". ")}.`,
+        metadata: { category: "project", title: `${proj.title} — Status`, company: proj.company },
+      })
+    );
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  // EDUCATION
+  // ════════════════════════════════════════════════════════════════════════
+
+  docs.push(
+    new Document({
+      pageContent: `Jeswin's education: ${m.education.map((e) => `${e.degree} from ${e.institution} in ${e.location} (${e.period})${e.thesis ? `. Thesis: ${e.thesis}` : ""}${e.relevance ? `. Relevance: ${e.relevance}` : ""}`).join(". ")}.`,
+      metadata: { category: "education", title: "Education" },
+    })
+  );
+
+  // ════════════════════════════════════════════════════════════════════════
+  // CERTIFICATIONS & AWARDS
+  // ════════════════════════════════════════════════════════════════════════
+
+  docs.push(
+    new Document({
+      pageContent: `Jeswin holds ${m.certifications.length} certifications: ${m.certifications.map((c) => `${c.name} from ${c.provider} (${c.category})`).join(", ")}. These span project management, generative AI, LLMs, machine learning, data analytics, and leadership.`,
+      metadata: { category: "certifications", title: "Certifications" },
+    })
+  );
+
+  docs.push(
+    new Document({
+      pageContent: `Jeswin's awards and recognition: ${m.awards.map((a) => `${a.title}${"event" in a ? ` at ${(a as any).event}` : ""}${"organization" in a ? ` from ${(a as any).organization}` : ""} — ${a.significance}`).join(". ")}.`,
+      metadata: { category: "awards", title: "Awards & Recognition" },
+    })
+  );
+
+  // ════════════════════════════════════════════════════════════════════════
+  // CROSS-CUTTING THEMES (from master dataset)
+  // ════════════════════════════════════════════════════════════════════════
+
+  for (const [key, theme] of Object.entries(m.themes)) {
+    docs.push(
+      new Document({
+        pageContent: `Jeswin's cross-cutting theme: ${theme.label}. Evidence: ${theme.evidence.join(". ")}. ${("technologies" in theme && (theme as any).technologies) ? `Technologies: ${(theme as any).technologies.join(", ")}.` : ""}`,
+        metadata: { category: "themes", title: theme.label },
+      })
+    );
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  // PROVEN TRAITS — narrative character stories
+  // ════════════════════════════════════════════════════════════════════════
+
+  if (m.traits) {
+    // Overview chunk
+    docs.push(
+      new Document({
+        pageContent: `Jeswin's proven professional traits: ${m.traits.map((t: any) => `${t.name} — ${t.hook}`).join(". ")}. These traits are backed by real stories and hard metrics from his career.`,
+        metadata: { category: "traits", title: "All Traits Overview" },
+      })
+    );
+
+    // Individual trait chunks
+    for (const trait of m.traits) {
+      docs.push(
+        new Document({
+          pageContent: `Jeswin's trait "${trait.name}": ${trait.hook} ${trait.narrative} Evidence: ${trait.evidence.join(". ")}.`,
+          metadata: { category: "traits", title: trait.name },
+        })
+      );
+    }
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  // POSITIONING STATEMENTS (from master dataset)
+  // ════════════════════════════════════════════════════════════════════════
+
+  docs.push(
+    new Document({
+      pageContent: `Jeswin's elevator pitch: ${m.positioning.elevatorPitch}`,
+      metadata: { category: "positioning", title: "Elevator Pitch" },
+    })
+  );
+
+  for (const [role, summary] of Object.entries(m.positioning.summaries)) {
+    docs.push(
+      new Document({
+        pageContent: `Jeswin positioned as ${role}: ${summary}`,
+        metadata: { category: "positioning", title: `Positioning — ${role}` },
+      })
+    );
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  // TECHNICAL CONCEPTS (from portfolio-knowledge-base — still valuable)
+  // ════════════════════════════════════════════════════════════════════════
+
+  const tech = portfolioKnowledgeBase.technicalKnowledge;
+
+  docs.push(
+    new Document({
+      pageContent: `Agentic AI is a core area of Jeswin's expertise. ${tech.agenticAI.definition}. Key patterns: ${tech.agenticAI.keyPatterns.join(", ")}. Applications: ${tech.agenticAI.applications}. Examples: ${tech.agenticAI.examples.join(", ")}.`,
+      metadata: { category: "concepts", title: "Agentic AI" },
+    })
+  );
+
+  docs.push(
+    new Document({
+      pageContent: `Jeswin designs multi-agent architectures: ${tech.multiAgentArchitecture.description}. Benefits: ${tech.multiAgentArchitecture.benefits.join(", ")}. Examples: ${tech.multiAgentArchitecture.examples.join(", ")}.`,
+      metadata: { category: "concepts", title: "Multi-Agent Architecture" },
+    })
+  );
+
+  docs.push(
+    new Document({
+      pageContent: `Jeswin builds RAG pipelines: ${tech.ragPipelines.description}. Components: ${tech.ragPipelines.components.join(", ")}. Technologies: ${tech.ragPipelines.technologies.join(", ")}. This portfolio's chatbot itself uses a RAG pipeline.`,
+      metadata: { category: "concepts", title: "RAG Pipelines" },
+    })
+  );
+
+  docs.push(
+    new Document({
+      pageContent: `Jeswin uses LangGraph for state management: ${tech.langGraphStateManagement.description}. Advantages: ${tech.langGraphStateManagement.advantages.join(", ")}. Use cases: ${tech.langGraphStateManagement.useCases.join(", ")}.`,
+      metadata: { category: "concepts", title: "LangGraph Patterns" },
+    })
+  );
+
+  const hitl = tech.humanInTheLoop;
+  docs.push(
+    new Document({
+      pageContent: `Jeswin implements Human-in-the-Loop (HITL) patterns: ${hitl.description}. Use cases: ${hitl.useCases.join(", ")}. Implementation: ${hitl.implementation}. Examples: ${hitl.examples.join(". ")}.`,
+      metadata: { category: "concepts", title: "Human-in-the-Loop" },
+    })
+  );
+
+  // ════════════════════════════════════════════════════════════════════════
+  // CAREER NARRATIVE (from portfolio-knowledge-base)
+  // ════════════════════════════════════════════════════════════════════════
+
   const narrative = portfolioKnowledgeBase.careerNarrative;
   docs.push(
     new Document({
       pageContent: narrative.journey,
-      metadata: { category: "narrative", source: "careerNarrative", title: "Career Journey" },
+      metadata: { category: "narrative", title: "Career Journey" },
     })
   );
 
   docs.push(
     new Document({
-      pageContent: `Jeswin's key professional strengths include: ${narrative.strengths.map((s) => `${s.area} — ${s.description}`).join(". ")}. These strengths combine to make him effective at both designing complex AI systems and leading the teams and stakeholders needed to bring them to production.`,
-      metadata: { category: "narrative", source: "careerNarrative", title: "Key Strengths" },
-    })
-  );
-
-  docs.push(
-    new Document({
-      pageContent: `Jeswin is seeking roles in the following areas: ${narrative.targetRoles.join(". ")}. He is a good fit for these types of companies: ${narrative.companyTypes.join(". ")}. He brings a unique combination of hands-on production AI experience, team leadership, and business acumen that makes him particularly valuable in roles that bridge technical implementation with business strategy.`,
-      metadata: { category: "narrative", source: "careerNarrative", title: "Target Roles" },
-    })
-  );
-
-  // ── Technical concepts ────────────────────────────────────────────
-  const tech = portfolioKnowledgeBase.technicalKnowledge;
-  docs.push(
-    new Document({
-      pageContent: `Agentic AI is a core area of Jeswin's expertise. ${tech.agenticAI.definition}. The key patterns he implements include ${tech.agenticAI.keyPatterns.join(", ")}. These patterns are applied to ${tech.agenticAI.applications}. Real examples from his work include ${tech.agenticAI.examples.join(", ")}. Jeswin has hands-on production experience deploying Agentic AI systems, not just theoretical knowledge.`,
-      metadata: { category: "concepts", source: "technicalKnowledge", title: "Agentic AI" },
-    })
-  );
-
-  docs.push(
-    new Document({
-      pageContent: `Jeswin designs multi-agent architectures where ${tech.multiAgentArchitecture.description}. The benefits of this approach include ${tech.multiAgentArchitecture.benefits.join(", ")}. In his production systems, he has implemented this pattern at scale: ${tech.multiAgentArchitecture.examples.join(", ")}. He uses LangGraph for agent orchestration and state management across these multi-agent systems.`,
-      metadata: { category: "concepts", source: "technicalKnowledge", title: "Multi-Agent Architecture" },
-    })
-  );
-
-  docs.push(
-    new Document({
-      pageContent: `Jeswin builds RAG (Retrieval-Augmented Generation) pipelines for grounding LLM responses in external knowledge. ${tech.ragPipelines.description}. A RAG pipeline consists of ${tech.ragPipelines.components.join(", ")}. He implements these using technologies like ${tech.ragPipelines.technologies.join(", ")}. This portfolio's own chatbot is built using a RAG pipeline that retrieves relevant information about Jeswin's background before generating responses.`,
-      metadata: { category: "concepts", source: "technicalKnowledge", title: "RAG Pipelines" },
-    })
-  );
-
-  docs.push(
-    new Document({
-      pageContent: `Jeswin uses LangGraph for managing complex stateful workflows in his AI systems. ${tech.langGraphStateManagement.description}. The advantages include ${tech.langGraphStateManagement.advantages.join(", ")}. He has applied LangGraph state management to ${tech.langGraphStateManagement.useCases.join(", ")}. LangGraph is central to his production Agentic AI work at Constient Global Solutions.`,
-      metadata: { category: "concepts", source: "technicalKnowledge", title: "LangGraph Patterns" },
-    })
-  );
-
-  // Human-in-the-Loop concept
-  const hitl = tech.humanInTheLoop;
-  docs.push(
-    new Document({
-      pageContent: `Jeswin implements Human-in-the-Loop (HITL) patterns in his AI systems. ${hitl.description}. He applies HITL in use cases like ${hitl.useCases.join(", ")}. His implementation approach: ${hitl.implementation}. Concrete examples from his work: ${hitl.examples.join(". ")}. This pattern is especially important in his financial reconciliation work where autonomous AI decisions require human validation for high-stakes transactions.`,
-      metadata: { category: "concepts", source: "technicalKnowledge", title: "Human-in-the-Loop" },
-    })
-  );
-
-  // ── Positioning / elevator pitch ──────────────────────────────────
-  const pos = portfolioKnowledgeBase.positioning;
-  docs.push(
-    new Document({
-      pageContent: `${pos.elevator_pitch} In one line: ${pos.oneLiner}. What makes Jeswin unique: ${pos.uniqueValue.join(". ")}. He differentiates himself through production Agentic AI expertise that is practical, not theoretical, combined with a proven track record of 10x efficiency improvements and experience leading teams and training thousands of professionals.`,
-      metadata: { category: "positioning", source: "positioning", title: "Positioning & Value Prop" },
+      pageContent: `Jeswin's key strengths: ${narrative.strengths.map((s) => `${s.area} — ${s.description}`).join(". ")}.`,
+      metadata: { category: "narrative", title: "Key Strengths" },
     })
   );
 

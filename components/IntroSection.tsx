@@ -18,18 +18,18 @@ import {
 } from 'lucide-react'
 
 const experienceStats = [
-  { label: 'Total Experience', value: '9', unit: 'Years', icon: Calendar, color: 'from-violet-500 to-purple-600', navigateTo: 'experience' as Section },
-  { label: 'AI / ML', value: '7', unit: 'Years', icon: Brain, color: 'from-blue-500 to-cyan-500' },
-  { label: 'Data / BI', value: '6', unit: 'Years', icon: Database, color: 'from-emerald-500 to-teal-500' },
-  { label: 'Gen AI / LLMs', value: '2', unit: 'Years', icon: Sparkles, color: 'from-pink-500 to-rose-500' },
-  { label: 'Agentic AI', value: '1', unit: 'Year', icon: Cpu, color: 'from-orange-500 to-amber-500' },
+  { label: 'Total Experience', value: '10', unit: 'Years', icon: Calendar, color: 'from-violet-500 to-purple-600', navigateTo: 'experience' as Section },
+  { label: 'AI / ML', value: '8', unit: 'Years', icon: Brain, color: 'from-blue-500 to-cyan-500' },
+  { label: 'Data / BI', value: '7', unit: 'Years', icon: Database, color: 'from-emerald-500 to-teal-500' },
+  { label: 'Gen AI / LLMs', value: '3', unit: 'Years', icon: Sparkles, color: 'from-pink-500 to-rose-500' },
+  { label: 'Agentic AI', value: '2', unit: 'Years', icon: Cpu, color: 'from-orange-500 to-amber-500' },
 ]
 
 const projectStats = [
-  { label: 'Industry Projects', value: '7', icon: FolderKanban, navigateTo: 'projects' as Section },
+  { label: 'Products', value: '2', icon: Brain, navigateTo: 'projects' as Section },
+  { label: 'Industry Projects', value: '7', icon: FolderKanban },
   { label: 'Curriculum Projects', value: '13', icon: GraduationCap },
   { label: 'Projects Managed', value: '10+', icon: Building2 },
-  { label: 'Products', value: '5+', icon: Brain },
   { label: 'Enterprise Clients', value: '4+', icon: Building2 },
 ]
 
@@ -87,8 +87,6 @@ export default function IntroSection({ onNavigate }: IntroSectionProps) {
         transition={{ duration: 0.5, delay: 0.2 }}
         className="max-w-4xl mx-auto px-6 lg:px-12"
       >
-        <p className="text-muted text-sm mb-6">A snapshot of my professional journey</p>
-
         {/* Experience Stats - Large Cards */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
           {experienceStats.map((stat, index) => {
@@ -138,11 +136,11 @@ export default function IntroSection({ onNavigate }: IntroSectionProps) {
                     }`}
                   >
                     <div className={`p-2 rounded-lg ${isClickable ? 'bg-accent/20' : 'bg-accent/10'}`}>
-                      <stat.icon size={16} className={isClickable ? 'text-accent' : 'text-accent'} />
+                      <stat.icon size={16} className="text-accent" />
                     </div>
-                    <div>
+                    <div className="text-center flex-1">
                       <p className="text-xl font-bold">{stat.value}</p>
-                      <p className="text-xs text-muted text-left">{stat.label}</p>
+                      <p className="text-xs text-muted">{stat.label}</p>
                     </div>
                   </button>
                 )

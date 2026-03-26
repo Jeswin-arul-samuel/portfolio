@@ -33,7 +33,7 @@ Currently, I architect Agentic AI systems and Human-in-the-Loop pipelines using 
 I'm seeking opportunities in AI Engineering, Solutions Architecture, or hybrid roles that connect technology with business impact.`,
 
     careerHighlights: [
-      { label: "Years Experience", value: "9+" },
+      { label: "Years Experience", value: "10+" },
       { label: "Professionals Trained", value: "3000+" },
       { label: "Ex-Amazon", value: "BI Engineer" },
       { label: "Education", value: "MSc AI, SKEMA Paris" },
@@ -868,7 +868,7 @@ Key theme: Solving complex real-world problems through intelligent systems while
   // COMMUNICATION & POSITIONING
   // ============================================================================
   positioning: {
-    elevator_pitch: "AI Solutions Architect with 9+ years building intelligent systems. Recently deployed Agentic AI achieving 98% accuracy in financial reconciliation and 80% autonomous customer recognition. Expert in LangGraph, GPT-4o, and production AI systems. Seeking AI engineering or solutions architecture roles with business impact.",
+    elevator_pitch: "AI Solutions Architect with 10+ years building intelligent systems. Recently deployed Agentic AI achieving 98% accuracy in financial reconciliation and 80% autonomous customer recognition. Expert in LangGraph, GPT-4o, and production AI systems. Seeking AI engineering or solutions architecture roles with business impact.",
 
     oneLiner: "Bridge between AI innovation and business impact - architecting autonomous Agentic AI systems that solve complex real-world problems.",
 

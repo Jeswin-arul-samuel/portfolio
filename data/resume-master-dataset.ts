@@ -1004,6 +1004,51 @@ export const masterResumeDataset = {
   },
 
   // ============================================================================
+  // WHAT I BRING TO THE TABLE — PROVEN TRAITS
+  // ============================================================================
+  // These narrative trait sections were crafted for the unconventional resume.
+  // Each trait follows the format: creative header → one-line hook → short story → hard metric.
+  // No company names — kept generic so they work across all resume variants.
+  traits: [
+    {
+      name: "The Firefighter",
+      hook: "I walk into broken situations and make them work.",
+      narrative: "When an enterprise AI project was stalling and the client was losing confidence, I was brought in. A fresh perspective and a data-first approach turned things around — within a day, the path forward was clear. Ten weeks later: a production system with 98% accuracy, cutting monthly close from 2+ weeks to 2 days. When a pandemic shut down the bootstrapped startup I worked at — a classroom-only business with zero VC funding — I pivoted the entire company online and retained 60% of annual revenue.",
+      evidence: ["Constient — rescued stalling AI project, shipped 98% accuracy in 10 weeks", "Lema Labs — COVID pivot, retained 60% revenue"],
+    },
+    {
+      name: "The Data Detective",
+      hook: "I diagnose before I prescribe. Every solution starts with the data.",
+      narrative: "The stalling project I inherited had one core issue — the solution was built before the data was understood. I stepped back, studied the actual business process, mapped the data sources, analyzed the patterns, and designed the system around what the data was actually telling me. In another role, I got on calls with international partner data teams, mapped what data they had versus what was needed, and built a validation framework that took data readiness from 38% to 86%.",
+      evidence: ["Constient — data-first approach unlocked 98% reconciliation accuracy", "Amazon — data readiness 38% → 86% through data mapping and validation"],
+    },
+    {
+      name: "The Bridge",
+      hook: "The tech means nothing if the business doesn't get it. I make sure they do.",
+      narrative: "I don't just build systems — I sit with finance controllers, restaurant operators, and compliance teams to understand their problems, then come back with solutions they trust. I've been the single point between engineering, business stakeholders, and clients. I've negotiated data standards with external partners across international borders. I've presented to boardrooms and debugged code in the same week.",
+      evidence: ["Constient — single point between engineering, finance, and client", "Amazon — negotiated data standards with EU/UK broker partners"],
+    },
+    {
+      name: "The Tech Enabler",
+      hook: "I learn fast, then bring others along with me.",
+      narrative: "I've gone from soldering line-follower robots to deploying production multi-agent AI systems — all self-taught. But I don't hoard knowledge. I've trained 3000+ professionals across robotics, IoT, ML, and AI. I co-founded a maker community whose members won national hackathons and launched 2 startups. In one role, I mastered 8 enterprise data products in 9 months and trained a global team of 12 trainers to deliver them.",
+      evidence: ["Lema Labs — trained 3000+, community members won hackathons and launched startups", "Informatica — mastered 8 products in 9 months, trained 12 global trainers"],
+    },
+    {
+      name: "The Revenue Builder",
+      hook: "Everything I build is designed to make the business win.",
+      narrative: "Every training program I designed at a startup drove revenue growth — school robotics (+30%), IoT workshops (+40%), and a flagship ML course that became the company's primary revenue stream (+60%). At an enterprise software company, 4 courses I designed increased the sales pipeline by 22%. I don't build tech for tech's sake — I build things that sell, scale, and sustain.",
+      evidence: ["Lema Labs — 3 programs driving 30-60% revenue growth each", "Informatica — 4 courses increased sales pipeline by 22%"],
+    },
+    {
+      name: "The Loyal Craftsman",
+      hook: "I stay where I'm creating value.",
+      narrative: "Six years at a small, bootstrapped startup — not because I couldn't leave, but because I was building something meaningful, surrounded by curious and intellectual minds that kept me challenged. I saw students become engineers, professionals land promotions, and community members start companies. When the work matters, the people inspire, and the impact is real, I'm all in.",
+      evidence: ["Lema Labs — 6 years at bootstrapped startup, chose impact over brand names"],
+    },
+  ],
+
+  // ============================================================================
   // POSITIONING STATEMENTS (ready for different resume types)
   // ============================================================================
   positioning: {

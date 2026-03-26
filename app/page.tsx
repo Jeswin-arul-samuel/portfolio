@@ -63,11 +63,14 @@ export default function Home() {
       <main className="flex-1 lg:ml-80 min-h-screen">
         {activeSection === 'intro' ? (
           <IntroSection onNavigate={setActiveSection} />
-        ) : activeSection === 'skills' || activeSection === 'projects' ? (
+        ) : activeSection === 'projects' ? (
+          <div className="w-full min-h-screen">
+            <ProjectsShowcase />
+          </div>
+        ) : activeSection === 'skills' ? (
           <div className="w-full max-w-7xl mx-auto px-6 lg:px-12 py-8 lg:py-12 flex items-start lg:items-center justify-center min-h-screen">
             <div className="w-full">
-              {activeSection === 'skills' && <SkillsCompact />}
-              {activeSection === 'projects' && <ProjectsShowcase />}
+              <SkillsCompact />
             </div>
           </div>
         ) : (
