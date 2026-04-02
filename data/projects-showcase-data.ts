@@ -286,6 +286,7 @@ export const projectsShowcaseData: ProjectShowcase[] = [
     year: 2024,
     status: "complete",
     colorScheme: "plum",
+    demoUrl: "https://ideapoke-frnd.vercel.app/",
 
     problem: {
       heading: "Finding the Next Big Innovation Shouldn't Take Months",
