@@ -12,7 +12,7 @@
     "@calcom/embed-react": "^1.5.3",
     "@fontsource/inter": "^5.2.8",
     "@langchain/classic": "^1.0.17",
-"@langchain/core": "^1.1.24",
+    "@langchain/core": "^1.1.24",
     "@langchain/langgraph": "^1.1.4",
     "@langchain/openai": "^1.2.7",
     "@react-three/drei": "^9.92.7",
@@ -26,6 +26,7 @@
     "react": "^18.3.0",
     "react-dom": "^18.3.0",
     "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
     "three": "^0.182.0"
   },
   "devDependencies": {

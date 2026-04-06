@@ -5,7 +5,14 @@ import { useInView } from 'framer-motion'
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { masterResumeDataset } from '@/data/resume-master-dataset'
 
-const traits = masterResumeDataset.traits
+// Map strengths into the trait format the orbit expects
+const strengths = masterResumeDataset.strengthsAndWeaknesses.strengths
+const traits = strengths.map((s) => ({
+  name: s.strength.split(' ').slice(0, 3).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
+  hook: s.whyItMatters,
+  narrative: s.evidence,
+  evidence: [] as string[],
+}))
 
 const languages = [
   { name: "English", level: "Native", flag: "🇬🇧" },

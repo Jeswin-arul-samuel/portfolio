@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Menu } from 'lucide-react'
 import SidebarNav from '@/components/SidebarNav'
 import ChatWidget from '@/components/ChatWidget'
@@ -10,31 +10,68 @@ import CareerProgression from '@/components/CareerProgression'
 import SkillsCompact from '@/components/SkillsCompact'
 import ExperienceArc from '@/components/ExperienceArc'
 import ProjectsShowcase from '@/components/ProjectsShowcase'
+import ArticlesSection from '@/components/ArticlesSection'
 import CertificationsSection from '@/components/CertificationsSection'
 import ContactCompact from '@/components/ContactCompact'
 
-export type Section = 'intro' | 'about' | 'career' | 'skills' | 'experience' | 'projects' | 'certifications' | 'contact'
+export type Section = 'intro' | 'about' | 'career' | 'skills' | 'experience' | 'projects' | 'articles' | 'certifications' | 'contact'
+
+const VALID_SECTIONS: Section[] = ['intro', 'about', 'career', 'skills', 'experience', 'projects', 'articles', 'certifications', 'contact']
+
+function getSectionFromHash(): Section {
+  if (typeof window === 'undefined') return 'intro'
+  const hash = window.location.hash.replace('#', '')
+  return VALID_SECTIONS.includes(hash as Section) ? (hash as Section) : 'intro'
+}
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState<Section>('intro')
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(true) // Start with menu open on mobile
-  const [hasSelectedSection, setHasSelectedSection] = useState(false) // Track if user has selected anything
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(true)
+  const [hasSelectedSection, setHasSelectedSection] = useState(false)
+
+  // Read hash on mount
+  useEffect(() => {
+    const section = getSectionFromHash()
+    if (section !== 'intro') {
+      setActiveSection(section)
+      setMobileMenuOpen(false)
+      setHasSelectedSection(true)
+    }
+  }, [])
+
+  // Listen for hash changes (browser back/forward)
+  useEffect(() => {
+    const onHashChange = () => {
+      const section = getSectionFromHash()
+      setActiveSection(section)
+      if (section !== 'intro') {
+        setMobileMenuOpen(false)
+        setHasSelectedSection(true)
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+    window.addEventListener('hashchange', onHashChange)
+    return () => window.removeEventListener('hashchange', onHashChange)
+  }, [])
+
+  // Update hash when section changes
+  const navigateTo = useCallback((section: Section) => {
+    setActiveSection(section)
+    window.location.hash = section === 'intro' ? '' : section
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [])
 
   const handleSectionChange = (section: Section) => {
-    setActiveSection(section)
-    setMobileMenuOpen(false) // Close menu when section is selected on mobile
-    setHasSelectedSection(true) // User has now selected something
-    window.scrollTo({ top: 0, behavior: 'smooth' }) // Scroll to top
+    navigateTo(section)
+    setMobileMenuOpen(false)
+    setHasSelectedSection(true)
   }
 
   return (
     <div className="flex min-h-screen">
       {/* Fixed Sidebar - Always visible on desktop */}
       <div className="hidden lg:block">
-        <SidebarNav activeSection={activeSection} setActiveSection={(section) => {
-          setActiveSection(section)
-          window.scrollTo({ top: 0, behavior: 'smooth' })
-        }} />
+        <SidebarNav activeSection={activeSection} setActiveSection={navigateTo} />
       </div>
 
       {/* Mobile Menu Overlay */}
@@ -62,7 +99,7 @@ export default function Home() {
       {/* Main Content - Single section at a time */}
       <main className="flex-1 lg:ml-80 min-h-screen">
         {activeSection === 'intro' ? (
-          <IntroSection onNavigate={setActiveSection} />
+          <IntroSection onNavigate={navigateTo} />
         ) : activeSection === 'projects' ? (
           <div className="w-full min-h-screen">
             <ProjectsShowcase />
@@ -79,6 +116,7 @@ export default function Home() {
               {activeSection === 'about' && <AboutCompact />}
               {activeSection === 'career' && <CareerProgression />}
               {activeSection === 'experience' && <ExperienceArc />}
+              {activeSection === 'articles' && <ArticlesSection />}
               {activeSection === 'certifications' && <CertificationsSection />}
               {activeSection === 'contact' && <ContactCompact />}
             </div>

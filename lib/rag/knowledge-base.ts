@@ -370,24 +370,34 @@ export function buildDocuments(): Document[] {
   }
 
   // ════════════════════════════════════════════════════════════════════════
-  // PROVEN TRAITS — narrative character stories
+  // STRENGTHS & BEHAVIORAL STORIES
   // ════════════════════════════════════════════════════════════════════════
 
-  if (m.traits) {
-    // Overview chunk
+  if (m.strengthsAndWeaknesses?.strengths) {
     docs.push(
       new Document({
-        pageContent: `Jeswin's proven professional traits: ${m.traits.map((t: any) => `${t.name} — ${t.hook}`).join(". ")}. These traits are backed by real stories and hard metrics from his career.`,
-        metadata: { category: "traits", title: "All Traits Overview" },
+        pageContent: `Jeswin's key strengths: ${m.strengthsAndWeaknesses.strengths.map((s: any) => `${s.strength} — ${s.evidence}`).join(". ")}.`,
+        metadata: { category: "strengths", title: "All Strengths Overview" },
       })
     );
 
-    // Individual trait chunks
-    for (const trait of m.traits) {
+    for (const s of m.strengthsAndWeaknesses.strengths) {
       docs.push(
         new Document({
-          pageContent: `Jeswin's trait "${trait.name}": ${trait.hook} ${trait.narrative} Evidence: ${trait.evidence.join(". ")}.`,
-          metadata: { category: "traits", title: trait.name },
+          pageContent: `Jeswin's strength: ${s.strength}. Evidence: ${s.evidence}. Why it matters: ${s.whyItMatters}`,
+          metadata: { category: "strengths", title: s.strength },
+        })
+      );
+    }
+  }
+
+  if (m.behavioralStories) {
+    for (const [key, story] of Object.entries(m.behavioralStories)) {
+      const s = story as any;
+      docs.push(
+        new Document({
+          pageContent: `Behavioral story — ${s.question}. Situation: ${s.situation}. Task: ${s.task}. Action: ${s.action}. Result: ${s.result}.`,
+          metadata: { category: "behavioral", title: key },
         })
       );
     }
