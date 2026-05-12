@@ -484,5 +484,67 @@ export function buildDocuments(): Document[] {
     })
   );
 
+  // ════════════════════════════════════════════════════════════════════════
+  // TECHNOLOGY EXPERIENCE — per-tech years + context (one chunk per tech).
+  // Frequent recruiter question: "how many years of X does he have?" — a
+  // dedicated chunk per technology gives the cleanest possible retrieval.
+  // ════════════════════════════════════════════════════════════════════════
+
+  const humanizeKey = (k: string) =>
+    k.replace(/([A-Z])/g, " $1").replace(/^./, (c) => c.toUpperCase()).trim();
+
+  for (const [techKey, tech] of Object.entries((m as any).technologyExperience || {})) {
+    const t = tech as { years: string; since: string; until?: string; context: string };
+    const displayName = humanizeKey(techKey);
+    const range = t.until ? `${t.since}–${t.until}` : `since ${t.since}`;
+    docs.push(
+      new Document({
+        pageContent: `Jeswin's experience with ${displayName}: ${t.years} years (${range}). ${t.context}`,
+        metadata: { category: "technology-experience", title: `${displayName} — Experience` },
+      })
+    );
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  // WHY HIRE ME — one mega chunk per target role. Each pitch is rich enough
+  // to read as a self-contained "why him for THIS role" answer.
+  // ════════════════════════════════════════════════════════════════════════
+
+  for (const [roleKey, role] of Object.entries((m as any).whyHireMe || {})) {
+    const r = role as any;
+    const evidenceText = r.evidence
+      ? Object.entries(r.evidence)
+          .map(([k, items]) => `${humanizeKey(k)} — ${(items as string[]).join("; ")}`)
+          .join(". ")
+      : "";
+    const objectionsText = (r.anticipatedObjections || [])
+      .map((o: any) => `Concern: "${o.concern}" Rebuttal: ${o.rebuttal}`)
+      .join(" | ");
+    docs.push(
+      new Document({
+        pageContent: `Why hire Jeswin as ${r.roleTitle}. Core identity: ${r.coreIdentity}. Core argument: ${r.coreArgument} Why this role: ${(r.whyThisRole || []).join(". ")}. Evidence: ${evidenceText}. Differentiators: ${(r.differentiators || []).join(". ")}. Anticipated objections: ${objectionsText}`,
+        metadata: { category: "why-hire-me", title: r.roleTitle, role: roleKey },
+      })
+    );
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  // RECRUITER CONCERNS / FAQs — one Q→A chunk per concern so embeddings
+  // capture both the question intent and the framed response.
+  // ════════════════════════════════════════════════════════════════════════
+
+  for (const [concernKey, concern] of Object.entries((m as any).recruiterConcerns || {})) {
+    const c = concern as any;
+    const whatTheySee = c.whatTheySee ? ` What they see: ${c.whatTheySee.join("; ")}.` : "";
+    const status = c.currentStatus ? ` Current status: ${c.currentStatus}.` : "";
+    const tip = c.proactiveTip ? ` Proactive framing tip: ${c.proactiveTip}` : "";
+    docs.push(
+      new Document({
+        pageContent: `Recruiter concern about Jeswin: "${c.concern}".${whatTheySee}${status} Response: ${c.response}${tip}`,
+        metadata: { category: "recruiter-concern", title: humanizeKey(concernKey) },
+      })
+    );
+  }
+
   return docs;
 }

@@ -2,12 +2,17 @@
  * PORTFOLIO DATA - Derived from Master Resume Dataset
  * ====================================================
  * This file re-exports data in the shapes that site components expect.
- * Single source of truth: resume-master-dataset.ts
  *
- * DO NOT add data here directly — update resume-master-dataset.ts instead.
+ * DATA SOURCES:
+ * - `resume-master-dataset.ts` → canonical resume content (DO NOT edit — it is
+ *   a copy of a file generated in another project and will be overwritten).
+ * - `site-config.ts` → site-specific display config (navigation, featured
+ *   project list, display categories). Edit this file when you need to change
+ *   how projects are displayed on the site.
  */
 
 import { masterResumeDataset } from "./resume-master-dataset"
+import { siteNavigation, projectCategories, featuredProjectNames } from "./site-config"
 
 const m = masterResumeDataset
 
@@ -80,7 +85,7 @@ export const personalInfo = {
 // ============================================================================
 // NAVIGATION
 // ============================================================================
-export const navigation = m.siteDisplay.navigation
+export const navigation = siteNavigation
 
 // ============================================================================
 // SKILLS
@@ -136,9 +141,17 @@ function buildProjectApproach(proj: any): string {
     if (arch.dataFlow) parts.push(`## Data Flow\n${arch.dataFlow}`)
   }
 
-  if (proj.features?.length) {
-    parts.push("## Key Features")
-    parts.push(...proj.features.map((f: string) => `- ${f}`))
+  if (proj.features) {
+    if (Array.isArray(proj.features)) {
+      parts.push("## Key Features")
+      parts.push(...proj.features.map((f: string) => `- ${f}`))
+    } else if (typeof proj.features === "object") {
+      parts.push("## Key Features")
+      for (const [section, items] of Object.entries(proj.features)) {
+        parts.push(`### ${section}`)
+        parts.push(...(items as string[]).map((f: string) => `- ${f}`))
+      }
+    }
   }
 
   if (proj.whatYouDid) {
@@ -166,8 +179,8 @@ function buildProjectImpact(proj: any): string {
 
 function flattenProjects(): Project[] {
   const allProjects: any[] = []
-  const cats = m.siteDisplay.projectCategories
-  const featured = m.siteDisplay.featuredProjects
+  const cats = projectCategories
+  const featured = featuredProjectNames
 
   for (const exp of m.experience) {
     // Work experience projects

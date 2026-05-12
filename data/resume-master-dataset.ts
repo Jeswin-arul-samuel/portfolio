@@ -2276,38 +2276,4 @@ At Constient, this is exactly what I did: I architected both systems, led 12 eng
       usableFor: ["How do you mentor others?", "How do you scale yourself?", "Tell me about your leadership style", "Describe a time you had to work through others"],
     },
   },
-
-  // ============================================================================
-  // SITE DISPLAY METADATA (used by portfolio-data.ts adapter)
-  // ============================================================================
-  siteDisplay: {
-    navigation: [
-      { name: "About", href: "#about" },
-      { name: "Skills", href: "#skills" },
-      { name: "Projects", href: "#projects" },
-      { name: "Experience", href: "#experience" },
-      { name: "Contact", href: "#contact" },
-    ],
-    featuredProjects: [
-      "AI-Powered Cash Reconciliation (Accounts Receivable Ledger)",
-      "Virtual Waiter (Hospitality AI Assistant)",
-      "Personalized Learning Assistant (Generative Learning Platform)",
-      "Research & Innovation Idea Generator",
-      "Import/Export Data Standardization",
-      "Customs Audit Automation Dashboard",
-    ],
-    projectCategories: {
-      "AI-Powered Cash Reconciliation (Accounts Receivable Ledger)": "Agentic AI",
-      "Cash Reconciliation for Hospitality Chain": "Agentic AI",
-      "Virtual Waiter (Hospitality AI Assistant)": "Agentic AI",
-      "Personalized Learning Assistant (Generative Learning Platform)": "EdTech AI",
-      "Product Description Generator": "Generative AI",
-      "Research & Innovation Idea Generator": "Generative AI",
-      "GenAI Project Suite": "Generative AI / Agentic AI",
-      "Deep Learning Projects Collection": "Machine Learning",
-      "Import/Export Data Standardization": "Data Engineering",
-      "Customs Audit Automation Dashboard": "Data Engineering",
-      "Universal Data Validation Framework (Cross-Broker Standardization)": "Data Engineering",
-    } as Record<string, string>,
-  },
 }
